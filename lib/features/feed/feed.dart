@@ -187,20 +187,26 @@ class _FeedPageState extends State<FeedPage> {
   Widget _buildBloodGroupDropdown() {
     return Expanded(
       flex: 1,
-      child: DropdownButtonFormField<String>(
-        initialValue: _selectedBloodGroup,
-        decoration: const InputDecoration(
-          labelText: 'Blood Group',
-          border: OutlineInputBorder(),
+      child: ButtonTheme(
+        alignedDropdown: true,
+        child: DropdownButtonFormField<String>(
+          initialValue: _selectedBloodGroup,
+
+          decoration: const InputDecoration(
+            labelText: 'Blood Group',
+            visualDensity: VisualDensity(vertical: -4),
+          ),
+          items: AppData.bloodGroups
+              .map(
+                (group) => DropdownMenuItem(value: group, child: Text(group)),
+              )
+              .toList(),
+          onChanged: (value) async {
+            setState(() => _selectedBloodGroup = value);
+            await _loadRequests(reset: true);
+          },
+          isExpanded: true,
         ),
-        items: AppData.bloodGroups
-            .map((group) => DropdownMenuItem(value: group, child: Text(group)))
-            .toList(),
-        onChanged: (value) async {
-          setState(() => _selectedBloodGroup = value);
-          await _loadRequests(reset: true);
-        },
-        isExpanded: true,
       ),
     );
   }

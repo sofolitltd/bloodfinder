@@ -2,6 +2,7 @@ import 'package:bloodfinder/data/db/app_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/models/blood_request.dart';
@@ -22,9 +23,18 @@ class _PostBloodRequestPageState extends State<PostBloodRequestPage> {
   String? _selectedDistrict;
   String? _selectedSubdistrict;
 
-  final List<String> _bagOptions = ['1', '2', '3', '4', '5+'];
-
-  List<String> _subDistrictList = [];
+  final List<String> _bagOptions = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+  ];
 
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
@@ -115,20 +125,21 @@ class _PostBloodRequestPageState extends State<PostBloodRequestPage> {
         title: const Text('Post Blood Request'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child: Form(
-              key: _formKey,
+      body: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   // Name
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                      labelText: 'Name',
-                      hintText: 'Enter name',
+                      labelText: 'Patient Name',
+                      hintText: 'Enter Patient Name',
                     ),
                     validator: (val) =>
                         (val == null || val.trim().isEmpty) ? 'Required' : null,
@@ -143,9 +154,19 @@ class _PostBloodRequestPageState extends State<PostBloodRequestPage> {
                       labelText: 'Contact Number',
                       hintText: 'Enter contact number',
                     ),
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) return 'Required';
-                      if (val.trim().length < 10) return 'Invalid number';
+                    inputFormatters: [
+                      FilteringTextInputFormatter
+                          .digitsOnly, // Only allow digits
+                      LengthLimitingTextInputFormatter(11), // Max 11 digits
+                    ],
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Required';
+                      if (v.length != 11) {
+                        return 'Mobile number must be 11 digits';
+                      }
+                      if (!RegExp(r'^\d{11}$').hasMatch(v)) {
+                        return 'Invalid number';
+                      }
                       return null;
                     },
                   ),
@@ -288,6 +309,10 @@ class _PostBloodRequestPageState extends State<PostBloodRequestPage> {
                     maxLines: 3,
                     decoration: const InputDecoration(
                       labelText: 'Note (optional)',
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 10,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),

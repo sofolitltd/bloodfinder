@@ -1,10 +1,17 @@
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart'; // For saving user data
-import 'package:firebase_auth/firebase_auth.dart'; // For authentication
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
 
-import '../../data/db/app_data.dart';
+import '/data/db/app_data.dart';
+import '/data/models/user_model.dart';
 import '../community/search_page.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -15,37 +22,22 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  // GlobalKey for form validation
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  // Text Editing Controllers for various input fields
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _mobileNumberController = TextEditingController();
-  final TextEditingController _locationController =
-      TextEditingController(); // Current Address
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _mobileController = TextEditingController();
+  final _addressController = TextEditingController();
 
-  // Focus Nodes for field navigation
-  final FocusNode _firstNameFocus = FocusNode();
-  final FocusNode _lastNameFocus = FocusNode();
-  final FocusNode _mobileNumberFocus = FocusNode();
-  final FocusNode _locationFocus = FocusNode();
-  final FocusNode _districtFocus = FocusNode();
-  final FocusNode _thanaFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
-  final FocusNode _passwordFocus = FocusNode();
-
-  // State variables for dropdowns and selections
-  String? _selectedGender; // Made nullable for initial state
-  DateTime? selectedDateOfBirth;
-  String? _selectedBloodGroup; // Made nullable for initial state
-  bool isDonor = true;
-
-  // State variables for Autocomplete (District and Thana)
+  DateTime? _dob;
+  String? _gender;
   String? _selectedDistrict;
   String? _selectedSubdistrict;
+  String? _bloodGroup;
+  bool isDonor = true;
+  XFile? _pickedImage;
 
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -56,139 +48,125 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _mobileNumberController.dispose();
-    _locationController.dispose();
-
-    _firstNameFocus.dispose();
-    _lastNameFocus.dispose();
-    _mobileNumberFocus.dispose();
-    _locationFocus.dispose();
-    _districtFocus.dispose();
-    _thanaFocus.dispose();
-    _emailFocus.dispose();
-    _passwordFocus.dispose();
+    _mobileController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
-  // Helper to show SnackBar messages
-  void _showMessage(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-      ),
-    );
-  }
-
-  // Date Picker
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDateOfBirth ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null && picked != selectedDateOfBirth) {
+  // Pick image and compress
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final compressed = await _compressImage(File(pickedFile.path));
       setState(() {
-        selectedDateOfBirth = picked;
+        _pickedImage = compressed; // File? type, works perfectly
       });
     }
   }
 
-  // Handle User Registration
+  Future<XFile?> _compressImage(File file) async {
+    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      '${file.parent.path}/compressed_${file.path.split('/').last}',
+      quality: 70, // adjust for smaller size
+      minWidth: 500,
+      minHeight: 500,
+    );
+
+    return compressedFile; // already File? type
+  }
+
+  Future<String> _uploadImage(File file, String uid) async {
+    final ref = FirebaseStorage.instance.ref().child('users/$uid.jpg');
+    await ref.putFile(file);
+    return await ref.getDownloadURL();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dob ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) setState(() => _dob = picked);
+  }
+
   Future<void> _handleRegistration() async {
-    if (!_formKey.currentState!.validate()) {
-      _showMessage('Please fix the errors in the form.', isError: true);
-
-      return;
-    }
-
-    // Basic validation for dropdowns and date picker
-    if (_selectedGender == null || _selectedGender!.isEmpty) {
-      _showMessage('Please select your Gender.', isError: true);
-      return;
-    }
-    if (selectedDateOfBirth == null) {
-      _showMessage('Please select your Date of Birth.', isError: true);
-      return;
-    }
-    if (_selectedDistrict == null) {
-      _showMessage('Please select your District.', isError: true);
-      return;
-    }
-    if (_selectedSubdistrict == null) {
-      _showMessage('Please select your Thana.', isError: true);
-      return;
-    }
-    if (_selectedBloodGroup == null || _selectedBloodGroup!.isEmpty) {
-      _showMessage('Please select your Blood Group.', isError: true);
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     try {
       setState(() => _isLoading = true);
 
-      // 1. Create User with Email and Password
+      // Create Firebase Auth User
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );
 
-      // 2. Save Additional User Data to Firestore
-      String uid = userCredential.user!.uid;
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'firstName': _firstNameController.text.trim(),
-        'lastName': _lastNameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'mobileNumber': _mobileNumberController.text.trim(),
-        'gender': _selectedGender,
-        'dateOfBirth': selectedDateOfBirth!.toIso8601String(),
-        // Store as ISO String
-        //address as {}
-        'address': [
-          {
-            'type': 'current',
-            'currentAddress': _locationController.text.trim(),
-            'district': _selectedDistrict,
-            'subdistrict': _selectedSubdistrict,
-          },
-        ],
-        'communities': [],
-        'bloodGroup': _selectedBloodGroup,
-        'isDonor': isDonor,
-        'isEmergencyDonor': false,
-        'token': '',
-        'createdAt': FieldValue.serverTimestamp(), // Timestamp of creation
-      });
+      final uid = userCredential.user!.uid;
+      String imageUrl = '';
 
-      // _showMessage('Registration Successful! Please log in.', isError: false);
-      setState(() => _isLoading = false);
-      // Navigate back to the login screen after successful registration
-      Navigator.pushReplacementNamed(
-        context,
-        '/',
-      ); // Use pushReplacementNamed to prevent back navigation
-    } on FirebaseAuthException catch (e) {
-      String errorMessage;
-      if (e.code == 'weak-password') {
-        errorMessage = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'The account already exists for that email.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'The email address is not valid.';
-      } else {
-        errorMessage = 'Firebase Auth Error: ${e.message}';
+      if (_pickedImage != null) {
+        imageUrl = await _uploadImage(File(_pickedImage!.path), uid);
       }
-      _showMessage(errorMessage, isError: true);
-      log('Firebase Auth Error: ${e.code} - ${e.message}');
+
+      //
+      final createdAt = DateTime.now().toIso8601String();
+
+      //
+      var token = await FirebaseMessaging.instance.getToken();
+
+      // Create UserModel
+      final user = UserModel(
+        uid: uid,
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        email: _emailController.text.trim(),
+        mobileNumber: _mobileController.text.trim(),
+        gender: _gender!,
+        dateOfBirth: _dob!,
+        currentAddress: _addressController.text.trim(),
+        district: _selectedDistrict!,
+        subdistrict: _selectedSubdistrict!,
+        communities: [],
+        bloodGroup: _bloodGroup!,
+        isDonor: isDonor,
+        isEmergencyDonor: false,
+        token: token ?? '',
+        createdAt: createdAt,
+        isOnline: false,
+        image: imageUrl,
+      );
+
+      // Save to Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set(user.toJson());
+
+      setState(() => _isLoading = false);
+
+      Navigator.pushReplacementNamed(context, '/'); // Go to login/home
+    } on FirebaseAuthException catch (e) {
+      log('FirebaseAuth Error: ${e.code} - ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Authentication error'),
+          backgroundColor: Colors.red,
+        ),
+      );
       setState(() => _isLoading = false);
     } catch (e) {
-      _showMessage(
-        'An unexpected error occurred: ${e.toString()}',
-        isError: true,
+      log('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Unexpected error occurred'),
+          backgroundColor: Colors.red,
+        ),
       );
-      log('General Error: $e');
       setState(() => _isLoading = false);
     }
   }
@@ -196,471 +174,231 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registration'), centerTitle: true),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey, // Assign the form key
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Information',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+      appBar: AppBar(title: const Text('Register')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Image Picker
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: _pickedImage != null
+                      ? FileImage(File(_pickedImage!.path))
+                      : null,
+                  child: _pickedImage == null
+                      ? const Icon(Icons.camera_alt, size: 40)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // First & Last Name
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: TextFormField(
+                      controller: _firstNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'First Name',
+                      ),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: TextFormField(
+                      controller: _lastNameController,
+                      decoration: const InputDecoration(labelText: 'Last Name'),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
 
-                const SizedBox(height: 16),
-
-                // First Name & Last Name
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: TextFormField(
-                        // Changed to TextFormField
-                        controller: _firstNameController,
-                        focusNode: _firstNameFocus,
-                        decoration: const InputDecoration(
-                          labelText: 'First Name',
-                        ),
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) =>
-                            FocusScope.of(context).requestFocus(_lastNameFocus),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'First Name is required';
-                          }
-                          return null;
-                        },
+              // Gender & DOB
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButtonFormField<String>(
+                        initialValue: _gender,
+                        hint: const Text('Select Gender'),
+                        items: ['Male', 'Female']
+                            .map(
+                              (g) => DropdownMenuItem(value: g, child: Text(g)),
+                            )
+                            .toList(),
+                        onChanged: (v) => setState(() => _gender = v),
+                        validator: (v) => v == null ? 'Required' : null,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        // Changed to TextFormField
-                        controller: _lastNameController,
-                        focusNode: _lastNameFocus,
-                        decoration: const InputDecoration(
-                          labelText: 'Last Name',
-                        ),
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) =>
-                            FocusScope.of(context).requestFocus(
-                              _mobileNumberFocus,
-                            ), // Next to mobile if gender/dob aren't TextFormFields
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Last Name is required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Gender & Date of Birth
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: DropdownButtonFormField<String>(
-                          initialValue:
-                              _selectedGender, // Use nullable value directly
-                          hint: const Text('Gender'),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
                           decoration: const InputDecoration(
-                            // Removed fill and borderSide.none for Dropdown to match TextField
-                            labelText: 'Gender',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 12.0,
-                            ),
+                            labelText: 'Date of Birth',
                           ),
-                          items: <String>['Male', 'Female', 'Other'].map((
-                            String value,
-                          ) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedGender = newValue;
-                            });
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Gender is required';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    Expanded(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: () => _selectDate(context),
-                        child: AbsorbPointer(
-                          child: TextFormField(
-                            // Changed to TextFormField for consistent styling
-                            decoration: const InputDecoration(
-                              labelText: 'Date of Birth',
-                              // suffixIcon: const Icon(Icons.calendar_today), // Consider adding back if you want a visual cue
-                            ),
-                            controller: TextEditingController(
-                              text: selectedDateOfBirth == null
-                                  ? ''
-                                  : '${selectedDateOfBirth!.day}/${selectedDateOfBirth!.month}/${selectedDateOfBirth!.year}',
-                            ),
-                            validator: (value) {
-                              if (selectedDateOfBirth == null) {
-                                return 'DOB is required';
-                              }
-                              return null;
-                            },
+                          controller: TextEditingController(
+                            text: _dob == null
+                                ? ''
+                                : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
                           ),
+                          validator: (_) => _dob == null ? 'Required' : null,
                         ),
                       ),
                     ),
-                  ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Mobile
+              TextFormField(
+                controller: _mobileController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(labelText: 'Mobile Number'),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly, // Only allow digits
+                  LengthLimitingTextInputFormatter(11), // Max 11 digits
+                ],
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  if (v.length != 11) return 'Mobile number must be 11 digits';
+                  if (!RegExp(r'^\d{11}$').hasMatch(v)) return 'Invalid number';
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Address
+              TextFormField(
+                controller: _addressController,
+                decoration: const InputDecoration(labelText: 'Current Address'),
+                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+              ),
+              const SizedBox(height: 16),
+
+              // District & Subdistrict
+              _buildDistrictDropdown(),
+              const SizedBox(height: 16),
+              _buildSubDistrictDropdown(),
+              const SizedBox(height: 16),
+
+              // Blood Group
+              ButtonTheme(
+                alignedDropdown: true,
+                child: DropdownButtonFormField<String>(
+                  initialValue: _bloodGroup,
+                  hint: const Text('Blood Group'),
+                  items: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+                      .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _bloodGroup = v),
+                  validator: (v) => v == null ? 'Required' : null,
                 ),
+              ),
+              CheckboxListTile(
+                title: const Text('Sign up as Donor'),
+                value: isDonor,
+                onChanged: (v) => setState(() => isDonor = v!),
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+              const SizedBox(height: 16),
 
-                const SizedBox(height: 16),
-
-                // Mobile Number
-                TextFormField(
-                  // Changed to TextFormField
-                  controller: _mobileNumberController,
-                  focusNode: _mobileNumberFocus,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(labelText: 'Mobile Number'),
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) =>
-                      FocusScope.of(context).requestFocus(_locationFocus),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Mobile Number is required';
-                    }
-                    if (!RegExp(r'^\d{11}$').hasMatch(value)) {
-                      // Basic 11-digit check for BD numbers
-                      return 'Enter a valid 11-digit mobile number';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 24),
-
-                // address
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Address',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+              // Email & Password
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                    return 'Invalid email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
-                const SizedBox(height: 12),
+                validator: (v) =>
+                    v == null || v.length < 8 ? 'Minimum 8 characters' : null,
+              ),
+              const SizedBox(height: 32),
 
-                // Current Address
-                TextFormField(
-                  // Changed to TextFormField
-                  controller: _locationController,
-                  focusNode: _locationFocus,
-                  decoration: const InputDecoration(
-                    labelText: 'Current Address',
-                  ),
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) =>
-                      FocusScope.of(context).requestFocus(_districtFocus),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Current Address is required';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                //
-                // District Dropdown
-                _buildDistrictDropdown(),
-
-                const SizedBox(height: 16),
-
-                // Sub-District Dropdown
-                _buildSubDistrictDropdown(),
-
-                const SizedBox(height: 24),
-
-                //
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Blood',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Blood Group & Sign up as donor
-                //
-                ButtonTheme(
-                  alignedDropdown: true,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _selectedBloodGroup,
-                    hint: const Text('Select Blood Group'),
-                    decoration: const InputDecoration(
-                      labelText: 'Blood Group',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 12.0,
-                      ),
-                    ),
-                    items:
-                        <String>[
-                          'A+',
-                          'A-',
-                          'B+',
-                          'B-',
-                          'AB+',
-                          'AB-',
-                          'O+',
-                          'O-',
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedBloodGroup = newValue;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Blood Group is required';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                //
-                CheckboxListTile(
-                  visualDensity: VisualDensity.compact,
-                  title: const Text('Sign up as Donor'),
-                  value: isDonor,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      isDonor = newValue!;
-                    });
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-
-                const SizedBox(height: 16),
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Account',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Email
-                TextFormField(
-                  // Changed to TextFormField
-                  controller: _emailController,
-                  focusNode: _emailFocus,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) =>
-                      FocusScope.of(context).requestFocus(_passwordFocus),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                // Password
-                TextFormField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocus,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
-                  ),
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _handleRegistration(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 32),
-
-                // Sign Up Button
-                ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : _handleRegistration, // Call the registration handler
-
-                  child: _isLoading
-                      ? SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Text('Create Account'),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Already have an account? Sign In
-                TextButton(
-                  onPressed: () {
-                    // Navigate to sign in screen
-                    Navigator.pop(
-                      context,
-                    ); // Pop the current registration screen
-                    // Or, if you want to ensure it's the root login page:
-                    // Navigator.pushReplacementNamed(context, '/');
-                  },
-                  child: Row(
-                    spacing: 8,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Already have an account? ',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 15),
-                      ),
-                      Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.red[700],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ElevatedButton(
+                onPressed: _isLoading ? null : _handleRegistration,
+                child: _isLoading
+                    ? SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Create Account'),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  //
   Widget _buildDistrictDropdown() {
     return TextFormField(
       readOnly: true,
       decoration: InputDecoration(
-        // labelText: 'District',
         hintText: _selectedDistrict ?? 'Select District',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        suffixIcon: _selectedDistrict != null
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _selectedDistrict = null;
-                    _selectedSubdistrict = null;
-                  });
-                },
-              )
-            : const Icon(Icons.arrow_drop_down),
+        suffixIcon: const Icon(Icons.arrow_drop_down),
       ),
       onTap: () async {
-        final selectedValue = await Navigator.push(
+        final selected = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SearchPage(
+            builder: (_) => SearchPage(
               title: 'District',
               items: (AppData.districts.map((d) => d.name).toList()..sort()),
             ),
           ),
         );
-        if (selectedValue != null) {
+        if (selected != null) {
           setState(() {
-            _selectedDistrict = selectedValue;
+            _selectedDistrict = selected;
             _selectedSubdistrict = null;
           });
         }
       },
-      validator: (value) {
-        if (_selectedDistrict == null) {
-          return 'Please select a district';
-        }
-        return null;
-      },
+      validator: (_) => _selectedDistrict == null ? 'Required' : null,
     );
   }
 

@@ -15,7 +15,7 @@ class FCMSender {
       target: {'token': token},
       title: title,
       body: body,
-      data: {'type': 'chat', 'chatId': chatId},
+      data: {'type': 'chats', 'chatId': chatId},
     );
   }
 

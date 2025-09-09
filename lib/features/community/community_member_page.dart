@@ -1,213 +1,192 @@
+import 'package:bloodfinder/data/models/community.dart';
+import 'package:bloodfinder/data/models/user_model.dart';
 import 'package:bloodfinder/features/widgets/start_chat_btn.dart';
-import 'package:bloodfinder/shared/admin_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommunityMembersPage extends StatefulWidget {
-  final String communityId;
+import '/data/providers/community_members_provider.dart';
 
-  const CommunityMembersPage({super.key, required this.communityId});
-
-  @override
-  State<CommunityMembersPage> createState() => _CommunityMembersPageState();
-}
-
-class _CommunityMembersPageState extends State<CommunityMembersPage> {
-  final int _pageSize = 10;
-  final List<DocumentSnapshot> _membersDocs = [];
-  bool _isLoading = false;
-  bool _hasMore = true;
-  DocumentSnapshot? _lastDocument;
+class CommunityMembersPage extends ConsumerWidget {
+  final Community community;
+  const CommunityMembersPage({super.key, required this.community});
 
   @override
-  void initState() {
-    super.initState();
-    _fetchMembers();
-  }
-
-  /// 🔥 Fetch members with pagination
-  Future<void> _fetchMembers() async {
-    if (_isLoading || !_hasMore) return;
-    setState(() => _isLoading = true);
-
-    // Get community doc to extract members[]
-    final communityDoc = await FirebaseFirestore.instance
-        .collection('communities')
-        .doc(widget.communityId)
-        .get();
-
-    if (!communityDoc.exists) {
-      setState(() => _isLoading = false);
-      return;
-    }
-
-    final members = List<String>.from(communityDoc['members'] ?? []);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final members = ref.watch(communityMembersProvider(community.id));
 
     if (members.isEmpty) {
-      setState(() {
-        _isLoading = false;
-        _hasMore = false;
-      });
-      return;
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Firestore query with whereIn (max 10 at once)
-    Query query = FirebaseFirestore.instance
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: members.take(10).toList())
-        .limit(_pageSize);
-
-    if (_lastDocument != null) {
-      query = query.startAfterDocument(_lastDocument!);
-    }
-
-    final querySnapshot = await query.get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      _lastDocument = querySnapshot.docs.last;
-      _membersDocs.addAll(querySnapshot.docs);
-    }
-
-    if (querySnapshot.docs.length < _pageSize) {
-      _hasMore = false;
-    }
-
-    setState(() => _isLoading = false);
-  }
-
-  /// 🔴 Remove Member
-  Future<void> _removeMember(String userId) async {
-    await FirebaseFirestore.instance
-        .collection('communities')
-        .doc(widget.communityId)
-        .update({
-          'members': FieldValue.arrayRemove([userId]),
-        });
-
-    setState(() {
-      _membersDocs.removeWhere((doc) => doc.id == userId);
-    });
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Member removed')));
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Community Members'), centerTitle: true),
-      body: _membersDocs.isEmpty && !_isLoading
-          ? const Center(child: Text('No members in this community.'))
-          : ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemCount: _membersDocs.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _membersDocs.length) {
-                  if (_hasMore) {
-                    _fetchMembers();
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                }
+      appBar: AppBar(title: const Text("Community Members"), centerTitle: true),
+      body: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemCount:
+            members.length +
+            (ref.read(communityMembersProvider(community.id).notifier).hasMore
+                ? 1
+                : 0),
+        itemBuilder: (context, index) {
+          if (index == members.length) {
+            // only show loading if more data exists
+            ref
+                .read(communityMembersProvider(community.id).notifier)
+                .loadMore();
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                final userDoc = _membersDocs[index];
-                final userData = userDoc.data() as Map<String, dynamic>;
+          final memberDoc = members[index];
+          final memberId = memberDoc.id;
 
-                final otherUserId = userDoc.id;
-                final firstName = userData['firstName'] ?? '';
-                final lastName = userData['lastName'] ?? '';
-                final name = '$firstName $lastName';
-                final mobile = userData['mobileNumber'] ?? '';
-                final bloodGroup = userData['bloodGroup'] ?? '';
-                final address =
-                    '${userData['address'][0]['currentAddress']}, ${userData['address'][0]['subDistrict']}, ${userData['address'][0]['district']}' ??
-                    '';
+          return StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(memberId)
+                .snapshots(),
+            builder: (context, userSnapshot) {
+              if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                return const ListTile(title: Text('User not found'));
+              }
 
-                return Card(
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: Colors.grey),
-                    ),
-                    leading: CircleAvatar(child: const Icon(Icons.person)),
-                    isThreeLine: true,
-                    title: Text(name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //
-                        Text('Blood: $bloodGroup'),
+              final userData =
+                  userSnapshot.data!.data() as Map<String, dynamic>;
+              final user = UserModel.fromJson(userData);
+              final name = '${user.firstName} ${user.lastName}';
+              final mobile = user.mobileNumber;
+              final blood = user.bloodGroup;
+              final otherUserId = user.uid;
 
-                        Text('Address: $address'),
-
-                        SizedBox(height: 8),
-
-                        //
-                        Row(
-                          spacing: 10,
-                          children: [
-                            //
-                            Expanded(
-                              flex: 3,
-                              child: StartChatButton(otherUserId: otherUserId),
+              return Card(
+                child: ListTile(
+                  isThreeLine: true,
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.redAccent.shade200,
+                    child: user.image.isEmpty
+                        ? Text(
+                            user.firstName.isNotEmpty
+                                ? user.firstName[0].toUpperCase()
+                                : '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
                             ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: CachedNetworkImage(
+                              imageUrl: user.image,
+                              width: 36,
+                              height: 36,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(strokeWidth: 2),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error, color: Colors.red),
+                            ),
+                          ),
+                  ),
 
-                            //
+                  title: Text(name),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Mobile: $mobile | Blood: $blood'),
+                      const SizedBox(height: 8),
+                      Row(
+                        spacing: 10,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: StartChatButton(otherUserId: otherUserId),
+                          ),
+                          if (community.admin.contains(
+                            FirebaseAuth.instance.currentUser!.uid,
+                          ))
                             Expanded(
-                              flex: 4,
-                              child: AdminWidget(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    visualDensity: VisualDensity(vertical: -4),
+                              flex: 2,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  visualDensity: const VisualDensity(
+                                    vertical: -3,
                                   ),
-                                  onPressed: () async {
-                                    final confirm = await showDialog<bool>(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: const Text('Remove Member'),
-                                        content: const Text(
-                                          'Are you sure you want to remove this member?',
+                                ),
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Remove Member'),
+                                      content: const Text(
+                                        'Are you sure you want to remove this member?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: const Text('Cancel'),
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(ctx, false),
-                                            child: const Text('Cancel'),
+                                        OutlinedButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, true),
+                                          child: const Text(
+                                            'Remove',
+                                            style: TextStyle(color: Colors.red),
                                           ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(ctx, true),
-                                            child: const Text('Remove'),
-                                          ),
-                                        ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm == true) {
+                                    // Remove locally first
+                                    ref
+                                        .read(
+                                          communityMembersProvider(
+                                            community.id,
+                                          ).notifier,
+                                        )
+                                        .removeMemberLocally(otherUserId);
+
+                                    // Remove from Firestore
+                                    await FirebaseFirestore.instance
+                                        .collection('communities')
+                                        .doc(community.id)
+                                        .collection('members')
+                                        .doc(otherUserId)
+                                        .delete();
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Member removed successfully',
+                                        ),
                                       ),
                                     );
-
-                                    if (confirm == true) {
-                                      _removeMember(userDoc.id);
-                                    }
-                                  },
-                                  child: Text('Remove Membership'),
-                                ),
+                                  }
+                                },
+                                child: const Text('Remove'),
                               ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 8),
-
-                        //
-                      ],
-                    ),
+                            )
+                          else
+                            Expanded(flex: 2, child: const SizedBox()),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                    ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

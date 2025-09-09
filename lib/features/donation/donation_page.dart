@@ -322,7 +322,7 @@ class _ChatButtonState extends State<ChatButton> {
     setState(() => isLoading = false);
 
     GoRouter.of(context).push(
-      '/chat/${chatDoc.id}',
+      '/chats/${chatDoc.id}',
       extra: {'donorId': donorId, 'requesterId': widget.requesterId},
     );
   }

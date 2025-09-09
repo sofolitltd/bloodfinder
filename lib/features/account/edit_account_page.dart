@@ -1,10 +1,15 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../data/db/app_data.dart';
+import '../../data/models/user_model.dart';
 import '../community/search_page.dart';
 
 class EditAccountPage extends StatefulWidget {
@@ -30,6 +35,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
   String? _selectedSubdistrict;
   String? _selectedBloodGroup;
   bool isDonor = true;
+  String? _profileImageUrl;
+  File? _selectedImage;
 
   bool _isLoading = false;
   var uid = FirebaseAuth.instance.currentUser?.uid;
@@ -50,25 +57,28 @@ class _EditAccountPageState extends State<EditAccountPage> {
       if (!doc.exists) return;
 
       final data = doc.data()!;
-      _firstNameController.text = data['firstName'] ?? '';
-      _lastNameController.text = data['lastName'] ?? '';
-      _mobileNumberController.text = data['mobileNumber'] ?? '';
-      _selectedGender = data['gender'];
-      if (data['dateOfBirth'] != null) {
-        _selectedDOB = DateTime.parse(data['dateOfBirth']);
-      }
-      _selectedBloodGroup = data['bloodGroup'];
-      isDonor = data['isDonor'] ?? true;
+      UserModel user = UserModel.fromJson(data);
 
+      _firstNameController.text = user.firstName;
+      _lastNameController.text = user.lastName;
+      _mobileNumberController.text = user.mobileNumber;
+      _selectedGender = user.gender;
+      _selectedDOB = DateTime.tryParse(data['dateOfBirth']);
+      _selectedBloodGroup = user.bloodGroup;
+      isDonor = user.isDonor;
+      _profileImageUrl = user.image;
       // Address
-      if (data['address'] != null && data['address'].isNotEmpty) {
-        final addr = data['address'][0];
-        _locationController.text = addr['currentAddress'] ?? '';
-        _selectedDistrict = addr['district'];
-        _selectedSubdistrict = addr['subdistrict'];
-      }
+      _locationController.text = user.currentAddress;
+      _selectedDistrict = user.district;
+      _selectedSubdistrict = user.subdistrict;
     } catch (e) {
       log("Error fetching user data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to load profile data'),
+          backgroundColor: Colors.red,
+        ),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
@@ -76,8 +86,13 @@ class _EditAccountPageState extends State<EditAccountPage> {
 
   Future<void> _updateUser() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
+
+    String? imageUrl = _profileImageUrl;
+    if (_selectedImage != null) {
+      imageUrl = await _uploadImage(_selectedImage!);
+    }
+
     try {
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'firstName': _firstNameController.text.trim(),
@@ -87,14 +102,10 @@ class _EditAccountPageState extends State<EditAccountPage> {
         'dateOfBirth': _selectedDOB?.toIso8601String(),
         'bloodGroup': _selectedBloodGroup,
         'isDonor': isDonor,
-        'address': [
-          {
-            'type': 'current',
-            'currentAddress': _locationController.text.trim(),
-            'district': _selectedDistrict,
-            'subdistrict': _selectedSubdistrict,
-          },
-        ],
+        'image': imageUrl,
+        'currentAddress': _locationController.text.trim(), // Flat structure
+        'district': _selectedDistrict, // Flat structure
+        'subdistrict': _selectedSubdistrict, // Flat structure
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -115,6 +126,24 @@ class _EditAccountPageState extends State<EditAccountPage> {
     }
   }
 
+  Future<String?> _uploadImage(File image) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref().child('users/$uid.jpg');
+      final uploadTask = storageRef.putFile(image);
+      final snapshot = await uploadTask.whenComplete(() {});
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      log("Error uploading image: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to upload image'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return null;
+    }
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -125,6 +154,76 @@ class _EditAccountPageState extends State<EditAccountPage> {
     if (picked != null) {
       setState(() => _selectedDOB = picked);
     }
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }
+
+  Widget _buildDistrictDropdown() {
+    return TextFormField(
+      readOnly: true,
+      decoration: InputDecoration(
+        hintText: _selectedDistrict ?? 'Select District',
+        suffixIcon: const Icon(Icons.arrow_drop_down),
+      ),
+      onTap: () async {
+        final selected = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SearchPage(
+              title: 'District',
+              items: AppData.districts.map((d) => d.name).toList(),
+            ),
+          ),
+        );
+        if (selected != null) {
+          setState(() {
+            _selectedDistrict = selected;
+            _selectedSubdistrict =
+                null; // Reset subdistrict when district changes
+          });
+        }
+      },
+      validator: (_) => _selectedDistrict == null ? 'Required' : null,
+    );
+  }
+
+  Widget _buildSubDistrictDropdown() {
+    final subDistricts = _selectedDistrict != null
+        ? AppData.districts
+              .firstWhere((d) => d.name == _selectedDistrict)
+              .subDistricts
+        : <String>[];
+
+    return TextFormField(
+      readOnly: true,
+      enabled: _selectedDistrict != null,
+      decoration: InputDecoration(
+        hintText: _selectedSubdistrict ?? 'Select Subdistrict',
+        suffixIcon: const Icon(Icons.arrow_drop_down),
+      ),
+      onTap: () async {
+        if (_selectedDistrict == null) return;
+        final selected = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                SearchPage(title: 'Subdistrict', items: subDistricts),
+          ),
+        );
+        if (selected != null) {
+          setState(() => _selectedSubdistrict = selected);
+        }
+      },
+      validator: (_) => _selectedSubdistrict == null ? 'Required' : null,
+    );
   }
 
   @override
@@ -142,17 +241,72 @@ class _EditAccountPageState extends State<EditAccountPage> {
             key: _formKey,
             child: Column(
               children: [
-                // Name
-                TextFormField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'First Name'),
-                  validator: (v) => v!.isEmpty ? 'Required' : null,
+                // Avatar with edit button
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: _selectedImage != null
+                            ? FileImage(_selectedImage!)
+                            : (_profileImageUrl != null
+                                      ? NetworkImage(_profileImageUrl!)
+                                      : null)
+                                  as ImageProvider?,
+                        child:
+                            _selectedImage == null && _profileImageUrl == null
+                            ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.grey[400],
+                              )
+                            : null,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'Last Name'),
-                  validator: (v) => v!.isEmpty ? 'Required' : null,
+                const SizedBox(height: 24),
+
+                // Name
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: TextFormField(
+                        controller: _firstNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'First Name',
+                        ),
+                        validator: (v) => v!.isEmpty ? 'Required' : null,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: _lastNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Last Name',
+                        ),
+                        validator: (v) => v!.isEmpty ? 'Required' : null,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 12),
 
@@ -161,14 +315,17 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   children: [
                     Expanded(
                       flex: 3,
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedGender,
-                        hint: const Text('Gender'),
-                        items: ['Male', 'Female', 'Other'].map((g) {
-                          return DropdownMenuItem(value: g, child: Text(g));
-                        }).toList(),
-                        onChanged: (v) => setState(() => _selectedGender = v),
-                        validator: (v) => v == null ? 'Required' : null,
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _selectedGender,
+                          hint: const Text('Gender'),
+                          items: ['Male', 'Female'].map((g) {
+                            return DropdownMenuItem(value: g, child: Text(g));
+                          }).toList(),
+                          onChanged: (v) => setState(() => _selectedGender = v),
+                          validator: (v) => v == null ? 'Required' : null,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -201,69 +358,35 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   controller: _mobileNumberController,
                   decoration: const InputDecoration(labelText: 'Mobile Number'),
                   keyboardType: TextInputType.phone,
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Only allow digits
+                    LengthLimitingTextInputFormatter(11), // Max 11 digits
+                  ],
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'Required';
+                    if (v.length != 11)
+                      return 'Mobile number must be 11 digits';
+                    if (!RegExp(r'^\d{11}$').hasMatch(v))
+                      return 'Invalid number';
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12),
+
                 // Address
                 TextFormField(
                   controller: _locationController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    hintText: _selectedDistrict ?? 'Select District',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.arrow_drop_down),
-                      onPressed: () async {
-                        final selected = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SearchPage(
-                              title: 'District',
-                              items: AppData.districts
-                                  .map((d) => d.name)
-                                  .toList(),
-                            ),
-                          ),
-                        );
-                        if (selected != null) {
-                          setState(() => _selectedDistrict = selected);
-                        }
-                      },
-                    ),
+                  decoration: const InputDecoration(
+                    labelText: 'Current Address',
                   ),
-                  validator: (_) =>
-                      _selectedDistrict == null ? 'Required' : null,
+                  validator: (v) => v!.isEmpty ? 'Required' : null,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
-                  readOnly: true,
-                  enabled: _selectedDistrict != null,
-                  decoration: InputDecoration(
-                    hintText: _selectedSubdistrict ?? 'Select Subdistrict',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.arrow_drop_down),
-                      onPressed: () async {
-                        if (_selectedDistrict == null) return;
-                        final subDistricts = AppData.districts
-                            .firstWhere((d) => d.name == _selectedDistrict)
-                            .subDistricts;
-                        final selected = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SearchPage(
-                              title: 'Subdistrict',
-                              items: subDistricts,
-                            ),
-                          ),
-                        );
-                        if (selected != null)
-                          setState(() => _selectedSubdistrict = selected);
-                      },
-                    ),
-                  ),
-                  validator: (_) =>
-                      _selectedSubdistrict == null ? 'Required' : null,
-                ),
+                _buildDistrictDropdown(),
                 const SizedBox(height: 12),
+                _buildSubDistrictDropdown(),
+                const SizedBox(height: 12),
+
                 // Blood Group
                 DropdownButtonFormField<String>(
                   value: _selectedBloodGroup,
@@ -275,6 +398,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   validator: (v) => v == null ? 'Required' : null,
                 ),
                 const SizedBox(height: 12),
+
                 // Donor status
                 CheckboxListTile(
                   title: const Text('Sign up as Donor'),

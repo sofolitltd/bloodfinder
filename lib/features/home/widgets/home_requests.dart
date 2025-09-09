@@ -24,8 +24,8 @@ class HomeBloodRequestsSection extends StatelessWidget {
     }
 
     final userData = userDoc.data()!;
-    final userDistrict = userData['address'][0]['district'] ?? '';
-    final userSubdistrict = userData['address'][0]['subdistrict'] ?? '';
+    final userDistrict = userData['district'] ?? '';
+    final userSubdistrict = userData['subdistrict'] ?? '';
 
     if (userDistrict.isEmpty && userSubdistrict.isEmpty) {
       yield [];
@@ -43,9 +43,7 @@ class HomeBloodRequestsSection extends StatelessWidget {
 
     await for (final snap in bothStream) {
       final subdistrictPosts = snap.docs
-          .map(
-            (doc) => BloodRequest.fromJson(doc.data() as Map<String, dynamic>),
-          )
+          .map((doc) => BloodRequest.fromJson(doc.data()))
           .where((req) => req.uid != uid)
           .toList();
 
@@ -63,10 +61,7 @@ class HomeBloodRequestsSection extends StatelessWidget {
 
         await for (final distSnap in distStream) {
           final distPosts = distSnap.docs
-              .map(
-                (doc) =>
-                    BloodRequest.fromJson(doc.data() as Map<String, dynamic>),
-              )
+              .map((doc) => BloodRequest.fromJson(doc.data()))
               .where((req) => req.uid != uid)
               .toList();
 
@@ -122,31 +117,35 @@ class HomeBloodRequestsSection extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Blood request stream
-            StreamBuilder<List<BloodRequest>>(
-              stream: _fetchBloodRequests(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(child: Text('Something went wrong'));
-                }
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            Container(
+              constraints: const BoxConstraints(maxHeight: 150),
 
-                final requests = snapshot.data!;
-                if (requests.isEmpty) {
-                  return const Center(child: Text('No blood requests found'));
-                }
+              child: StreamBuilder<List<BloodRequest>>(
+                stream: _fetchBloodRequests(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Text('Something went wrong'));
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: requests.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    return BloodRequestCard(request: requests[index]);
-                  },
-                );
-              },
+                  final requests = snapshot.data!;
+                  if (requests.isEmpty) {
+                    return const Center(child: Text('No blood requests found'));
+                  }
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: requests.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      return BloodRequestCard(request: requests[index]);
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),

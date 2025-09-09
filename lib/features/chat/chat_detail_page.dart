@@ -1,4 +1,5 @@
 import 'package:bloodfinder/notification/fcm_sender.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final FocusNode _focusNode = FocusNode();
 
   String? otherUserId;
+  String? otherUserImage;
   String? otherUserName;
   String? token = "";
 
@@ -64,6 +66,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           '${userDoc.data()?['firstName']} ${userDoc.data()?['lastName']}' ??
           'User';
       token = '${userDoc.data()?['token']}' ?? '';
+      otherUserImage = userDoc.data()?['image'] as String? ?? '';
     });
 
     _firestore.collection('users').doc(otherUserId).snapshots().listen((doc) {
@@ -157,6 +160,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       });
       _closeOverlay();
     } else {
+      //
       final msg = MessageModel(
         id: '',
         senderId: _uid,
@@ -164,17 +168,28 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         timestamp: DateTime.now(),
         seenBy: [_uid],
       );
+
+      //
       await messagesRef.add(msg.toMap());
+
+      //
       await chatRef.update({
         'lastMessage': msg.toMap(),
         'lastTime': FieldValue.serverTimestamp(),
       });
 
+      // get current user name
+      final userDoc = await _firestore.collection('users').doc(_uid).get();
+      final userName =
+          '${userDoc.data()?['firstName']} ${userDoc.data()?['lastName']}';
+
+      //
       if (!isOtherUserOnline && token != null) {
+        //
         FCMSender.sendToToken(
           chatId: widget.chatId,
           token: token!,
-          title: otherUserName ?? 'New Message',
+          title: userName ?? 'New Message',
           body: text,
         );
       }
@@ -209,14 +224,56 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   Stack(
                     children: [
                       CircleAvatar(
-                        radius: 18,
-                        child: Text(
-                          otherUserName != null
-                              ? otherUserName![0].toUpperCase()
-                              : '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        radius: 16,
+                        backgroundColor: Colors.redAccent.shade200,
+                        child:
+                            (otherUserImage != null &&
+                                otherUserImage!.isNotEmpty)
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CachedNetworkImage(
+                                  imageUrl: otherUserImage!,
+                                  width: 38,
+                                  height: 38,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) => Center(
+                                    child: Text(
+                                      otherUserName != null &&
+                                              otherUserName!.isNotEmpty
+                                          ? otherUserName![0].toUpperCase()
+                                          : '',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  otherUserName != null &&
+                                          otherUserName!.isNotEmpty
+                                      ? otherUserName![0].toUpperCase()
+                                      : '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
                       ),
+
+                      //
                       if (isOtherUserOnline)
                         Positioned(
                           right: 0,
@@ -300,6 +357,30 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         .map((doc) => MessageModel.fromMap(doc.id, doc.data()))
                         .toList();
 
+                    // todo: check if seen not work
+                    for (var msg in messages) {
+                      if (msg.senderId != _uid && !msg.seenBy.contains(_uid)) {
+                        _firestore
+                            .collection('chats')
+                            .doc(widget.chatId)
+                            .collection('messages')
+                            .doc(msg.id)
+                            .update({
+                              'seenBy': FieldValue.arrayUnion([_uid]),
+                            });
+
+                        //
+                        _firestore
+                            .collection('chats')
+                            .doc(widget.chatId)
+                            .update({
+                              'lastMessage.seenBy': FieldValue.arrayUnion([
+                                _uid,
+                              ]),
+                            });
+                      }
+                    }
+
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (_scrollController.hasClients) {
                         _scrollController.jumpTo(
@@ -354,6 +435,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      if (msg.isEdited)
+                                        const Text(
+                                          'Edited',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+
+                                      const SizedBox(width: 5),
+
                                       Text(
                                         formatTime(msg.timestamp),
                                         style: const TextStyle(
@@ -361,18 +453,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                           color: Colors.black54,
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
-                                      if (msg.isEdited)
-                                        const Icon(
-                                          Icons.edit,
-                                          size: 12,
-                                          color: Colors.black54,
-                                        ),
+
+                                      const SizedBox(width: 8),
+
+                                      //
                                       if (isMe) ...[
                                         Text(
                                           seenText,
                                           style: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 10,
+                                            letterSpacing: -2,
                                             color:
                                                 msg.seenBy.contains(otherUserId)
                                                 ? Colors.blue

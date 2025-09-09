@@ -8,12 +8,12 @@ class Community {
   final String district;
   final String subDistrict;
   final String address;
-  final List<String> members;
   final List<String> admin;
-  final List<String> joinRequests;
   final String? facebook;
   final String? whatsapp;
+  final int memberCount;
   final Timestamp createdAt;
+  final List<String> images;
 
   Community({
     required this.id,
@@ -23,12 +23,12 @@ class Community {
     required this.district,
     required this.subDistrict,
     required this.address,
-    this.members = const [],
     this.admin = const [],
-    this.joinRequests = const [],
     this.facebook,
     this.whatsapp,
+    required this.memberCount,
     required this.createdAt,
+    required this.images,
   });
 
   factory Community.fromJson(Map<String, dynamic> json) {
@@ -40,13 +40,12 @@ class Community {
       district: json['district'] as String,
       subDistrict: json['subDistrict'] as String,
       address: json['address'] as String,
-      members: List<String>.from(json['members'] ?? []),
       admin: List<String>.from(json['admin'] ?? []),
-      joinRequests: List<String>.from(json['joinRequests'] ?? []),
-      // Safely handle nullable fields by using the null-aware cast `as String?`
       facebook: json['facebook'] as String?,
       whatsapp: json['whatsapp'] as String?,
+      memberCount: json['memberCount'] as int,
       createdAt: json['createdAt'] as Timestamp,
+      images: List<String>.from(json['images'] ?? []),
     );
   }
 
@@ -59,12 +58,12 @@ class Community {
       'district': district,
       'subDistrict': subDistrict,
       'address': address,
-      'members': members,
       'admin': admin,
-      'joinRequests': joinRequests,
       'facebook': facebook,
       'whatsapp': whatsapp,
+      'memberCount': memberCount,
       'createdAt': createdAt,
+      'images': images,
     };
   }
 }

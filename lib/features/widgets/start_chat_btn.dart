@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/models/chat_model.dart';
+
 class StartChatButton extends StatefulWidget {
   final String otherUserId;
   final String buttonText;
@@ -10,7 +12,7 @@ class StartChatButton extends StatefulWidget {
   const StartChatButton({
     super.key,
     required this.otherUserId,
-    this.buttonText = "Start Chat",
+    this.buttonText = "Message",
   });
 
   @override
@@ -43,18 +45,30 @@ class _StartChatButtonState extends State<StartChatButton> {
 
       // If no chat exists, create a new one
       if (chatDoc == null) {
+        // create an "empty" last message using your model
+        final emptyMsg = MessageModel(
+          id: '',
+          senderId: '',
+          text: 'Hi! Feel free to send your first message.',
+          timestamp: DateTime.now(),
+          seenBy: [],
+        );
+
+        //
         final newChatRef = await chatsCollection.add({
           'participants': [currentUserID, widget.otherUserId],
-          'lastMessage': null,
+          'lastMessage': emptyMsg.toMap(),
           'lastTime': FieldValue.serverTimestamp(),
           'createdAt': FieldValue.serverTimestamp(),
+          'archivedBy': [],
+          'deletedBy': [],
         });
         chatDoc = await newChatRef.get();
       }
 
       // Navigate to chat page
       GoRouter.of(context).push(
-        '/chat/${chatDoc.id}',
+        '/chats/${chatDoc.id}',
         extra: {'donorId': currentUserID, 'requesterId': widget.otherUserId},
       );
     } catch (e) {
@@ -68,10 +82,13 @@ class _StartChatButtonState extends State<StartChatButton> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserID = FirebaseAuth.instance.currentUser!.uid;
+    final isSelf = widget.otherUserId == currentUserID;
+
     return ElevatedButton(
-      onPressed: isLoading ? null : _startChat,
+      onPressed: isLoading || isSelf ? null : _startChat,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue.shade300,
+        backgroundColor: isSelf ? Colors.grey : Colors.blue.shade300,
         visualDensity: VisualDensity(vertical: -3),
         padding: const EdgeInsets.symmetric(horizontal: 10),
       ),
@@ -84,7 +101,7 @@ class _StartChatButtonState extends State<StartChatButton> {
                 strokeWidth: 2,
               ),
             )
-          : Text(widget.buttonText),
+          : Text(isSelf ? "Can't message" : widget.buttonText),
     );
   }
 }

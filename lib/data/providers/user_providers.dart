@@ -13,7 +13,7 @@ final userProvider = StreamProvider<UserModel?>((ref) {
       .collection('users')
       .doc(user.uid)
       .snapshots()
-      .map((doc) => doc.exists ? UserModel.fromMap(doc.data()!, doc.id) : null);
+      .map((doc) => doc.exists ? UserModel.fromJson(doc.data()!) : null);
 });
 
 /// StreamProvider for user's donation collection

@@ -89,7 +89,13 @@ class HomeActionButtonsSection extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(8, 6, 8, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Theme.of(context).dividerColor, width: 1),
+
+          border: Border.all(
+            color: Theme.of(context).colorScheme.brightness == Brightness.light
+                ? Colors.black26
+                : Colors.white30,
+            width: 1,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

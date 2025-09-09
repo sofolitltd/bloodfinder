@@ -1,16 +1,18 @@
-import 'dart:developer';
-
+import 'package:bloodfinder/data/models/user_model.dart';
+import 'package:bloodfinder/features/widgets/start_chat_btn.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FindDonorPage extends StatefulWidget {
-  final String? bloodGroup;
-  final String? district;
+  final String bloodGroup;
+  final String? district; // ✅ now optional
   final String? subdistrict;
 
   const FindDonorPage({
     super.key,
-    this.bloodGroup,
+    required this.bloodGroup,
     this.district,
     this.subdistrict,
   });
@@ -20,168 +22,204 @@ class FindDonorPage extends StatefulWidget {
 }
 
 class _FindDonorPageState extends State<FindDonorPage> {
-  List<Map<String, dynamic>> _donors = [];
+  final ScrollController _scrollController = ScrollController();
+  final List<Map<String, dynamic>> _donors = [];
   bool _isLoading = false;
+  bool _hasMore = true;
+  DocumentSnapshot? _lastDoc;
+  static const int _pageSize = 10;
 
   @override
   void initState() {
     super.initState();
     _fetchDonors();
-  }
 
-  void _showMessage(String message, {bool isError = false}) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: isError ? Colors.red : Colors.green,
-        ),
-      );
-    }
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !_isLoading &&
+          _hasMore) {
+        _fetchDonors();
+      }
+    });
   }
 
   Future<void> _fetchDonors() async {
-    setState(() {
-      _isLoading = true;
-      _donors = [];
-    });
+    if (!_hasMore) return;
+
+    setState(() => _isLoading = true);
 
     try {
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection('users')
-          .where('isDonor', isEqualTo: true);
+          .where('isDonor', isEqualTo: true)
+          .where('bloodGroup', isEqualTo: widget.bloodGroup)
+          .orderBy('firstName')
+          .limit(_pageSize);
 
-      if (widget.bloodGroup != null && widget.bloodGroup!.isNotEmpty) {
-        query = query.where('bloodGroup', isEqualTo: widget.bloodGroup);
+      // ✅ District optional
+      if (widget.district?.isNotEmpty ?? false) {
+        query = query.where('district', isEqualTo: widget.district);
       }
 
-      if (widget.district != null && widget.district!.isNotEmpty) {
-        query = query.where('address.0.district', isEqualTo: widget.district);
+      // ✅ Subdistrict optional
+      if (widget.subdistrict?.isNotEmpty ?? false) {
+        query = query.where('subdistrict', isEqualTo: widget.subdistrict);
       }
 
-      if (widget.subdistrict != null && widget.subdistrict!.isNotEmpty) {
-        query = query.where(
-          'address.0.subdistrict',
-          isEqualTo: widget.subdistrict,
-        );
+      if (_lastDoc != null) {
+        query = query.startAfterDocument(_lastDoc!);
       }
 
       final snapshot = await query.get();
 
-      setState(() {
-        _donors = snapshot.docs.map((doc) => doc.data()).toList();
-      });
+      if (snapshot.docs.isNotEmpty) {
+        _lastDoc = snapshot.docs.last;
+        _donors.addAll(snapshot.docs.map((e) => e.data()).toList());
+      }
+
+      if (snapshot.docs.length < _pageSize) {
+        _hasMore = false;
+      }
+
+      setState(() {});
     } catch (e) {
-      log("Error fetching donors: $e");
-      _showMessage('Failed to load donors: ${e.toString()}', isError: true);
+      debugPrint('Error fetching donors: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Find Donors'), centerTitle: true),
-      body: _isLoading
+      body: _donors.isEmpty && _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _donors.isEmpty
-          ? const Center(
-              child: Text('No donors found for the selected filters.'),
-            )
-          : Card(
-              margin: EdgeInsets.symmetric(vertical: 8),
-              child: ListView.separated(
-                separatorBuilder: (_, __) => const SizedBox(height: 16),
-                padding: const EdgeInsets.all(16.0),
-                itemCount: _donors.length,
-                itemBuilder: (context, index) {
-                  final donor = _donors[index];
+          ? const Center(child: Text('No donors found'))
+          : ListView.separated(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              itemCount: _donors.length + (_hasMore ? 1 : 0),
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                if (index == _donors.length) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  final name =
-                      '${donor['firstName'] ?? ''} ${donor['lastName'] ?? ''}'
-                          .trim();
-                  final bloodGroup = donor['bloodGroup'] ?? 'N/A';
-                  final imageUrl = donor['imageUrl'] ?? '';
+                UserModel donor = UserModel.fromJson(_donors[index]);
 
-                  final addressData =
-                      donor['address'] is List && donor['address'].isNotEmpty
-                      ? donor['address'][0]
-                      : null;
-
-                  final address = addressData != null
-                      ? '${addressData['subdistrict'] ?? ''}, ${addressData['district'] ?? ''}'
-                      : 'N/A';
-
-                  return _buildDonorListItem(
-                    name: name,
-                    address: address,
-                    bloodGroup: bloodGroup,
-                    imageUrl: imageUrl,
-                  );
-                },
-              ),
+                //
+                return _buildDonorListItem(donor: donor);
+              },
             ),
     );
   }
 
-  Widget _buildDonorListItem({
-    required String name,
-    required String address,
-    required String bloodGroup,
-    required String imageUrl,
-  }) {
+  Widget _buildDonorListItem({required UserModel donor}) {
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border.all(color: Colors.grey.shade300),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-      child: Row(
+      child: Column(
+        spacing: 12,
         children: [
-          CircleAvatar(
-            radius: 25,
-            //todo: fix later
-            // backgroundImage: NetworkImage(imageUrl),
-            backgroundColor: Colors.grey[200],
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+          //
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //
+              Column(
+                children: [
+                  //
+                  donor.image.isEmpty
+                      ? Text(
+                          donor.firstName.toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: Colors.grey.shade400,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: CachedNetworkImage(
+                            imageUrl: donor.image,
+                            width: 64,
+                            height: 56,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                CupertinoActivityIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error, color: Colors.red),
+                          ),
+                        ),
+
+                  //
+                  Container(
+                    height: 36,
+                    width: 64,
+                    margin: EdgeInsets.only(top: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+
+                    child: Center(
+                      child: Text(
+                        donor.bloodGroup,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          height: 1,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  address,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              bloodGroup,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+                ],
               ),
-            ),
+
+              //
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${donor.firstName} ${donor.lastName}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${donor.currentAddress} ${donor.subdistrict} ${donor.district}',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        height: 1.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    StartChatButton(otherUserId: donor.uid),
+                  ],
+                ),
+              ),
+
+              //
+            ],
           ),
+
+          //
         ],
       ),
     );

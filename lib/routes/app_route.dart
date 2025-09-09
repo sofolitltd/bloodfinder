@@ -15,7 +15,8 @@ class AppRoute {
   // All routes defined below
   static const feed = AppRoute(name: 'feed', path: '/feed');
   static const home = AppRoute(name: 'home', path: '/home');
-  static const chat = AppRoute(name: 'chat', path: '/chat');
+  static const chat = AppRoute(name: 'chat', path: '/chats');
+  static const archive = AppRoute(name: 'archive', path: '/archive');
   static const account = AppRoute(name: 'account', path: '/account');
   //login
   static const login = AppRoute(name: 'login', path: '/login');

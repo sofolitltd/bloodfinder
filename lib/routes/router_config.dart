@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:bloodfinder/features/account/account_page.dart';
 import 'package:bloodfinder/features/auth/login.dart';
 import 'package:bloodfinder/features/auth/registration.dart';
+import 'package:bloodfinder/features/chat/archieve_message_page.dart';
 import 'package:bloodfinder/features/chat/chat_page.dart';
 import 'package:bloodfinder/features/feed/feed.dart';
 import 'package:bloodfinder/features/home/home_page.dart';
@@ -97,7 +98,7 @@ final GoRouter routerConfig = GoRouter(
     // chat details
     GoRoute(
       name: 'chatDetail',
-      path: '/chat/:chatId',
+      path: '/chats/:chatId',
       pageBuilder: (context, state) {
         final chatId = state.pathParameters['chatId']!;
         final extra =
@@ -106,7 +107,16 @@ final GoRouter routerConfig = GoRouter(
       },
     ),
 
-    //login
+    //archive
+    GoRoute(
+      name: AppRoute.archive.name,
+      path: AppRoute.archive.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ArchivedMessagesPage(), // The widget displayed for this route
+      ),
+    ),
+
+    //
     GoRoute(
       name: AppRoute.login.name,
       path: AppRoute.login.path,

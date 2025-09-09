@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../community/community.dart';
+import '../../community/community_page.dart';
 
 class HomeCommunitySection extends StatelessWidget {
   const HomeCommunitySection({super.key});
@@ -11,7 +11,7 @@ class HomeCommunitySection extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CommunityScreen()),
+          MaterialPageRoute(builder: (context) => const CommunityPage()),
         );
       },
       child: Container(

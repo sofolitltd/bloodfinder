@@ -34,7 +34,7 @@ class _DistrictRequestsPageState extends State<DistrictRequestsPage> {
     if (!userDoc.exists) return;
 
     final userData = userDoc.data()!;
-    _userDistrict = userData['address'][0]['district'] ?? '';
+    _userDistrict = userData['district'] ?? '';
     _subdistricts = await _fetchSubdistricts(_userDistrict);
 
     setState(() {

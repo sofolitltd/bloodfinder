@@ -294,16 +294,18 @@ class FcmApi {
   void _handleNavigation(Map<String, dynamic> data) {
     final type = data['type'];
     switch (type) {
-      case 'chat':
+      case 'chats':
         final chatId = data['chatId'];
         if (chatId != null) {
-          routerConfig.go('/chat/$chatId'); // pass chatId as path param
+          routerConfig.push('/chats');
+          routerConfig.push('/chats/$chatId');
         }
         break;
       case 'community':
         final communityId = data['communityId'];
         if (communityId != null) {
-          routerConfig.go('/community/$communityId');
+          routerConfig.push('/');
+          routerConfig.push('/community/$communityId');
         }
         break;
       default:

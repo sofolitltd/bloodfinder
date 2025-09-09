@@ -1,21 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../../../data/db/app_data.dart';
 import '../../community/search_page.dart';
 import '../../donation/find_donor.dart';
 
-class HomeFilterSection extends StatefulWidget {
-  const HomeFilterSection({super.key});
+class HomeFindDonorSection extends StatefulWidget {
+  const HomeFindDonorSection({super.key});
 
   @override
-  State<HomeFilterSection> createState() => _HomeFilterSectionState();
+  State<HomeFindDonorSection> createState() => _HomeFindDonorSectionState();
 }
 
-class _HomeFilterSectionState extends State<HomeFilterSection> {
+class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
   String? _selectedBloodGroup;
   String? _selectedDistrict;
   String? _selectedSubdistrict;
-  List<String> _subDistrictList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,52 +26,60 @@ class _HomeFilterSectionState extends State<HomeFilterSection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //
-            Text("Are you looking for blood ?", style: TextStyle(fontSize: 14)),
+            const Text(
+              "Are you looking for blood?",
+              style: TextStyle(fontSize: 15),
+            ),
+            const SizedBox(height: 16),
 
-            const SizedBox(height: 12),
-
-            // Blood Group
+            // Blood Group Dropdown (Required)
             ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonFormField<String>(
                 initialValue: _selectedBloodGroup,
-                decoration: const InputDecoration(
-                  labelText: 'Blood Group',
-                  border: OutlineInputBorder(),
-                ),
-                items: AppData.bloodGroups.map((group) {
-                  return DropdownMenuItem(value: group, child: Text(group));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBloodGroup = value;
-                  });
-                },
+                decoration: const InputDecoration(labelText: 'Blood Group *'),
+                items: AppData.bloodGroups
+                    .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedBloodGroup = val),
               ),
             ),
             const SizedBox(height: 12),
 
-            // District Dropdown
+            // District Dropdown (Optional now)
             _buildDistrictDropdown(),
 
-            const SizedBox(height: 12),
+            // Subdistrict Dropdown (Optional, only if district selected)
+            if (_selectedDistrict != null) ...[
+              const SizedBox(height: 12),
 
-            // Sub-District Dropdown
-            _buildSubDistrictDropdown(),
-
+              _buildSubDistrictDropdown(),
+            ],
             const SizedBox(height: 16),
 
-            // Find Donors
+            // Search Button
             ElevatedButton(
               onPressed: () {
+                if (_selectedBloodGroup == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a blood group'),
+                    ),
+                  );
+                  return;
+                }
+
+                log(
+                  "Blood: $_selectedBloodGroup, District: $_selectedDistrict, Subdistrict: $_selectedSubdistrict",
+                );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => FindDonorPage(
-                      bloodGroup: _selectedBloodGroup,
-                      district: _selectedDistrict,
-                      subdistrict: _selectedSubdistrict,
+                      bloodGroup: _selectedBloodGroup!,
+                      district: _selectedDistrict, // can be null
+                      subdistrict: _selectedSubdistrict, // can be null
                     ),
                   ),
                 );
@@ -83,13 +92,11 @@ class _HomeFilterSectionState extends State<HomeFilterSection> {
     );
   }
 
-  //
   Widget _buildDistrictDropdown() {
     return TextFormField(
       readOnly: true,
       decoration: InputDecoration(
-        // labelText: 'District',
-        hintText: _selectedDistrict ?? 'Select District',
+        hintText: _selectedDistrict ?? 'Select District (Optional)',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         suffixIcon: _selectedDistrict != null
             ? IconButton(
@@ -107,12 +114,13 @@ class _HomeFilterSectionState extends State<HomeFilterSection> {
         final selectedValue = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SearchPage(
+            builder: (_) => SearchPage(
               title: 'District',
-              items: (AppData.districts.map((d) => d.name).toList()..sort()),
+              items: AppData.districts.map((d) => d.name).toList()..sort(),
             ),
           ),
         );
+
         if (selectedValue != null) {
           setState(() {
             _selectedDistrict = selectedValue;
@@ -120,60 +128,45 @@ class _HomeFilterSectionState extends State<HomeFilterSection> {
           });
         }
       },
-      validator: (value) {
-        if (_selectedDistrict == null) {
-          return 'Please select a district';
-        }
-        return null;
-      },
     );
   }
 
-  //
   Widget _buildSubDistrictDropdown() {
     final subDistricts = _selectedDistrict != null
         ? AppData.districts
               .firstWhere((d) => d.name == _selectedDistrict)
               .subDistricts
         : <String>[];
+
     return TextFormField(
       readOnly: true,
       enabled: _selectedDistrict != null,
       decoration: InputDecoration(
-        // labelText: 'Subdistrict',
-        hintText: _selectedSubdistrict ?? 'Select Subdistrict',
+        hintText: _selectedSubdistrict ?? 'Select Subdistrict (Optional)',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         suffixIcon: _selectedSubdistrict != null
             ? IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  setState(() {
-                    _selectedSubdistrict = null;
-                  });
+                  setState(() => _selectedSubdistrict = null);
                 },
               )
             : const Icon(Icons.arrow_drop_down),
       ),
       onTap: () async {
         if (_selectedDistrict == null) return;
+
         final selectedValue = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
+            builder: (_) =>
                 SearchPage(title: 'Subdistrict', items: subDistricts),
           ),
         );
+
         if (selectedValue != null) {
-          setState(() {
-            _selectedSubdistrict = selectedValue;
-          });
+          setState(() => _selectedSubdistrict = selectedValue);
         }
-      },
-      validator: (value) {
-        if (_selectedSubdistrict == null) {
-          return 'Please select a subdistrict';
-        }
-        return null;
       },
     );
   }

@@ -227,10 +227,10 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                               district: _selectedDistrict!,
                               subDistrict: _selectedSubDistrict!,
                               address: _addressController.text.trim(),
-                              members: [uid],
                               admin: [uid],
-                              joinRequests: [],
+                              images: [],
                               createdAt: Timestamp.now(),
+                              memberCount: 1,
                               facebook:
                                   _facebookController.text.trim().isNotEmpty
                                   ? _facebookController.text.trim()
@@ -246,6 +246,18 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                             //
                             try {
                               await docRef.set(newCommunity.toJson());
+
+                              await FirebaseFirestore.instance
+                                  .collection('communities')
+                                  .doc(generatedId)
+                                  .collection('members')
+                                  .doc(uid)
+                                  .set({
+                                    'uid': uid,
+                                    'member': true,
+                                    'createdAt': Timestamp.now(),
+                                  });
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(

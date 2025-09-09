@@ -34,32 +34,32 @@ class AdminCommunityScreen extends StatelessWidget {
               );
               final communityDocId = doc.id;
 
-              return ExpansionTile(
-                title: Text(community.name),
-                subtitle: Text(
-                  'Pending Requests: ${community.joinRequests.length}',
-                ),
-                children: community.joinRequests.map((userId) {
-                  return ListTile(
-                    title: Text('User ID: $userId'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.check, color: Colors.green),
-                          onPressed: () =>
-                              _approveRequest(context, communityDocId, userId),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.red),
-                          onPressed: () =>
-                              _rejectRequest(context, communityDocId, userId),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              );
+              // return ExpansionTile(
+              //   title: Text(community.name),
+              //   subtitle: Text(
+              //     'Pending Requests: ${community.joinRequests.length}',
+              //   ),
+              //   children: community.joinRequests.map((userId) {
+              //     return ListTile(
+              //       title: Text('User ID: $userId'),
+              //       trailing: Row(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           IconButton(
+              //             icon: const Icon(Icons.check, color: Colors.green),
+              //             onPressed: () =>
+              //                 _approveRequest(context, communityDocId, userId),
+              //           ),
+              //           IconButton(
+              //             icon: const Icon(Icons.close, color: Colors.red),
+              //             onPressed: () =>
+              //                 _rejectRequest(context, communityDocId, userId),
+              //           ),
+              //         ],
+              //       ),
+              //     );
+              //   }).toList(),
+              // );
             },
           );
         },
