@@ -304,7 +304,7 @@ class FcmApi {
       case 'community':
         final communityId = data['communityId'];
         if (communityId != null) {
-          routerConfig.push('/');
+          routerConfig.push('/community');
           routerConfig.push('/community/$communityId');
         }
         break;

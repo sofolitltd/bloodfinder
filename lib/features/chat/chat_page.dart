@@ -350,8 +350,9 @@ class _ChatPageState extends State<ChatPage> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) return const Center(child: Text("Error"));
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
 
           final chatDocs = snapshot.data!.docs;
 

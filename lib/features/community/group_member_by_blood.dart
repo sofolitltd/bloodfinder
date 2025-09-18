@@ -1,7 +1,9 @@
+import 'package:bloodfinder/features/widgets/start_chat_btn.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class BloodGroupMembersScreen extends StatefulWidget {
+class BloodGroupMembersScreen extends StatelessWidget {
   final String communityId;
   final String bloodGroup;
 
@@ -11,86 +13,44 @@ class BloodGroupMembersScreen extends StatefulWidget {
     required this.bloodGroup,
   });
 
-  @override
-  State<BloodGroupMembersScreen> createState() =>
-      _BloodGroupMembersScreenState();
-}
-
-class _BloodGroupMembersScreenState extends State<BloodGroupMembersScreen> {
-  final List<Map<String, dynamic>> _members = [];
-  final int _batchSize = 10;
-  bool _isLoading = false;
-  bool _hasMore = true;
-  DocumentSnapshot? _lastMemberDoc;
-  List<String> _memberIds = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCommunityMembers();
-  }
-
-  Future<void> _loadCommunityMembers() async {
-    setState(() => _isLoading = true);
-
-    final communityDoc = await FirebaseFirestore.instance
+  Stream<List<Map<String, dynamic>>> _communityBloodGroupMembers() {
+    final membersRef = FirebaseFirestore.instance
         .collection('communities')
-        .doc(widget.communityId)
-        .get();
+        .doc(communityId)
+        .collection('members');
 
-    if (!communityDoc.exists) {
-      setState(() => _isLoading = false);
-      return;
-    }
+    return membersRef.snapshots().asyncMap((snapshot) async {
+      final userIds = snapshot.docs.map((doc) => doc['uid'] as String).toList();
 
-    final data = communityDoc.data() as Map<String, dynamic>;
-    _memberIds = List<String>.from(data['members'] ?? []);
+      if (userIds.isEmpty) return [];
 
-    await _loadNextBatch();
+      final List<Map<String, dynamic>> allMembers = [];
 
-    setState(() => _isLoading = false);
-  }
+      // 🔹 Batch the userIds into chunks of 10
+      for (var i = 0; i < userIds.length; i += 10) {
+        final chunk = userIds.sublist(
+          i,
+          i + 10 > userIds.length ? userIds.length : i + 10,
+        );
 
-  Future<void> _loadNextBatch() async {
-    if (!_hasMore || _memberIds.isEmpty) return;
+        final usersSnap = await FirebaseFirestore.instance
+            .collection('users')
+            .where(FieldPath.documentId, whereIn: chunk)
+            .get();
 
-    final usersCollection = FirebaseFirestore.instance.collection('users');
+        final members = usersSnap.docs
+            .map((doc) {
+              final data = doc.data();
+              data['uid'] = doc.id;
+              return data;
+            })
+            .where((data) => data['bloodGroup'] == bloodGroup)
+            .toList();
 
-    final startIndex = _lastMemberDoc == null
-        ? 0
-        : _memberIds.indexOf(_lastMemberDoc!.id) + 1;
-    final endIndex = (startIndex + _batchSize) > _memberIds.length
-        ? _memberIds.length
-        : startIndex + _batchSize;
-
-    final batchIds = _memberIds.sublist(startIndex, endIndex);
-
-    if (batchIds.isEmpty) {
-      _hasMore = false;
-      return;
-    }
-
-    final snapshot = await usersCollection
-        .where(FieldPath.documentId, whereIn: batchIds)
-        .get();
-
-    final newMembers = snapshot.docs
-        .where((doc) => doc['bloodGroup'] == widget.bloodGroup)
-        .map((doc) {
-          final data = doc.data();
-          data['uid'] = doc.id;
-          return data;
-        })
-        .toList();
-
-    setState(() {
-      _members.addAll(newMembers);
-      if (snapshot.docs.isNotEmpty) {
-        _lastMemberDoc = snapshot.docs.last;
+        allMembers.addAll(members);
       }
-      if (endIndex >= _memberIds.length) {
-        _hasMore = false;
-      }
+
+      return allMembers;
     });
   }
 
@@ -98,61 +58,114 @@ class _BloodGroupMembersScreenState extends State<BloodGroupMembersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.bloodGroup} Blood Group Members'),
+        title: Text('$bloodGroup Blood Group Members'),
         centerTitle: true,
       ),
-      body: _isLoading && _members.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : _members.isEmpty
-          ? const Center(child: Text('No members found for this blood group.'))
-          : NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (!_isLoading &&
-                    _hasMore &&
-                    scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
-                  _loadNextBatch();
-                }
-                return false;
-              },
-              child: Card(
-                margin: EdgeInsets.symmetric(vertical: 8),
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _members.length + (_hasMore ? 1 : 0),
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    if (index == _members.length) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _communityBloodGroupMembers(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                    final member = _members[index];
-                    final firstName = member['firstName'] ?? '';
-                    final lastName = member['lastName'] ?? '';
-                    final name = '$firstName $lastName'.trim();
-                    final phone = member['mobileNumber'] ?? 'N/A';
+          final members = snapshot.data!;
+          if (members.isEmpty) {
+            return const Center(
+              child: Text('No members found for this blood group.'),
+            );
+          }
 
-                    return Container(
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: members.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final member = members[index];
+              String otherUserId = member['uid'];
+
+              final name =
+                  '${member['firstName'] ?? ''} ${member['lastName'] ?? ''}'
+                      .trim();
+              final address =
+                  '${member['currentAddress'] ?? ''}, ${member['district'] ?? ''} ${member['subdistrict'] ?? ''}';
+
+              return Stack(
+                children: [
+                  //
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 21,
+                        backgroundColor: Colors.redAccent.shade200,
+                        child: member['image'].isEmpty
+                            ? Text(
+                                member['firstName'].isNotEmpty
+                                    ? member['firstName'][0].toUpperCase()
+                                    : '',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CachedNetworkImage(
+                                  imageUrl: member['image'],
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error, color: Colors.red),
+                                ),
+                              ),
+                      ),
+                      title: Text(name.isNotEmpty ? name : 'Unknown'),
+                      isThreeLine: true,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Address: $address'),
+                          SizedBox(height: 8),
+
+                          StartChatButton(otherUserId: otherUserId),
+                          SizedBox(height: 4),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  //
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: ListTile(
-                        title: Text(name.isNotEmpty ? name : 'Unknown'),
-                        subtitle: Text('Phone: $phone'),
-                        trailing: CircleAvatar(
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            widget.bloodGroup,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
+                      child: Text(
+                        bloodGroup,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    );
-                  },
-                ),
-              ),
-            ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

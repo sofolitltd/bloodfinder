@@ -1,7 +1,6 @@
+import 'package:bloodfinder/features/widgets/start_chat_btn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/blood_request.dart';
@@ -95,7 +94,7 @@ class DonationPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Requester",
+                          "Patient",
                           style: TextStyle(
                             // fontWeight: FontWeight.bold,
                             color: Colors.white54,
@@ -266,7 +265,9 @@ class DonationPage extends StatelessWidget {
                       const SizedBox(width: 12),
 
                       //
-                      Expanded(child: ChatButton(requesterId: request.uid)),
+                      Expanded(
+                        child: StartChatButton(otherUserId: request.uid),
+                      ),
                     ],
                   ),
                 ),
@@ -275,74 +276,6 @@ class DonationPage extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class ChatButton extends StatefulWidget {
-  final String requesterId;
-  const ChatButton({super.key, required this.requesterId});
-
-  @override
-  State<ChatButton> createState() => _ChatButtonState();
-}
-
-class _ChatButtonState extends State<ChatButton> {
-  bool isLoading = false;
-
-  Future<void> _startChat() async {
-    setState(() => isLoading = true);
-
-    final donorId = FirebaseAuth.instance.currentUser!.uid;
-    final chatsCollection = FirebaseFirestore.instance.collection('chats');
-
-    final chatQuery = await chatsCollection
-        .where('participants', arrayContains: donorId)
-        .get();
-
-    DocumentSnapshot? chatDoc;
-    for (var doc in chatQuery.docs) {
-      final participants = List<String>.from(doc['participants']);
-      if (participants.contains(widget.requesterId)) {
-        chatDoc = doc;
-        break;
-      }
-    }
-
-    if (chatDoc == null) {
-      final newChatRef = await chatsCollection.add({
-        'participants': [donorId, widget.requesterId],
-        'lastMessage': '',
-        'lastTime': FieldValue.serverTimestamp(),
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-      chatDoc = await newChatRef.get();
-    }
-
-    setState(() => isLoading = false);
-
-    GoRouter.of(context).push(
-      '/chats/${chatDoc.id}',
-      extra: {'donorId': donorId, 'requesterId': widget.requesterId},
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent.shade200,
-        visualDensity: VisualDensity.compact,
-      ),
-      onPressed: isLoading ? null : _startChat,
-      icon: isLoading
-          ? const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.chat),
-      label: isLoading ? Text('data') : const Text("Chat Now"),
     );
   }
 }

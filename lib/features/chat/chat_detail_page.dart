@@ -187,10 +187,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       if (!isOtherUserOnline && token != null) {
         //
         FCMSender.sendToToken(
-          chatId: widget.chatId,
           token: token!,
           title: userName ?? 'New Message',
           body: text,
+          data: {'type': 'chats', 'chatId': widget.chatId},
         );
       }
     }

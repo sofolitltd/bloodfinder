@@ -1,19 +1,22 @@
+import 'package:bloodfinder/notification/fcm_sender.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/models/community.dart';
 import '../../data/models/member.dart';
 import '../../data/models/user_model.dart';
+import '../../notification/notification_service.dart';
 
 class CommunityMemberRequestPage extends StatelessWidget {
-  final String communityId;
+  final Community community;
 
-  const CommunityMemberRequestPage({super.key, required this.communityId});
+  const CommunityMemberRequestPage({super.key, required this.community});
 
   @override
   Widget build(BuildContext context) {
     final membersRef = FirebaseFirestore.instance
         .collection('communities')
-        .doc(communityId)
+        .doc(community.id)
         .collection('members')
         .where('member', isEqualTo: false);
 
@@ -59,6 +62,7 @@ class CommunityMemberRequestPage extends StatelessWidget {
                   final mobile = user.mobileNumber;
                   final blood = user.bloodGroup;
                   final email = user.email;
+                  final token = user.token;
                   final address =
                       '${user.currentAddress}, ${user.subdistrict}, ${user.district}';
 
@@ -91,7 +95,40 @@ class CommunityMemberRequestPage extends StatelessWidget {
                                   Icons.check,
                                   color: Colors.green,
                                 ),
-                                onPressed: () => _approveRequest(member),
+                                onPressed: () async {
+                                  final ref = FirebaseFirestore.instance
+                                      .collection('communities')
+                                      .doc(community.id)
+                                      .collection('members')
+                                      .doc(member.uid);
+
+                                  await ref.update({
+                                    'member': true,
+                                    'createdAt': FieldValue.serverTimestamp(),
+                                  });
+
+                                  //
+                                  FCMSender.sendToToken(
+                                    token: token,
+                                    title: 'Accept Member Request',
+                                    body:
+                                        'Your request to join ${community.name} has been approved.',
+                                    data: {
+                                      'type': 'community',
+                                      'communityId': community.id,
+                                    },
+                                  );
+
+                                  // notify after approved
+                                  await NotificationService.addNotification(
+                                    title: 'Accept Member Request',
+                                    body:
+                                        'Your request to join ${community.name} has been approved.',
+                                    type: 'community',
+                                    data: {'communityId': community.id},
+                                    userId: user.uid,
+                                  );
+                                },
                               ),
                               //
                               OutlinedButton.icon(
@@ -124,23 +161,36 @@ class CommunityMemberRequestPage extends StatelessWidget {
     );
   }
 
-  Future<void> _approveRequest(Member member) async {
-    final ref = FirebaseFirestore.instance
-        .collection('communities')
-        .doc(communityId)
-        .collection('members')
-        .doc(member.uid);
-
-    await ref.update({
-      'member': true,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
+  // Future<void> _approveRequest(Member member) async {
+  //   final ref = FirebaseFirestore.instance
+  //       .collection('communities')
+  //       .doc(communityId)
+  //       .collection('members')
+  //       .doc(member.uid);
+  //
+  //   await ref.update({
+  //     'member': true,
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //   });
+  //
+  //   //
+  //   FCMSender.sendToTokenChat(token: token, title: title, body: body, chatId: chatId)
+  //
+  //   // notify after approved
+  //   await NotificationService.addNotification(
+  //     title: 'New Join Request',
+  //     body:
+  //     'Someone requested to join your ${community.name}.',
+  //     type: 'community',
+  //     data: {'communityId': community.id},
+  //     userId: adminUid,
+  //   );
+  // }
 
   Future<void> _rejectRequest(Member member) async {
     final ref = FirebaseFirestore.instance
         .collection('communities')
-        .doc(communityId)
+        .doc(community.id)
         .collection('members')
         .doc(member.uid);
 

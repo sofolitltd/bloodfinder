@@ -1,86 +1,29 @@
 import 'package:bloodfinder/shared/admin_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/models/user_model.dart';
+import '../widgets/start_chat_btn.dart';
 import 'add_emergency_donor.dart';
 
-class EmergencyDonorPage extends StatefulWidget {
+class EmergencyDonorPage extends StatelessWidget {
   const EmergencyDonorPage({super.key});
 
-  @override
-  State<EmergencyDonorPage> createState() => _EmergencyDonorPageState();
-}
-
-class _EmergencyDonorPageState extends State<EmergencyDonorPage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  final int _batchSize = 10;
-  List<DocumentSnapshot> _emergencyDocs = [];
-  bool _isLoadingMore = false;
-  bool _hasMore = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadInitial();
-  }
-
-  Future<void> _loadInitial() async {
-    final snapshot = await _firestore
-        .collection('emergency_donor')
-        .limit(_batchSize)
-        .get();
-
-    setState(() {
-      _emergencyDocs = snapshot.docs;
-      _hasMore = snapshot.docs.length == _batchSize;
-    });
-  }
-
-  Future<void> _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-
-    setState(() => _isLoadingMore = true);
-
-    final lastDoc = _emergencyDocs.last;
-
-    final snapshot = await _firestore
-        .collection('emergency_donor')
-        .startAfterDocument(lastDoc)
-        .limit(_batchSize)
-        .get();
-
-    setState(() {
-      _emergencyDocs.addAll(snapshot.docs);
-      _hasMore = snapshot.docs.length == _batchSize;
-      _isLoadingMore = false;
-    });
-  }
-
-  /// Stream of user data based on UID list
-  Stream<List<Map<String, dynamic>>> _streamDonorsData() {
-    return _firestore.collection('emergency_donor').snapshots().asyncMap((
-      snapshot,
-    ) async {
-      final uids = snapshot.docs.map((doc) => doc.id).toList();
-
-      if (uids.isEmpty) return [];
-
-      final userSnapshots = await Future.wait(
-        uids.map((uid) => _firestore.collection('users').doc(uid).get()),
-      );
-
-      return userSnapshots.where((doc) => doc.exists).map((doc) {
-        final data = doc.data()!;
-        return {
-          'uid': doc.id,
-          'name': '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}',
-          'bloodGroup': data['bloodGroup'] ?? 'Unknown',
-          'mobile': data['mobileNumber'] ?? 'N/A',
-          'address': data['address'],
-        };
-      }).toList();
-    });
+  // ✅ Stream of emergency donors
+  Stream<List<UserModel>> _streamEmergencyDonors() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where('isEmergencyDonor', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            // inject uid into model
+            return UserModel.fromJson({'uid': doc.id, ...data});
+          }).toList();
+        });
   }
 
   @override
@@ -91,8 +34,8 @@ class _EmergencyDonorPageState extends State<EmergencyDonorPage> {
         children: [
           // 🔴 Donors List
           Expanded(
-            child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: _streamDonorsData(),
+            child: StreamBuilder<List<UserModel>>(
+              stream: _streamEmergencyDonors(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
@@ -109,73 +52,122 @@ class _EmergencyDonorPageState extends State<EmergencyDonorPage> {
                   );
                 }
 
-                return Card(
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  child: ListView.separated(
-                    separatorBuilder: (_, __) => const SizedBox(height: 16),
-                    padding: const EdgeInsets.all(12),
-                    itemCount: donors.length,
-                    itemBuilder: (context, index) {
-                      final donor = donors[index];
-                      return Card(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey, width: 1),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  spacing: 12,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //
-                                    CircleAvatar(
-                                      child: const Icon(
-                                        Icons.person,
-                                        color: Colors.red,
+                return ListView.separated(
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  padding: const EdgeInsets.all(12),
+                  itemCount: donors.length,
+                  itemBuilder: (context, index) {
+                    final donor = donors[index];
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.redAccent.shade200,
+                              child: donor.image.isEmpty
+                                  ? Text(
+                                      donor.firstName.isNotEmpty
+                                          ? donor.firstName[0].toUpperCase()
+                                          : '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    )
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: CachedNetworkImage(
+                                        imageUrl: donor.image,
+                                        width: 36,
+                                        height: 36,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            ),
                                       ),
                                     ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //
+                                  Text(
+                                    "${donor.firstName ?? ''} ${donor.lastName ?? ''}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Blood Group: ${donor.bloodGroup ?? 'Unknown'}',
+                                  ),
+                                  Text(
+                                    'Mobile: ${donor.mobileNumber ?? 'N/A'}',
+                                  ),
+                                  Text(
+                                    'Address: ${donor.currentAddress}, ${donor.subdistrict}, ${donor.district}',
+                                  ),
 
-                                    //
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            donor['name'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                  const SizedBox(height: 8),
+
+                                  //
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.green.shade500,
+                                            visualDensity: VisualDensity(
+                                              vertical: -3,
                                             ),
                                           ),
-                                          Text(
-                                            'Blood Group: ${donor['bloodGroup']}',
-                                          ),
-                                          Text('Mobile: ${donor['mobile']}'),
-                                          Text(
-                                            'Address: ${donor['address'][0]['subdistrict']}, ${donor['address'][0]['district']}',
-                                          ),
-                                        ],
+                                          onPressed:
+                                              (donor.mobileNumber.isNotEmpty)
+                                              ? () => _callDonor(
+                                                  donor.mobileNumber,
+                                                )
+                                              : null,
+                                          icon: const Icon(Icons.call),
+                                          label: const Text("Call Donor"),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      const SizedBox(width: 12),
+
+                                      //
+                                      Expanded(
+                                        child: StartChatButton(
+                                          otherUserId: donor.uid,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
           ),
 
-          // todo: ➕ Add Emergency Donor Button (admin-only ideally)
+          // ➕ Add Emergency Donor Button (admin-only ideally)
           AdminWidget(
             child: Card(
               child: Padding(
@@ -198,5 +190,20 @@ class _EmergencyDonorPageState extends State<EmergencyDonorPage> {
         ],
       ),
     );
+  }
+
+  //
+  Future<void> _callDonor(String mobile) async {
+    if (mobile.isEmpty) return;
+    final Uri uri = Uri.parse("tel:$mobile");
+    try {
+      final bool launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched) debugPrint("❌ Could not launch dialer for $mobile");
+    } catch (e) {
+      debugPrint("❌ Error launching dialer: $e");
+    }
   }
 }

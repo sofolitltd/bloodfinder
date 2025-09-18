@@ -10,9 +10,9 @@ import 'community_member_page.dart';
 import 'community_member_request.dart';
 import 'group_member_by_blood.dart';
 
-class CommunityDetailsScreen extends StatelessWidget {
+class CommunityDetailsPage extends StatelessWidget {
   final String communityId;
-  const CommunityDetailsScreen({super.key, required this.communityId});
+  const CommunityDetailsPage({super.key, required this.communityId});
 
   String get _currentUserId => FirebaseAuth.instance.currentUser!.uid;
 
@@ -538,7 +538,7 @@ class CommunityDetailsScreen extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           CommunityMemberRequestPage(
-                                            communityId: community.id,
+                                            community: community,
                                           ),
                                     ),
                                   );

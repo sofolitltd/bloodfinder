@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/providers/notification_provider.dart';
+import '../../notification/notification_page.dart';
 import 'widgets/home_actions.dart';
 import 'widgets/home_find_donor.dart';
 import 'widgets/home_requests.dart';
@@ -59,11 +63,10 @@ class HomePage extends StatelessWidget {
         ),
 
         actions: [
-          //todo: later
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: const Icon(Icons.notifications_none, size: 24),
-          // ),
+          //
+          NotificationIconButton(
+            userId: FirebaseAuth.instance.currentUser!.uid,
+          ),
         ],
       ),
       body: SafeArea(
@@ -80,6 +83,65 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+//
+
+class NotificationIconButton extends ConsumerWidget {
+  final String userId;
+
+  const NotificationIconButton({super.key, required this.userId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unreadAsync = ref.watch(unreadCountProvider(userId));
+
+    return Stack(
+      children: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NotificationPage(userId: userId),
+              ),
+            );
+          },
+          icon: const Icon(Icons.notifications_none, size: 24),
+        ),
+        unreadAsync.when(
+          data: (count) => count > 0
+              ? Positioned(
+                  right: 4,
+                  top: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      count.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
+          loading: () => const SizedBox(),
+          error: (_, __) => const SizedBox(),
+        ),
+      ],
     );
   }
 }

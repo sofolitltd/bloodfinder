@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -54,6 +55,7 @@ class AccountPage extends ConsumerWidget {
               '${user.currentAddress}, ${user.subdistrict}, ${user.district}';
           final bloodGroup = user.bloodGroup;
           final isDonorStatus = user.isDonor;
+          final isEmergencyDonorStatus = user.isEmergencyDonor;
 
           // Donations
           final donations = donationAsync.maybeWhen(
@@ -238,7 +240,7 @@ class AccountPage extends ConsumerWidget {
 
                 // Donor switch
                 Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: ListTile(
                     contentPadding: const EdgeInsets.only(left: 16, right: 12),
                     leading: const Icon(Icons.check_circle_outline, size: 24),
@@ -253,6 +255,17 @@ class AccountPage extends ConsumerWidget {
                             .collection('users')
                             .doc(user.uid)
                             .update({'isDonor': value});
+
+                        //
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isEmergencyDonorStatus
+                                  ? 'You are no longer a donor.'
+                                  : 'You are now a donor.',
+                            ),
+                          ),
+                        );
                       },
                       activeThumbColor: Colors.red.shade700,
                     ),
@@ -261,6 +274,47 @@ class AccountPage extends ConsumerWidget {
                           .collection('users')
                           .doc(user.uid)
                           .update({'isDonor': !isDonorStatus});
+                    },
+                  ),
+                ),
+
+                // Emergency donor
+                Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.only(left: 16, right: 12),
+                    leading: const Icon(Icons.check_circle_outline, size: 24),
+                    title: Text(
+                      'Emergency Donor',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    trailing: Switch(
+                      value: isEmergencyDonorStatus,
+                      onChanged: (value) async {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user.uid)
+                            .update({'isEmergencyDonor': value});
+                        // show snackbar, change color. suitable message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isEmergencyDonorStatus
+                                  ? 'You are no longer an emergency donor.'
+                                  : 'You are now an emergency donor.',
+                            ),
+                          ),
+                        );
+                      },
+                      activeThumbColor: Colors.red.shade700,
+                    ),
+                    onTap: () async {
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .update({
+                            'isEmergencyDonor': !isEmergencyDonorStatus,
+                          });
                     },
                   ),
                 ),
@@ -355,6 +409,7 @@ class AccountPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     child: ElevatedButton.icon(
                       onPressed: () async {
+                        await FirebaseMessaging.instance.deleteToken();
                         await FirebaseAuth.instance.signOut();
                       },
                       icon: const Icon(Icons.logout),

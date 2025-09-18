@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:bloodfinder/features/auth/registration.dart';
+import 'package:bloodfinder/routes/router_config.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../routes/app_route.dart';
 
@@ -50,6 +50,24 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
+  Future<void> subscribeCommunityAdminTopics({required String uid}) async {
+    try {
+      // Fetch all communities where the user is admin
+      final snapshot = await FirebaseFirestore.instance
+          .collection('communities')
+          .where('admin', arrayContains: uid)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        final communityId = doc.id;
+        await FirebaseMessaging.instance.subscribeToTopic(communityId);
+        print('Subscribed to topic: $communityId');
+      }
+    } catch (e) {
+      print('Error subscribing to admin topics: $e');
+    }
+  }
+
   // Handles the login logic with Firebase Authentication
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
@@ -61,13 +79,18 @@ class _LoginPage extends State<LoginPage> {
           password: _passwordController.text.trim(),
         );
 
+        var uid = FirebaseAuth.instance.currentUser!.uid;
+
+        // subscribes to communities
+        await subscribeCommunityAdminTopics(uid: uid);
+
         // update get token fcm
         try {
           final token = await FirebaseMessaging.instance.getToken();
           if (token != null) {
             await FirebaseFirestore.instance
                 .collection('users')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .doc(uid)
                 .update({'token': token});
           }
         } catch (e) {
@@ -77,7 +100,9 @@ class _LoginPage extends State<LoginPage> {
 
         // Show success or navigate
         print('Login Successful!');
-        context.go(AppRoute.home.path);
+
+        //
+        routerConfig.go(AppRoute.home.path);
       } on FirebaseAuthException catch (e) {
         String errorMessage;
         switch (e.code) {

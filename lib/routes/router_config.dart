@@ -4,8 +4,9 @@ import 'dart:async';
 import 'package:bloodfinder/features/account/account_page.dart';
 import 'package:bloodfinder/features/auth/login.dart';
 import 'package:bloodfinder/features/auth/registration.dart';
-import 'package:bloodfinder/features/chat/archieve_message_page.dart';
 import 'package:bloodfinder/features/chat/chat_page.dart';
+import 'package:bloodfinder/features/community/community_details.dart';
+import 'package:bloodfinder/features/community/community_page.dart';
 import 'package:bloodfinder/features/feed/feed.dart';
 import 'package:bloodfinder/features/home/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -107,12 +108,33 @@ final GoRouter routerConfig = GoRouter(
       },
     ),
 
+    //community
+    GoRoute(
+      name: AppRoute.community.name,
+      path: AppRoute.community.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: CommunityPage(), // The widget displayed for this route
+      ),
+    ),
+
+    GoRoute(
+      name: 'communityDetail',
+      path: '/community/:communityId',
+      pageBuilder: (context, state) {
+        final communityId = state.pathParameters['communityId']!;
+        final extra = state.extra as Map<String, String>?;
+        return MaterialPage(
+          child: CommunityDetailsPage(communityId: communityId),
+        );
+      },
+    ),
+
     //archive
     GoRoute(
       name: AppRoute.archive.name,
       path: AppRoute.archive.path,
       pageBuilder: (context, state) => const NoTransitionPage(
-        child: ArchivedMessagesPage(), // The widget displayed for this route
+        child: CommunityPage(), // The widget displayed for this route
       ),
     ),
 

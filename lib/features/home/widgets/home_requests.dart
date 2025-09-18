@@ -117,35 +117,44 @@ class HomeBloodRequestsSection extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Blood request stream
-            Container(
-              constraints: const BoxConstraints(maxHeight: 150),
+            StreamBuilder<List<BloodRequest>>(
+              stream: _fetchBloodRequests(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 200),
+                    child: const Center(child: Text('Something went wrong')),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 200),
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                }
 
-              child: StreamBuilder<List<BloodRequest>>(
-                stream: _fetchBloodRequests(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(child: Text('Something went wrong'));
-                  }
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                final requests = snapshot.data!;
+                if (requests.isEmpty) {
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 200),
+                    child: const Center(child: Text('No blood requests found')),
+                  );
+                }
 
-                  final requests = snapshot.data!;
-                  if (requests.isEmpty) {
-                    return const Center(child: Text('No blood requests found'));
-                  }
-
-                  return ListView.separated(
+                return ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 200),
+                  child: ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: requests.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
+                      //
                       return BloodRequestCard(request: requests[index]);
                     },
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ],
         ),

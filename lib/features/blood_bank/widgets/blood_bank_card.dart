@@ -103,16 +103,16 @@ class BloodBankCard extends StatelessWidget {
                   ),
                 ),
 
-                //
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.black12, width: 1),
-                    color: Colors.red.shade200,
-                  ),
-                ),
+                // todo:  add image feature later
+                // Container(
+                //   width: 56,
+                //   height: 56,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(8),
+                //     border: Border.all(color: Colors.black12, width: 1),
+                //     color: Colors.red.shade200,
+                //   ),
+                // ),
                 //   image:
                 //       bloodBank.imageUrl != null &&
                 //           bloodBank.imageUrl!.isNotEmpty

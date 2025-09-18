@@ -5,20 +5,51 @@ import 'package:flutter/services.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 
 class FCMSender {
+  //
+  // static Future<bool> sendToToken({
+  //   required String token,
+  //   required String title,
+  //   required String body,
+  //   required String chatId,
+  // }) async {
+  //   return _send(
+  //     target: {'token': token},
+  //     title: title,
+  //     body: body,
+  //     data: {'type': 'chats', 'chatId': chatId},
+  //   );
+  // }
+
   static Future<bool> sendToToken({
     required String token,
     required String title,
     required String body,
-    required String chatId,
+    required Map<String, dynamic> data,
   }) async {
     return _send(
       target: {'token': token},
       title: title,
       body: body,
-      data: {'type': 'chats', 'chatId': chatId},
+      data: data,
     );
   }
 
+  /// Send notification to a topic
+  static Future<bool> sendToTopic({
+    required String topic,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+  }) async {
+    return _send(
+      target: {'topic': topic},
+      title: title,
+      body: body,
+      data: data,
+    );
+  }
+
+  //
   static Future<bool> _send({
     required Map<String, String> target,
     required String title,

@@ -22,6 +22,7 @@ class _FeedPageState extends State<FeedPage> {
   DocumentSnapshot? _lastDoc;
   bool _hasMore = true;
   bool _isLoading = false;
+  bool _isVisible = false;
 
   final StreamController<List<BloodRequest>> _streamController =
       StreamController<List<BloodRequest>>.broadcast();
@@ -242,34 +243,54 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Feed')),
+      appBar: AppBar(
+        title: const Text('Feed'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              //show or hide filter options
+              setState(() {
+                _isVisible = !_isVisible;
+              });
+            },
+            icon: Icon(
+              Icons.filter_list,
+              color: _isVisible ? Colors.grey : Colors.red.shade300,
+            ),
+          ),
+          SizedBox(width: 5),
+        ],
+      ),
       body: Column(
         spacing: 8,
         children: [
           //
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Row 1: District + Subdistrict
-                  Row(
-                    children: [
-                      _buildDistrictDropdown(),
-                      const SizedBox(width: 12),
-                      _buildSubDistrictDropdown(),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  // Row 2: Blood group + Clear button
-                  Row(
-                    children: [
-                      _buildBloodGroupDropdown(),
-                      const SizedBox(width: 12),
-                      _buildClearButton(),
-                    ],
-                  ),
-                ],
+          Visibility(
+            visible: _isVisible,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    // Row 1: District + Subdistrict
+                    Row(
+                      children: [
+                        _buildDistrictDropdown(),
+                        const SizedBox(width: 12),
+                        _buildSubDistrictDropdown(),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Row 2: Blood group + Clear button
+                    Row(
+                      children: [
+                        _buildBloodGroupDropdown(),
+                        const SizedBox(width: 12),
+                        _buildClearButton(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

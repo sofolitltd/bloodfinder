@@ -124,73 +124,39 @@ class _FindDonorPageState extends State<FindDonorPage> {
   }
 
   Widget _buildDonorListItem({required UserModel donor}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        spacing: 12,
-        children: [
-          //
-          Row(
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 12,
             children: [
-              //
-              Column(
-                children: [
-                  //
-                  donor.image.isEmpty
-                      ? Text(
-                          donor.firstName.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 40,
-                            color: Colors.grey.shade400,
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: CachedNetworkImage(
-                            imageUrl: donor.image,
-                            width: 64,
-                            height: 56,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                CupertinoActivityIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error, color: Colors.red),
-                          ),
-                        ),
-
-                  //
-                  Container(
-                    height: 36,
-                    width: 64,
-                    margin: EdgeInsets.only(top: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-
-                    child: Center(
-                      child: Text(
-                        donor.bloodGroup,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                          height: 1,
-                          fontSize: 20,
+              CircleAvatar(
+                child: donor.image.isEmpty
+                    ? Text(
+                        donor.firstName[0].toUpperCase(),
+                        style: TextStyle(fontSize: 20, color: Colors.grey),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(32),
+                        child: CachedNetworkImage(
+                          imageUrl: donor.image,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error, color: Colors.red),
                         ),
                       ),
-                    ),
-                  ),
-                ],
               ),
 
-              //
-              const SizedBox(width: 15),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,16 +167,24 @@ class _FindDonorPageState extends State<FindDonorPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${donor.currentAddress} ${donor.subdistrict} ${donor.district}',
+                      '${donor.currentAddress}, ${donor.subdistrict}, ${donor.district}',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         height: 1.2,
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
 
-                    StartChatButton(otherUserId: donor.uid),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: StartChatButton(otherUserId: donor.uid),
+                        ),
+                        Expanded(flex: 2, child: SizedBox()),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -218,10 +192,34 @@ class _FindDonorPageState extends State<FindDonorPage> {
               //
             ],
           ),
+        ),
 
-          //
-        ],
-      ),
+        //
+        Positioned(
+          right: 12,
+          top: 12,
+          child: Container(
+            padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(4),
+            ),
+
+            child: Center(
+              child: Text(
+                donor.bloodGroup,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  // height: 1,
+                  // fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
