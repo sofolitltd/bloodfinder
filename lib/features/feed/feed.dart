@@ -22,7 +22,7 @@ class _FeedPageState extends State<FeedPage> {
   DocumentSnapshot? _lastDoc;
   bool _hasMore = true;
   bool _isLoading = false;
-  bool _isVisible = false;
+  bool _isVisible = true;
 
   final StreamController<List<BloodRequest>> _streamController =
       StreamController<List<BloodRequest>>.broadcast();
@@ -255,10 +255,10 @@ class _FeedPageState extends State<FeedPage> {
             },
             icon: Icon(
               Icons.filter_list,
-              color: _isVisible ? Colors.grey : Colors.red.shade300,
+              color: !_isVisible ? Colors.grey : Colors.red.shade300,
             ),
           ),
-          SizedBox(width: 5),
+          SizedBox(width: 8),
         ],
       ),
       body: Column(

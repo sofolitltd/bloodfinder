@@ -12,14 +12,14 @@ import '../../data/db/app_data.dart';
 import '../../data/models/user_model.dart';
 import '../community/search_page.dart';
 
-class EditAccountPage extends StatefulWidget {
-  const EditAccountPage({super.key});
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
 
   @override
-  State<EditAccountPage> createState() => _EditAccountPageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditAccountPageState extends State<EditAccountPage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Controllers

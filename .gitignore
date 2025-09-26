@@ -47,3 +47,5 @@ app.*.map.json
 
 /assets/data/bloodfinder.json
 /lib/data/services/
+/android/app/upload-keystore.jks
+/android/key.properties

@@ -3,13 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user_model.dart';
 
-// Donor StateNotifier
-class DonorNotifier extends StateNotifier<List<UserModel>> {
-  DonorNotifier() : super([]);
-
+class DonorNotifier extends AsyncNotifier<List<UserModel>> {
   bool _hasMore = true;
   DocumentSnapshot? _lastDoc;
   static const int _pageSize = 10;
+
+  @override
+  Future<List<UserModel>> build() async {
+    // initial empty state
+    return [];
+  }
 
   Future<void> fetchDonors({
     required String bloodGroup,
@@ -20,7 +23,7 @@ class DonorNotifier extends StateNotifier<List<UserModel>> {
     if (!_hasMore && !reset) return;
 
     if (reset) {
-      state = [];
+      state = const AsyncValue.data([]);
       _hasMore = true;
       _lastDoc = null;
     }
@@ -31,14 +34,12 @@ class DonorNotifier extends StateNotifier<List<UserModel>> {
         .where('bloodGroup', isEqualTo: bloodGroup)
         .limit(_pageSize);
 
-    if (district != null && district.isNotEmpty) {
+    if (district?.isNotEmpty ?? false) {
       query = query.where('district', isEqualTo: district);
     }
-
-    if (subdistrict != null && subdistrict.isNotEmpty) {
+    if (subdistrict?.isNotEmpty ?? false) {
       query = query.where('subdistrict', isEqualTo: subdistrict);
     }
-
     if (_lastDoc != null) {
       query = query.startAfterDocument(_lastDoc!);
     }
@@ -47,10 +48,11 @@ class DonorNotifier extends StateNotifier<List<UserModel>> {
 
     if (snapshot.docs.isNotEmpty) {
       _lastDoc = snapshot.docs.last;
-      state = [
-        ...state,
+      final newList = [
+        ...state.value ?? [],
         ...snapshot.docs.map((e) => UserModel.fromJson(e.data())),
       ];
+      state = AsyncValue.data(newList);
     }
 
     if (snapshot.docs.length < _pageSize) {
@@ -59,13 +61,13 @@ class DonorNotifier extends StateNotifier<List<UserModel>> {
   }
 
   void reset() {
-    state = [];
+    state = const AsyncValue.data([]);
     _hasMore = true;
     _lastDoc = null;
   }
 }
 
-// Riverpod Provider
-final donorProvider = StateNotifierProvider<DonorNotifier, List<UserModel>>(
-  (ref) => DonorNotifier(),
+// ✅ Riverpod Provider (new API)
+final donorProvider = AsyncNotifierProvider<DonorNotifier, List<UserModel>>(
+  DonorNotifier.new,
 );

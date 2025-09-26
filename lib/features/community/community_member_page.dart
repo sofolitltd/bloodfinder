@@ -141,9 +141,12 @@ class CommunityMembersPage extends ConsumerWidget {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  const SizedBox(height: 4),
+
                                   Text('Address: $address'),
                                   const SizedBox(height: 8),
                                   Row(
+                                    spacing: 8,
                                     children: [
                                       Expanded(
                                         flex: 4,
@@ -198,10 +201,17 @@ class CommunityMembersPage extends ConsumerWidget {
                                               );
 
                                               if (confirm == true) {
+                                                // Remove member from members subcollection
                                                 await communityDoc
                                                     .collection('members')
                                                     .doc(user.uid)
                                                     .delete();
+
+                                                // Update member count
+                                                await communityDoc.update({
+                                                  'memberCount':
+                                                      FieldValue.increment(-1),
+                                                });
                                               }
                                             } else if (value ==
                                                 'toggle_admin') {
@@ -243,6 +253,7 @@ class CommunityMembersPage extends ConsumerWidget {
                                         ),
                                     ],
                                   ),
+                                  const SizedBox(height: 4),
                                 ],
                               ),
                             ),

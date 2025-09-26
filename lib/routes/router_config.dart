@@ -1,7 +1,7 @@
 // lib/router_config.dart
 import 'dart:async';
 
-import 'package:bloodfinder/features/account/account_page.dart';
+import 'package:bloodfinder/features/account/profile_page.dart';
 import 'package:bloodfinder/features/auth/login.dart';
 import 'package:bloodfinder/features/auth/registration.dart';
 import 'package:bloodfinder/features/chat/chat_page.dart';
@@ -89,7 +89,7 @@ final GoRouter routerConfig = GoRouter(
               name: AppRoute.account.name,
               path: AppRoute.account.path,
               pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: AccountPage()),
+                  const NoTransitionPage(child: ProfilePage()),
             ),
           ],
         ),

@@ -98,9 +98,22 @@ class CommunityMemberRequestPage extends StatelessWidget {
                                 onPressed: () async {
                                   final ref = FirebaseFirestore.instance
                                       .collection('communities')
-                                      .doc(community.id)
+                                      .doc(community.id);
+
+                                  // update member
+                                  await ref
                                       .collection('members')
-                                      .doc(member.uid);
+                                      .doc(member.uid)
+                                      .update({
+                                        'member': true,
+                                        'createdAt':
+                                            FieldValue.serverTimestamp(),
+                                      });
+
+                                  // update member count
+                                  ref.update({
+                                    'memberCount': FieldValue.increment(1),
+                                  });
 
                                   await ref.update({
                                     'member': true,

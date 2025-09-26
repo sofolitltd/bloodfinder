@@ -14,26 +14,31 @@ dependencies:
 
   firebase_core: ^4.0.0
   cloud_firestore: ^6.0.0
+  firebase_auth: ^6.0.2
+  firebase_storage: ^13.0.1
+
   go_router: ^16.2.0
   google_fonts: ^6.3.1
 
-  flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.6.1
+  flutter_riverpod: ^3.0.0
+  riverpod_annotation: ^3.0.0
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
 
   intl: ^0.20.2
-  firebase_auth: ^6.0.2
   url_launcher: ^6.3.2
-  share_plus: ^11.1.0
+  share_plus: ^12.0.0
+
+#
   firebase_messaging: ^16.0.1
   http: ^1.5.0
   flutter_local_notifications: ^19.4.1
   path_provider: ^2.1.5
   googleapis_auth: ^2.0.0
+
+
   in_app_update: ^4.2.3
   flutter_image_compress: ^2.4.0
-  firebase_storage: ^13.0.1
   image_picker: ^1.2.0
   cached_network_image: ^3.4.1
 
@@ -41,10 +46,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  riverpod_generator: ^2.6.5
-  custom_lint: ^0.7.6
-  riverpod_lint: ^2.6.5
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^3.0.0
+  custom_lint: ^0.8.0
+  riverpod_lint: ^3.0.0
   build_runner: ^2.5.4
   freezed: ^3.1.0
   json_serializable: ^6.9.5

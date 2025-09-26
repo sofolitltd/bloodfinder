@@ -382,12 +382,13 @@ class _ChatPageState extends State<ChatPage> {
           });
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // Archive button appears only if any chat is archived
               if (hasArchived)
-                Padding(
+                Container(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton.icon(
+                  child: OutlinedButton.icon(
                     onPressed: () {
                       GoRouter.of(context).push(AppRoute.archive.path);
                     },
@@ -395,14 +396,15 @@ class _ChatPageState extends State<ChatPage> {
                     label: const Text("View Archived Chats"),
                   ),
                 ),
+              //
+              if (!hasArchived) SizedBox(height: 8),
 
               Expanded(
                 child: filteredChats.isEmpty
                     ? const Center(child: Text("No active chats"))
                     : ListView.separated(
                         itemCount: filteredChats.length,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        separatorBuilder: (_, __) => const SizedBox(height: 18),
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final chatDoc = filteredChats[index];
                           final chatData = chatDoc.data();
