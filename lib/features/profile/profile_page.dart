@@ -4,15 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '/data/models/user_model.dart';
 import '/data/providers/theme_provider.dart';
 import '/data/providers/user_providers.dart';
 import '/features/account/edit_profile_page.dart';
-import '/features/blood_request/my_blood_request.dart';
-import '/features/donation/donation_history.dart';
-import '../community/community_page.dart';
+import '../../routes/app_route.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -364,24 +363,14 @@ class ProfilePage extends ConsumerWidget {
                           Icons.scatter_plot,
                           'My Blood Requests',
                           () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MyBloodRequestsPage(),
-                              ),
-                            );
+                            context.pushNamed(AppRoute.bloodRequest.name);
                           },
                         ),
                         _buildProfileOption(
                           Icons.history,
                           'My Donation History',
                           () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const DonationHistoryPage(),
-                              ),
-                            );
+                            context.pushNamed(AppRoute.bloodRequest.name);
                           },
                         ),
 
@@ -389,12 +378,7 @@ class ProfilePage extends ConsumerWidget {
                           Icons.history,
                           'Community Page',
                           () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const CommunityPage(),
-                              ),
-                            );
+                            context.pushNamed(AppRoute.community.name);
                           },
                         ),
                       ],
