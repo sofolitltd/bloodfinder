@@ -1,0 +1,13 @@
+[{
+  "relation": [
+    "delegate_permission/common.handle_all_urls",
+    "delegate_permission/common.get_login_creds"
+  ],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.sofolit.bloodfinder",
+    "sha256_cert_fingerprints": [
+      "C8:77:32:A3:6B:A7:92:2D:4D:FC:5B:65:8F:20:58:ED:97:13:57:FD:37:80:16:37:23:78:57:D1:56:30:59:4A"
+    ]
+  }
+}]

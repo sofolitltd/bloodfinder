@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:119562024934:android:edcd8da322876e6676c827",
-        "android_client_info": {
-          "package_name": "com.example.blood_donor"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBRmHim0dgayyztopAd-nkjudvcud5IyCM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:119562024934:android:bcf94482d8ce608c76c827",
         "android_client_info": {
           "package_name": "com.sofolit.bloodfinder"

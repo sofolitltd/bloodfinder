@@ -34,6 +34,4 @@ abstract class UserModel with _$UserModel {
     final data = doc.data() as Map<String, dynamic>;
     return UserModel.fromJson({...data, 'uid': doc.id});
   }
-
-  // create toJason
 }

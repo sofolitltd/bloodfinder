@@ -1,10 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '/data/db/app_data.dart';
 import '/data/models/community.dart';
@@ -28,7 +32,9 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
 
   String? _selectedDistrict;
   String? _selectedSubDistrict;
-  String? _communityCode;
+  XFile? _pickedImage;
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -38,30 +44,6 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     _facebookController.dispose();
     _whatsappController.dispose();
     super.dispose();
-  }
-
-  Future<String> _generateCommunityCode() async {
-    final CollectionReference communities = FirebaseFirestore.instance
-        .collection('communities');
-    try {
-      QuerySnapshot lastCommunitySnapshot = await communities
-          .orderBy('code', descending: true)
-          .limit(1)
-          .get();
-      int nextNumber = 1;
-      if (lastCommunitySnapshot.docs.isNotEmpty) {
-        String lastCode = lastCommunitySnapshot.docs.first['code'] as String;
-        RegExp regExp = RegExp(r'\d+');
-        String? numberString = regExp.stringMatch(lastCode);
-        if (numberString != null) {
-          nextNumber = int.parse(numberString) + 1;
-        }
-      }
-      return 'BF$nextNumber';
-    } catch (e) {
-      log('Error generating community code: $e');
-      return 'BF1';
-    }
   }
 
   @override
@@ -187,104 +169,180 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                         keyboardType: TextInputType.url,
                       ),
 
+                      const SizedBox(height: 24),
+
+                      Text(
+                        'Community Image',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      //Image Picker
+                      GestureDetector(
+                        onTap: _pickImage,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              height: 140,
+                              width: 140,
+                              color: Colors.red.shade50.withValues(alpha: 0.4),
+                              child: _pickedImage != null
+                                  ? Image.file(File(_pickedImage!.path))
+                                  : Icon(
+                                      Icons.image,
+                                      size: 50,
+                                      color: Colors.red.shade100,
+                                    ),
+                            ),
+
+                            //
+                            if (_pickedImage != null)
+                              Positioned(
+                                top: -8,
+                                right: -8,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    setState(() {
+                                      _pickedImage = null;
+                                    });
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 12,
+                                    child: const Icon(Icons.close, size: 14),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
                       const SizedBox(height: 32),
 
                       // Create Community Button
                       ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (_selectedDistrict == null ||
-                                _selectedSubDistrict == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please select District and Subdistrict',
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  if (_selectedDistrict == null ||
+                                      _selectedSubDistrict == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please select District and Subdistrict',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
 
-                            // Generate a new code on form submission
-                            await _generateCommunityCode().then((code) {
-                              _communityCode = code;
-                            });
-
-                            // current uid
-                            final uid = FirebaseAuth.instance.currentUser!.uid;
-
-                            final docRef = FirebaseFirestore.instance
-                                .collection('communities')
-                                .doc();
-
-                            final generatedId = docRef.id;
-
-                            //
-                            Community newCommunity = Community(
-                              id: generatedId.toString(),
-                              code: _communityCode.toString(),
-                              name: _nameController.text.trim(),
-                              mobile: _mobileController.text.trim(),
-                              district: _selectedDistrict!,
-                              subDistrict: _selectedSubDistrict!,
-                              address: _addressController.text.trim(),
-                              admin: [uid],
-                              images: [],
-                              createdAt: Timestamp.now(),
-                              memberCount: 1,
-                              facebook:
-                                  _facebookController.text.trim().isNotEmpty
-                                  ? _facebookController.text.trim()
-                                  : '',
-                              whatsapp:
-                                  _whatsappController.text.trim().isNotEmpty
-                                  ? _whatsappController.text.trim()
-                                  : '',
-                            );
-
-                            log('New Community JSON: ${newCommunity.toJson()}');
-
-                            //
-                            try {
-                              await docRef.set(newCommunity.toJson());
-
-                              await FirebaseFirestore.instance
-                                  .collection('communities')
-                                  .doc(generatedId)
-                                  .collection('members')
-                                  .doc(uid)
-                                  .set({
-                                    'uid': uid,
-                                    'member': true,
-                                    'createdAt': Timestamp.now(),
+                                  setState(() {
+                                    _isLoading = true;
                                   });
 
-                              // notification
-                              await FirebaseMessaging.instance.subscribeToTopic(
-                                generatedId,
-                              );
+                                  // current uid
+                                  final uid =
+                                      FirebaseAuth.instance.currentUser!.uid;
 
-                              //
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Community created successfully!',
-                                  ),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            } catch (e) {
-                              log('Error creating community: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Failed to create community: $e',
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
+                                  final docRef = FirebaseFirestore.instance
+                                      .collection('communities')
+                                      .doc();
+
+                                  final generatedId = docRef.id;
+
+                                  String imageUrl = '';
+
+                                  if (_pickedImage != null) {
+                                    imageUrl = await _uploadImage(
+                                      File(_pickedImage!.path),
+                                      generatedId,
+                                    );
+                                  }
+
+                                  // Generate a new code on form submission
+                                  var communityCode =
+                                      await _generateCommunityCode();
+
+                                  //
+                                  Community newCommunity = Community(
+                                    id: generatedId.toString(),
+                                    code: communityCode.toString(),
+                                    name: _nameController.text.trim(),
+                                    mobile: _mobileController.text.trim(),
+                                    district: _selectedDistrict!,
+                                    subDistrict: _selectedSubDistrict!,
+                                    address: _addressController.text.trim(),
+                                    admin: [uid],
+                                    images: imageUrl == "" ? [] : [imageUrl],
+                                    createdAt: Timestamp.now(),
+                                    memberCount: 1,
+                                    facebook:
+                                        _facebookController.text
+                                            .trim()
+                                            .isNotEmpty
+                                        ? _facebookController.text.trim()
+                                        : '',
+                                    whatsapp:
+                                        _whatsappController.text
+                                            .trim()
+                                            .isNotEmpty
+                                        ? _whatsappController.text.trim()
+                                        : '',
+                                  );
+
+                                  log(
+                                    'New Community JSON: ${newCommunity.toJson()}',
+                                  );
+
+                                  //
+                                  try {
+                                    await docRef.set(newCommunity.toJson());
+
+                                    await FirebaseFirestore.instance
+                                        .collection('communities')
+                                        .doc(generatedId)
+                                        .collection('members')
+                                        .doc(uid)
+                                        .set({
+                                          'uid': uid,
+                                          'member': true,
+                                          'createdAt': Timestamp.now(),
+                                        });
+
+                                    // notification
+                                    await FirebaseMessaging.instance
+                                        .subscribeToTopic(generatedId);
+
+                                    //
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Community created successfully!',
+                                        ),
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                  } catch (e) {
+                                    log('Error creating community: $e');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Failed to create community: $e',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           padding: const EdgeInsets.symmetric(vertical: 15),
@@ -293,10 +351,18 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                           ),
                           minimumSize: const Size(double.infinity, 50),
                         ),
-                        child: const Text(
-                          'Create Community',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
+                        child: _isLoading
+                            ? SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                'Create Community',
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ],
                   ),
@@ -307,6 +373,59 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         ),
       ),
     );
+  }
+
+  // Pick image and compress
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final compressed = await _compressImage(File(pickedFile.path));
+      setState(() {
+        _pickedImage = compressed; // File? type, works perfectly
+      });
+    }
+  }
+
+  Future<XFile?> _compressImage(File file) async {
+    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      '${file.parent.path}/compressed_${file.path.split('/').last}',
+      quality: 70, // adjust for smaller size
+      minWidth: 500,
+      minHeight: 500,
+    );
+
+    return compressedFile; // already File? type
+  }
+
+  Future<String> _uploadImage(File file, String uid) async {
+    final ref = FirebaseStorage.instance.ref().child('communities/$uid.jpg');
+    await ref.putFile(file);
+    return await ref.getDownloadURL();
+  }
+
+  Future<String> _generateCommunityCode() async {
+    final counterRef = FirebaseFirestore.instance
+        .collection('settings')
+        .doc('communityCounter');
+
+    return FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(counterRef);
+
+      int current = 0;
+      if (snapshot.exists && snapshot.data()?['count'] is int) {
+        current = snapshot['count'];
+      }
+
+      int next = current + 1;
+
+      // Ensure the counter document always exists and updates atomically
+      transaction.set(counterRef, {'count': next}, SetOptions(merge: true));
+
+      // Return formatted community code (uppercase optional)
+      return '$next';
+    });
   }
 
   //
@@ -435,7 +554,7 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                     children: [
                       const Icon(
                         Icons.info_outline,
-                        size: 24,
+                        size: 20,
                         color: Colors.red,
                       ),
                       const SizedBox(width: 8),
@@ -444,7 +563,15 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Create a community for your school, college, university, or family. Stay connected. Tap to view/hide community guidelines.',
+                              'Read Before create community!',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Text(
+                              'Create community for your school, college, university, or family. Tap to view/hide community guidelines.',
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -459,7 +586,7 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                                 padding: EdgeInsets.only(top: 12),
                                 child: Text(
                                   "- Add at least 10 members within 1 month.\n"
-                                  "- Communities not meeting this may be removed.\n"
+                                  "- Communities not meeting the guidelines may be removed.\n"
                                   "- You’ll be notified before any removal.",
                                   style: TextStyle(
                                     fontSize: 13,

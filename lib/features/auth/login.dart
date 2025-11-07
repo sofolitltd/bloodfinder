@@ -1,13 +1,14 @@
 import 'dart:developer';
 
-import 'package:bloodfinder/features/auth/registration.dart';
 import 'package:bloodfinder/routes/router_config.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../routes/app_route.dart';
+import 'forgot_password.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -116,7 +117,7 @@ class _LoginPage extends State<LoginPage> {
             errorMessage = 'The email address is not valid.';
             break;
           case 'user-disabled':
-            errorMessage = 'This user account has been disabled.';
+            errorMessage = 'This user profile has been disabled.';
             break;
           default:
             errorMessage = 'An error occurred: ${e.message}';
@@ -257,7 +258,31 @@ class _LoginPage extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 25),
+
+                  const SizedBox(height: 8),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity(
+                          vertical: -3,
+                          horizontal: -3,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordPage(),
+                          ),
+                        );
+                      },
+                      child: Text('Forgot Password'),
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
 
                   // Sign In Button
                   SizedBox(
@@ -285,12 +310,7 @@ class _LoginPage extends State<LoginPage> {
                       visualDensity: VisualDensity.compact,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RegistrationPage(),
-                        ),
-                      ); // Navigate to registration page
+                      context.push(AppRoute.registration.path);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -298,7 +318,7 @@ class _LoginPage extends State<LoginPage> {
                       children: [
                         //
                         Text(
-                          'Don\'t have an account? ',
+                          'Don\'t have an profile? ',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 15,

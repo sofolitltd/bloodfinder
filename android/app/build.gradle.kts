@@ -21,6 +21,7 @@ android {
     namespace = "com.sofolit.bloodfinder"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+//    ndkVersion = "27.3.13750724"
 
     compileOptions {
         //add for local notification

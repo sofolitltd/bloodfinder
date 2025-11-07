@@ -23,7 +23,7 @@ class _MyBloodRequestsPageState extends State<MyBloodRequestsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const PostBloodRequestPage()),
+            MaterialPageRoute(builder: (_) => const BloodRequestPage()),
           );
         },
         icon: const Icon(Icons.add),

@@ -66,15 +66,28 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<XFile?> _compressImage(File file) async {
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+    // Get extension (e.g. jpg, png, jpeg)
+    final ext = file.path.split('.').last.toLowerCase();
+
+    // Determine format and extension
+    final isPng = ext == 'png';
+    final format = isPng ? CompressFormat.png : CompressFormat.jpeg;
+
+    // Ensure proper output path
+    final newExt = isPng ? 'png' : 'jpg';
+    final targetPath =
+        '${file.parent.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.$newExt';
+
+    final result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
-      '${file.parent.path}/compressed_${file.path.split('/').last}',
-      quality: 70, // adjust for smaller size
+      targetPath,
+      quality: 70,
       minWidth: 500,
       minHeight: 500,
+      format: format,
     );
 
-    return compressedFile; // already File? type
+    return result != null ? XFile(result.path) : null;
   }
 
   Future<String> _uploadImage(File file, String uid) async {
@@ -174,197 +187,299 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(title: const Text('Register'), centerTitle: true),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
+            spacing: 8,
             children: [
-              // Image Picker
-              GestureDetector(
-                onTap: _pickImage,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _pickedImage != null
-                      ? FileImage(File(_pickedImage!.path))
-                      : null,
-                  child: _pickedImage == null
-                      ? const Icon(Icons.camera_alt, size: 40)
-                      : null,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // First & Last Name
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: TextFormField(
-                      controller: _firstNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'First Name',
+              SizedBox(),
+              //
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //
+                      Text(
+                        'User Info',
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: _lastNameController,
-                      decoration: const InputDecoration(labelText: 'Last Name'),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
 
-              // Gender & DOB
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButtonFormField<String>(
-                        initialValue: _gender,
-                        hint: const Text('Select Gender'),
-                        items: ['Male', 'Female']
-                            .map(
-                              (g) => DropdownMenuItem(value: g, child: Text(g)),
-                            )
-                            .toList(),
-                        onChanged: (v) => setState(() => _gender = v),
-                        validator: (v) => v == null ? 'Required' : null,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Date of Birth',
+                      const SizedBox(height: 8),
+
+                      //Image Picker
+                      Center(
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _pickedImage != null
+                                ? FileImage(File(_pickedImage!.path))
+                                : null,
+                            child: _pickedImage == null
+                                ? const Icon(Icons.camera_alt, size: 40)
+                                : null,
                           ),
-                          controller: TextEditingController(
-                            text: _dob == null
-                                ? ''
-                                : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
-                          ),
-                          validator: (_) => _dob == null ? 'Required' : null,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 16),
+
+                      // First & Last Name
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: TextFormField(
+                              controller: _firstNameController,
+                              decoration: const InputDecoration(
+                                labelText: 'First Name',
+                              ),
+                              validator: (v) =>
+                                  v == null || v.isEmpty ? 'Required' : null,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              controller: _lastNameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Last Name',
+                              ),
+                              validator: (v) =>
+                                  v == null || v.isEmpty ? 'Required' : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Gender & DOB
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _gender,
+                                hint: const Text('Select Gender'),
+                                items: ['Male', 'Female']
+                                    .map(
+                                      (g) => DropdownMenuItem(
+                                        value: g,
+                                        child: Text(g),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (v) => setState(() => _gender = v),
+                                validator: (v) => v == null ? 'Required' : null,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context),
+                              child: AbsorbPointer(
+                                child: TextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Date of Birth',
+                                  ),
+                                  controller: TextEditingController(
+                                    text: _dob == null
+                                        ? ''
+                                        : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
+                                  ),
+                                  validator: (_) =>
+                                      _dob == null ? 'Required' : null,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Mobile
-              TextFormField(
-                controller: _mobileController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Mobile Number'),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly, // Only allow digits
-                  LengthLimitingTextInputFormatter(11), // Max 11 digits
-                ],
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Required';
-                  if (v.length != 11) return 'Mobile number must be 11 digits';
-                  if (!RegExp(r'^\d{11}$').hasMatch(v)) return 'Invalid number';
-                  return null;
-                },
+                ),
               ),
 
-              const SizedBox(height: 16),
+              // Mobiles
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Contact',
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
 
-              // Address
-              TextFormField(
-                controller: _addressController,
-                decoration: const InputDecoration(labelText: 'Current Address'),
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _mobileController,
+                        keyboardType: TextInputType.phone,
+                        decoration: const InputDecoration(
+                          labelText: 'Mobile Number',
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter
+                              .digitsOnly, // Only allow digits
+                          LengthLimitingTextInputFormatter(11), // Max 11 digits
+                        ],
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Required';
+                          if (v.length != 11)
+                            return 'Mobile number must be 11 digits';
+                          if (!RegExp(r'^\d{11}$').hasMatch(v))
+                            return 'Invalid number';
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Address
+                      TextFormField(
+                        controller: _addressController,
+                        decoration: const InputDecoration(
+                          labelText: 'Current Address',
+                        ),
+                        validator: (v) =>
+                            v == null || v.isEmpty ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // District & Subdistrict
+                      _buildDistrictDropdown(),
+                      const SizedBox(height: 16),
+                      _buildSubDistrictDropdown(),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-
-              // District & Subdistrict
-              _buildDistrictDropdown(),
-              const SizedBox(height: 16),
-              _buildSubDistrictDropdown(),
-              const SizedBox(height: 16),
 
               // Blood Group
-              ButtonTheme(
-                alignedDropdown: true,
-                child: DropdownButtonFormField<String>(
-                  initialValue: _bloodGroup,
-                  hint: const Text('Blood Group'),
-                  items: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
-                      .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _bloodGroup = v),
-                  validator: (v) => v == null ? 'Required' : null,
-                ),
-              ),
-              CheckboxListTile(
-                title: const Text('Sign up as Donor'),
-                value: isDonor,
-                onChanged: (v) => setState(() => isDonor = v!),
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
-              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Donor Info ',
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
 
-              // Email & Password
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Required';
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
-                    return 'Invalid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () =>
-                        setState(() => _obscurePassword = !_obscurePassword),
+                      const SizedBox(height: 16),
+                      ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _bloodGroup,
+                          hint: const Text('Blood Group'),
+                          items:
+                              ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+                                  .map(
+                                    (bg) => DropdownMenuItem(
+                                      value: bg,
+                                      child: Text(bg),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) => setState(() => _bloodGroup = v),
+                          validator: (v) => v == null ? 'Required' : null,
+                        ),
+                      ),
+                      CheckboxListTile(
+                        title: const Text('Sign up as Donor'),
+                        value: isDonor,
+                        onChanged: (v) => setState(() => isDonor = v!),
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
+                    ],
                   ),
                 ),
-                validator: (v) =>
-                    v == null || v.length < 8 ? 'Minimum 8 characters' : null,
               ),
-              const SizedBox(height: 32),
 
-              ElevatedButton(
-                onPressed: _isLoading ? null : _handleRegistration,
-                child: _isLoading
-                    ? SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: const CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Create Account'),
+              // Email & Password
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Authentication',
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Required';
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                            return 'Invalid email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                        ),
+                        validator: (v) => v == null || v.length < 8
+                            ? 'Minimum 8 characters'
+                            : null,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(),
+
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleRegistration,
+                    child: _isLoading
+                        ? SizedBox(
+                            height: 18,
+                            width: 18,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text('Create Account'),
+                  ),
+                ),
               ),
             ],
           ),

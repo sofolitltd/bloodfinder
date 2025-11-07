@@ -1,0 +1,21 @@
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const communityId = urlParams.get("community");
+
+  if (!communityId) {
+    window.location = "https://play.google.com/store/apps/details?id=com.sofolit.bloodfinder";
+  } else {
+    const packageName = "com.sofolit.bloodfinder";
+    const deepLink = `bloodfinder://community/${communityId}`;
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+
+    const start = Date.now();
+    window.location = deepLink;
+
+    setTimeout(() => {
+      if (Date.now() - start < 1500) {
+        window.location = playStoreUrl;
+      }
+    }, 1000);
+  }
+</script>

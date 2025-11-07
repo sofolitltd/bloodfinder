@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../data/models/chat_model.dart';
 
@@ -108,6 +109,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         .collection('messages')
         .doc(_selectedMessage!.id)
         .update({'text': 'This message was deleted', 'isDeleted': true});
+
+    // update last message
+    _firestore.collection('chats').doc(widget.chatId).update({
+      'lastMessage.text': 'Last message was deleted',
+      'lastMessage.isDeleted': true,
+    });
+
     _closeOverlay();
   }
 
@@ -140,12 +148,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Future<void> _copyMessage() async {
     if (_selectedMessage == null) return;
     Clipboard.setData(ClipboardData(text: _selectedMessage!.text));
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Message copied')));
+    Fluttertoast.showToast(msg: 'Message copied to clipboard');
     _closeOverlay();
   }
 
+  //
   Future<void> _sendMessage() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
@@ -418,7 +425,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               ),
                               decoration: BoxDecoration(
                                 color: isMe
-                                    ? Colors.red.shade100
+                                    ? Colors.red.shade100.withValues(alpha: .5)
                                     : Colors.grey.shade100,
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -488,7 +495,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           if (_isEditing)
             Positioned.fill(
               child: Container(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 alignment: Alignment.bottomCenter,
                 child: _buildInputField(),
               ),
@@ -500,44 +507,64 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _buildInputField() {
     return SafeArea(
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  decoration: InputDecoration(
-                    hintText: _isEditing
-                        ? "Edit message..."
-                        : "Type a message...",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: EdgeInsets.zero,
+          child: Container(
+            padding: const EdgeInsets.only(top: 10, left: 12, bottom: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              spacing: 4,
+              children: [
+                Expanded(
+                  child: Scrollbar(
+                    // color: Colors.red,
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      autocorrect: false,
+                      maxLines: 8,
+                      minLines: 1,
+                      decoration: InputDecoration(
+                        hintText: _isEditing
+                            ? "Edit message..."
+                            : "Type a message...",
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 0,
+                          vertical: 0,
+                        ),
+
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: _controller.text.trim().isEmpty
-                    ? Colors.grey
-                    : Colors.red,
-                child: IconButton(
-                  icon: const Icon(Icons.send, color: Colors.white),
-                  onPressed: _controller.text.trim().isEmpty
-                      ? null
-                      : _sendMessage,
-                ),
-              ),
-            ],
+
+                //
+                if (_controller.text.trim().isNotEmpty)
+                  GestureDetector(
+                    onTap: _controller.text.trim().isEmpty
+                        ? null
+                        : _sendMessage,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 4, right: 8),
+                      child: const Icon(Icons.send, color: Colors.red),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

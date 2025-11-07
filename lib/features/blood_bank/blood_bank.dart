@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../../shared/admin_widget.dart';
 import 'add_blood_bank.dart';
 
-class BloodBankScreen extends StatelessWidget {
-  const BloodBankScreen({super.key});
+class BloodBankPage extends StatelessWidget {
+  const BloodBankPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,46 +22,41 @@ class BloodBankScreen extends StatelessWidget {
           //
           Expanded(
             child: Card(
-              margin: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('blood_bank')
-                      .snapshots(),
-                  builder: (context, asyncSnapshot) {
-                    if (asyncSnapshot.hasError) {
-                      return Text('Error: ${asyncSnapshot.error}');
-                    }
-                    if (asyncSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(child: const Text('Loading...'));
-                    }
-                    final bloodBanks = asyncSnapshot.data!.docs;
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('blood_bank')
+                    .snapshots(),
+                builder: (context, asyncSnapshot) {
+                  if (asyncSnapshot.hasError) {
+                    return Text('Error: ${asyncSnapshot.error}');
+                  }
+                  if (asyncSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(child: const Text('Loading...'));
+                  }
+                  final bloodBanks = asyncSnapshot.data!.docs;
 
-                    if (bloodBanks.isEmpty) {
-                      return Center(
-                        child: const Text('No blood banks found...'),
+                  if (bloodBanks.isEmpty) {
+                    return Center(child: const Text('No blood banks found...'));
+                  }
+
+                  //
+                  return ListView.separated(
+                    padding: EdgeInsets.all(16),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 16),
+                    itemCount: bloodBanks.length,
+                    itemBuilder: (context, index) {
+                      //
+                      final BloodBank bloodBank = BloodBank.fromJson(
+                        bloodBanks[index].data(),
                       );
-                    }
 
-                    //
-                    return ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 16),
-                      itemCount: bloodBanks.length,
-                      itemBuilder: (context, index) {
-                        //
-                        final BloodBank bloodBank = BloodBank.fromJson(
-                          bloodBanks[index].data(),
-                        );
-
-                        //
-                        return BloodBankCard(bloodBank: bloodBank);
-                      },
-                    );
-                  },
-                ),
+                      //
+                      return BloodBankCard(bloodBank: bloodBank);
+                    },
+                  );
+                },
               ),
             ),
           ),

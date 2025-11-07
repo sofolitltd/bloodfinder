@@ -1,8 +1,7 @@
-import 'package:bloodfinder/features/emergency_donor/emergency_donor_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../blood_bank/blood_bank.dart';
-import '../../blood_request/post_blood_request.dart';
+import '../../../routes/app_route.dart';
 import 'home_community.dart';
 
 class HomeActionButtonsSection extends StatelessWidget {
@@ -30,12 +29,7 @@ class HomeActionButtonsSection extends StatelessWidget {
                   icon: Icons.scatter_plot,
                   text: 'Post Blood\nRequest',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PostBloodRequestPage(),
-                      ),
-                    );
+                    context.pushNamed(AppRoute.bloodRequest.name);
                   },
                 ),
                 _buildActionButton(
@@ -43,12 +37,7 @@ class HomeActionButtonsSection extends StatelessWidget {
                   icon: Icons.bloodtype,
                   text: 'Blood\nBank',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BloodBankScreen(),
-                      ),
-                    );
+                    context.pushNamed(AppRoute.bloodBank.name);
                   },
                 ),
                 _buildActionButton(
@@ -57,12 +46,7 @@ class HomeActionButtonsSection extends StatelessWidget {
                   text: 'Emergency\nDonors',
                   onTap: () {
                     //
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EmergencyDonorPage(),
-                      ),
-                    );
+                    context.pushNamed(AppRoute.emergencyDonor.name);
                   },
                 ),
               ],
@@ -77,7 +61,7 @@ class HomeActionButtonsSection extends StatelessWidget {
   }
 
   Widget _buildActionButton(
-    context, {
+    BuildContext context, {
     required IconData icon,
     required String text,
     required VoidCallback onTap,
@@ -89,12 +73,23 @@ class HomeActionButtonsSection extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(8, 6, 8, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
+          color: Theme.of(context).colorScheme.brightness == Brightness.light
+              ? Colors.white
+              : Colors.transparent,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.transparent.withValues(alpha: .05),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
 
           border: Border.all(
             color: Theme.of(context).colorScheme.brightness == Brightness.light
-                ? Colors.black26
+                ? Colors.black12
                 : Colors.white30,
-            width: 1,
+            width: .5,
           ),
         ),
         child: Column(

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/community.dart';
 import '../../data/models/user_model.dart';
+import '../emergency_donor/emergency_donor_page.dart';
 import '../widgets/start_chat_btn.dart';
 
 class CommunityMembersPage extends ConsumerWidget {
@@ -154,6 +155,33 @@ class CommunityMembersPage extends ConsumerWidget {
                                           otherUserId: user.uid,
                                         ),
                                       ),
+
+                                      //
+                                      Expanded(
+                                        flex: 4,
+                                        child: !currentUserIsAdmin
+                                            ? SizedBox()
+                                            : ElevatedButton.icon(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.green.shade500,
+                                                  visualDensity: VisualDensity(
+                                                    vertical: -3,
+                                                  ),
+                                                ),
+                                                onPressed:
+                                                    (user
+                                                        .mobileNumber
+                                                        .isNotEmpty)
+                                                    ? () => callDonor(
+                                                        user.mobileNumber,
+                                                      )
+                                                    : null,
+                                                icon: const Icon(Icons.call),
+                                                label: const Text("Call Donor"),
+                                              ),
+                                      ),
+
                                       if (currentUserIsAdmin)
                                         PopupMenuButton<String>(
                                           onSelected: (value) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../community/community_page.dart';
+import '/routes/app_route.dart';
 
 class HomeCommunitySection extends StatelessWidget {
   const HomeCommunitySection({super.key});
@@ -9,10 +10,7 @@ class HomeCommunitySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CommunityPage()),
-        );
+        context.pushNamed(AppRoute.community.name);
       },
       child: Container(
         height: 100,

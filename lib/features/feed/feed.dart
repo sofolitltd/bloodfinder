@@ -195,7 +195,7 @@ class _FeedPageState extends State<FeedPage> {
 
           decoration: const InputDecoration(
             labelText: 'Blood Group',
-            visualDensity: VisualDensity(vertical: -4),
+            // visualDensity: VisualDensity(vertical: -4),
           ),
           items: AppData.bloodGroups
               .map(

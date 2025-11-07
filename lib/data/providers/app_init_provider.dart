@@ -13,7 +13,7 @@ final appInitProvider = FutureProvider<void>((ref) async {
   try {
     final info = await InAppUpdate.checkForUpdate();
     if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-      await InAppUpdate.startFlexibleUpdate();
+      await InAppUpdate.performImmediateUpdate();
       await InAppUpdate.completeFlexibleUpdate();
     }
   } catch (e) {

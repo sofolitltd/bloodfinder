@@ -142,10 +142,15 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
       readOnly: true,
       enabled: _selectedDistrict != null,
       decoration: InputDecoration(
+        isDense: true,
+        contentPadding: EdgeInsets.fromLTRB(10, 8, 10, 8),
         hintText: _selectedSubdistrict ?? 'Select Subdistrict (Optional)',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
         suffixIcon: _selectedSubdistrict != null
             ? IconButton(
+                style: IconButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
                 icon: const Icon(Icons.close),
                 onPressed: () {
                   setState(() => _selectedSubdistrict = null);

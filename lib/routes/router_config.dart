@@ -1,19 +1,28 @@
 // lib/router_config.dart
 import 'dart:async';
 
-import 'package:bloodfinder/features/account/profile_page.dart';
-import 'package:bloodfinder/features/auth/login.dart';
-import 'package:bloodfinder/features/auth/registration.dart';
-import 'package:bloodfinder/features/chat/chat_page.dart';
-import 'package:bloodfinder/features/community/community_details.dart';
-import 'package:bloodfinder/features/community/community_page.dart';
-import 'package:bloodfinder/features/feed/feed.dart';
-import 'package:bloodfinder/features/home/home_page.dart';
+import 'package:bloodfinder/features/blood_request/my_blood_request.dart';
+import 'package:bloodfinder/features/chat/archieve_message_page.dart';
+import 'package:bloodfinder/features/community/edit_community.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/chat/chat_detail_page.dart';
+import '/features/auth/login.dart';
+import '/features/auth/registration.dart';
+import '/features/blood_bank/blood_bank.dart';
+import '/features/blood_request/post_blood_request.dart';
+import '/features/chat/chat_detail_page.dart';
+import '/features/chat/chat_page.dart';
+import '/features/community/community_details.dart';
+import '/features/community/community_page.dart';
+import '/features/donation/donation_history.dart';
+import '/features/emergency_donor/emergency_donor_page.dart';
+import '/features/feed/feed.dart';
+import '/features/home/home_page.dart';
+import '/features/profile/profile_page.dart';
+import '../data/models/community.dart';
+import '../features/auth/forgot_password.dart';
 import 'app_route.dart';
 
 // Global key for the root navigator, essential for GoRouter
@@ -27,7 +36,7 @@ final GoRouter routerConfig = GoRouter(
     final isLoggedIn = _auth.currentUser != null;
     final isLoggingIn =
         state.uri.toString() == AppRoute.login.path ||
-        state.uri.toString() == AppRoute.register.path;
+        state.uri.toString() == AppRoute.registration.path;
 
     if (!isLoggedIn && !isLoggingIn) return AppRoute.login.path;
     if (isLoggedIn && isLoggingIn) return AppRoute.home.path;
@@ -86,8 +95,8 @@ final GoRouter routerConfig = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              name: AppRoute.account.name,
-              path: AppRoute.account.path,
+              name: AppRoute.profile.name,
+              path: AppRoute.profile.path,
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: ProfilePage()),
             ),
@@ -108,6 +117,15 @@ final GoRouter routerConfig = GoRouter(
       },
     ),
 
+    //archive
+    GoRoute(
+      name: AppRoute.archive.name,
+      path: AppRoute.archive.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ArchivedMessagesPage(), // The widget displayed for this route
+      ),
+    ),
+
     //community
     GoRoute(
       name: AppRoute.community.name,
@@ -122,23 +140,23 @@ final GoRouter routerConfig = GoRouter(
       path: '/community/:communityId',
       pageBuilder: (context, state) {
         final communityId = state.pathParameters['communityId']!;
-        final extra = state.extra as Map<String, String>?;
         return MaterialPage(
           child: CommunityDetailsPage(communityId: communityId),
         );
       },
     ),
 
-    //archive
+    // edit community
     GoRoute(
-      name: AppRoute.archive.name,
-      path: AppRoute.archive.path,
-      pageBuilder: (context, state) => const NoTransitionPage(
-        child: CommunityPage(), // The widget displayed for this route
-      ),
+      name: 'editCommunity',
+      path: '/editCommunity',
+      pageBuilder: (context, state) {
+        final community = state.extra as Community;
+        return MaterialPage(child: EditCommunity(community: community));
+      },
     ),
 
-    //
+    // login
     GoRoute(
       name: AppRoute.login.name,
       path: AppRoute.login.path,
@@ -149,11 +167,62 @@ final GoRouter routerConfig = GoRouter(
 
     //register
     GoRoute(
-      name: AppRoute.register.name,
-      path: AppRoute.register.path,
+      name: AppRoute.registration.name,
+      path: AppRoute.registration.path,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: RegistrationPage(), // The widget displayed for this route
       ),
+    ),
+
+    //reset
+    GoRoute(
+      name: AppRoute.forgotPassword.name,
+      path: AppRoute.forgotPassword.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ForgotPasswordPage(), // The widget displayed for this route
+      ),
+    ),
+
+    // blood request
+    GoRoute(
+      name: AppRoute.bloodRequest.name,
+      path: AppRoute.bloodRequest.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: BloodRequestPage(), // The widget displayed for this route
+      ),
+    ),
+
+    // blood bank
+    GoRoute(
+      name: AppRoute.bloodBank.name,
+      path: AppRoute.bloodBank.path,
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: BloodBankPage(), // The widget displayed for this route
+      ),
+    ),
+
+    // emergency donor
+    GoRoute(
+      name: AppRoute.emergencyDonor.name,
+      path: AppRoute.emergencyDonor.path,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: EmergencyDonorPage()),
+    ),
+
+    // blood req history
+    GoRoute(
+      name: AppRoute.bloodRequestHistory.name,
+      path: AppRoute.bloodRequestHistory.path,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: MyBloodRequestsPage()),
+    ),
+
+    // donation history
+    GoRoute(
+      name: AppRoute.donationHistory.name,
+      path: AppRoute.donationHistory.path,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: DonationHistoryPage()),
     ),
   ],
 );

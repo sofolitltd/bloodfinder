@@ -10,8 +10,8 @@ import 'package:intl/intl.dart';
 import '/data/models/user_model.dart';
 import '/data/providers/theme_provider.dart';
 import '/data/providers/user_providers.dart';
-import '/features/account/edit_profile_page.dart';
-import '../../routes/app_route.dart';
+import '/routes/app_route.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -363,14 +363,16 @@ class ProfilePage extends ConsumerWidget {
                           Icons.scatter_plot,
                           'My Blood Requests',
                           () {
-                            context.pushNamed(AppRoute.bloodRequest.name);
+                            context.pushNamed(
+                              AppRoute.bloodRequestHistory.name,
+                            );
                           },
                         ),
                         _buildProfileOption(
                           Icons.history,
                           'My Donation History',
                           () {
-                            context.pushNamed(AppRoute.bloodRequest.name);
+                            context.pushNamed(AppRoute.donationHistory.name);
                           },
                         ),
 

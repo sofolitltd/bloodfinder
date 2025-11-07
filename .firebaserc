@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "bloodfinder": "bloodfinder-bd"
+  },
+  "targets": {
+    "bloodfinder-bd": {
+      "hosting": {
+        "bloodfinder": [
+          "bloodfinder-bd"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

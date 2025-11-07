@@ -8,14 +8,14 @@ import 'package:intl/intl.dart';
 import '../../data/models/blood_request.dart';
 import '../community/search_page.dart';
 
-class PostBloodRequestPage extends StatefulWidget {
-  const PostBloodRequestPage({super.key});
+class BloodRequestPage extends StatefulWidget {
+  const BloodRequestPage({super.key});
 
   @override
-  State<PostBloodRequestPage> createState() => _PostBloodRequestPageState();
+  State<BloodRequestPage> createState() => _BloodRequestPageState();
 }
 
-class _PostBloodRequestPageState extends State<PostBloodRequestPage> {
+class _BloodRequestPageState extends State<BloodRequestPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedBloodGroup;

@@ -49,3 +49,5 @@ app.*.map.json
 /lib/data/services/
 /android/app/upload-keystore.jks
 /android/key.properties
+
+web/.well-known/assetlinks.json

@@ -15,7 +15,7 @@ class AppRoute {
   // All routes defined below
   static const feed = AppRoute(name: 'feed', path: '/feed');
   static const home = AppRoute(name: 'home', path: '/home');
-  static const account = AppRoute(name: 'account', path: '/account');
+  static const profile = AppRoute(name: 'profile', path: '/profile');
 
   //chat
   static const chat = AppRoute(name: 'chat', path: '/chats');
@@ -23,9 +23,43 @@ class AppRoute {
 
   //
   static const community = AppRoute(name: 'community', path: '/community');
+  static const communityDetails = AppRoute(
+    name: 'community-details',
+    path: '/community-details',
+  );
 
   //login
   static const login = AppRoute(name: 'login', path: '/login');
+
   //register
-  static const register = AppRoute(name: 'register', path: '/register');
+  static const registration = AppRoute(name: 'register', path: '/register');
+
+  //reset
+  static const forgotPassword = AppRoute(
+    name: 'forgotPassword',
+    path: '/forgotPassword',
+  );
+
+  //
+  static const bloodRequest = AppRoute(
+    name: 'blood-request',
+    path: '/blood-request',
+  );
+  static const bloodBank = AppRoute(name: 'blood-bank', path: '/blood-bank');
+
+  static const emergencyDonor = AppRoute(
+    name: 'emergency-donor',
+    path: '/emergency-donor',
+  );
+
+  static const donationHistory = AppRoute(
+    name: 'donation-history',
+    path: '/donation-history',
+  );
+
+  //
+  static const bloodRequestHistory = AppRoute(
+    name: 'blood-request-history',
+    path: '/blood-request-history',
+  );
 }

@@ -135,7 +135,7 @@ class EmergencyDonorPage extends StatelessWidget {
                                           ),
                                           onPressed:
                                               (donor.mobileNumber.isNotEmpty)
-                                              ? () => _callDonor(
+                                              ? () => callDonor(
                                                   donor.mobileNumber,
                                                 )
                                               : null,
@@ -193,17 +193,18 @@ class EmergencyDonorPage extends StatelessWidget {
   }
 
   //
-  Future<void> _callDonor(String mobile) async {
-    if (mobile.isEmpty) return;
-    final Uri uri = Uri.parse("tel:$mobile");
-    try {
-      final bool launched = await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
-      if (!launched) debugPrint("❌ Could not launch dialer for $mobile");
-    } catch (e) {
-      debugPrint("❌ Error launching dialer: $e");
-    }
+}
+
+Future<void> callDonor(String mobile) async {
+  if (mobile.isEmpty) return;
+  final Uri uri = Uri.parse("tel:$mobile");
+  try {
+    final bool launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) debugPrint("❌ Could not launch dialer for $mobile");
+  } catch (e) {
+    debugPrint("❌ Error launching dialer: $e");
   }
 }

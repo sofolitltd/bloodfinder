@@ -1,17 +1,24 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
-import '../../data/models/community.dart';
-import '../../data/models/member.dart';
+import '/data/models/community.dart';
+import '/data/models/member.dart';
+import '/features/community/edit_community.dart';
+import '/notification/fcm_sender.dart';
+import '/notification/notification_service.dart';
 import 'community_member_page.dart';
 import 'community_member_request.dart';
 import 'group_member_by_blood.dart';
 
 class CommunityDetailsPage extends StatelessWidget {
   final String communityId;
+
   const CommunityDetailsPage({super.key, required this.communityId});
 
   String get _currentUserId => FirebaseAuth.instance.currentUser!.uid;
@@ -31,7 +38,7 @@ class CommunityDetailsPage extends StatelessWidget {
   }
 
   // Fetch pending join requests
-  _joinRequestsStream(String communityId) {
+  Stream<List<Member>> _joinRequestsStream(String communityId) {
     return FirebaseFirestore.instance
         .collection('communities')
         .doc(communityId)
@@ -103,9 +110,20 @@ class CommunityDetailsPage extends StatelessWidget {
     );
   }
 
+  // Add this helper function within your State class (or outside, if you prefer)
+  Stream<DocumentSnapshot> _currentUserMemberStatusStream(String communityId) {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return FirebaseFirestore.instance
+        .collection('communities')
+        .doc(communityId)
+        .collection('members')
+        .doc(uid)
+        .snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final uid = _currentUserId; // Use the class variable
 
     return Scaffold(
       appBar: AppBar(
@@ -128,7 +146,7 @@ class CommunityDetailsPage extends StatelessWidget {
                 ...communityData,
                 'id': communityId,
               });
-              if (community.admin.contains(_currentUserId)) {
+              if (community.admin.contains(uid)) {
                 return IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () {
@@ -199,41 +217,139 @@ class CommunityDetailsPage extends StatelessWidget {
                     child: Column(
                       children: [
                         // Top Banner
-                        Container(
-                          width: double.infinity,
-                          height: 180,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.bloodtype,
-                                color: Colors.white,
-                                size: 40,
+                        Stack(
+                          alignment: AlignmentGeometry.topRight,
+                          children: [
+                            //
+                            Container(
+                              width: double.infinity,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                community.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 64,
+                                    height: 64,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: .5,
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: community.images.isEmpty
+                                        ? Text(
+                                            community.name.isNotEmpty
+                                                ? community.name[0]
+                                                      .toUpperCase()
+                                                : '',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red.shade100,
+                                            ),
+                                          )
+                                        : ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              imageUrl: community.images.first,
+                                              width: 64,
+                                              height: 64,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  CupertinoActivityIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) => Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  ),
+                                            ),
+                                          ),
+                                  ),
+
+                                  //
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    community.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    '${community.address}, ${community.subDistrict}, ${community.district}',
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              spacing: 0,
+                              children: [
+                                //
+                                if (community.admin.contains(uid))
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditCommunity(
+                                            community: community,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+
+                                //
+                                IconButton.filledTonal(
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    visualDensity: VisualDensity.compact,
+                                    padding: const EdgeInsets.all(0),
+                                  ),
+                                  onPressed: () {
+                                    //
+                                    SharePlus.instance.share(
+                                      ShareParams(
+                                        title: "Share Community",
+                                        text:
+                                            "Blood Finder\n\nCommunity: ${community.name}\n\nCheck out our community:\n https://bloodfinder.web.app/open-app.html?community=${community.id}",
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.share,
+                                    color: Colors.red,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                '${community.address}, ${community.subDistrict}, ${community.district}',
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
-                          ),
+                                SizedBox(width: 8),
+                              ],
+                            ),
+
+                            // edit btn (Only show edit button if current user is an admin)
+                          ],
                         ),
 
                         const SizedBox(height: 12),
@@ -312,147 +428,207 @@ class CommunityDetailsPage extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                // --- Members by Blood Group ---
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Members by Blood Group',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                // 🌟 NEW: Check Current User's Member Status to show member content 🌟
+                StreamBuilder<DocumentSnapshot>(
+                  stream: _currentUserMemberStatusStream(community.id),
+                  builder: (context, memberStatusSnapshot) {
+                    bool isApprovedMember = false;
+
+                    if (memberStatusSnapshot.hasData &&
+                        memberStatusSnapshot.data!.exists) {
+                      final memberData =
+                          memberStatusSnapshot.data!.data()
+                              as Map<String, dynamic>?;
+                      // Check if 'member' field is explicitly true
+                      if (memberData != null && memberData['member'] == true) {
+                        isApprovedMember = true;
+                      }
+                    }
+
+                    if (isApprovedMember) {
+                      // ➡️ Show Member-Only Content
+                      return Column(
+                        children: [
+                          // --- Members by Blood Group ---
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const Text(
+                                    'Members by Blood Group',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  //
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      minHeight: 180,
+                                    ),
+                                    child: StreamBuilder<List<Member>>(
+                                      stream: _membersStream(community.id),
+                                      builder: (context, memberSnapshot) {
+                                        if (!memberSnapshot.hasData) {
+                                          return const SizedBox();
+                                        }
+
+                                        final members = memberSnapshot.data!;
+                                        if (members.isEmpty) {
+                                          return const Text(
+                                            "No approved members yet",
+                                          );
+                                        }
+
+                                        return StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('users')
+                                              .where(
+                                                FieldPath.documentId,
+                                                whereIn: members
+                                                    .map((m) => m.uid)
+                                                    .toList(),
+                                              )
+                                              .snapshots(),
+                                          builder: (context, userSnapshot) {
+                                            if (!userSnapshot.hasData) {
+                                              return const SizedBox();
+                                            }
+
+                                            final bloodGroupCounts = {
+                                              'A+': 0,
+                                              'A-': 0,
+                                              'B+': 0,
+                                              'B-': 0,
+                                              'O+': 0,
+                                              'O-': 0,
+                                              'AB+': 0,
+                                              'AB-': 0,
+                                            };
+
+                                            for (var doc
+                                                in userSnapshot.data!.docs) {
+                                              final blood =
+                                                  doc['bloodGroup'] as String?;
+                                              if (blood != null &&
+                                                  bloodGroupCounts.containsKey(
+                                                    blood,
+                                                  )) {
+                                                bloodGroupCounts[blood] =
+                                                    bloodGroupCounts[blood]! +
+                                                    1;
+                                              }
+                                            }
+
+                                            return GridView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 4,
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
+                                                  ),
+                                              itemCount:
+                                                  bloodGroupCounts.length,
+                                              itemBuilder: (context, index) {
+                                                final bg = bloodGroupCounts.keys
+                                                    .elementAt(index);
+                                                return _buildBloodGroupItem(
+                                                  context,
+                                                  bg,
+                                                  bloodGroupCounts[bg]!,
+                                                  community.id,
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
 
-                        //
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 180),
-                          child: StreamBuilder<List<Member>>(
-                            stream: _membersStream(community.id),
-                            builder: (context, memberSnapshot) {
-                              if (!memberSnapshot.hasData) {
-                                return SizedBox();
-                              }
+                          const SizedBox(height: 8),
 
-                              final members = memberSnapshot.data!;
-                              if (members.isEmpty) {
-                                return Text("No members yet");
-                              }
-
-                              return StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('users')
-                                    .where(
-                                      FieldPath.documentId,
-                                      whereIn: members
-                                          .map((m) => m.uid)
-                                          .toList(),
-                                    )
-                                    .snapshots(),
-                                builder: (context, userSnapshot) {
-                                  if (!userSnapshot.hasData) {
-                                    return SizedBox();
-                                  }
-
-                                  final bloodGroupCounts = {
-                                    'A+': 0,
-                                    'A-': 0,
-                                    'B+': 0,
-                                    'B-': 0,
-                                    'O+': 0,
-                                    'O-': 0,
-                                    'AB+': 0,
-                                    'AB-': 0,
-                                  };
-
-                                  for (var doc in userSnapshot.data!.docs) {
-                                    final blood = doc['bloodGroup'] as String?;
-                                    if (blood != null &&
-                                        bloodGroupCounts.containsKey(blood)) {
-                                      bloodGroupCounts[blood] =
-                                          bloodGroupCounts[blood]! + 1;
-                                    }
-                                  }
-
-                                  return GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                          crossAxisSpacing: 10,
-                                          mainAxisSpacing: 10,
-                                        ),
-                                    itemCount: bloodGroupCounts.length,
-                                    itemBuilder: (context, index) {
-                                      final bg = bloodGroupCounts.keys
-                                          .elementAt(index);
-                                      return _buildBloodGroupItem(
-                                        context,
-                                        bg,
-                                        bloodGroupCounts[bg]!,
-                                        community.id,
-                                      );
-                                    },
+                          // --- All Community Members Button ---
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CommunityMembersPage(
+                                            community: community,
+                                          ),
+                                    ),
                                   );
                                 },
-                              );
-                            },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text("All Community Members"),
+                                    const SizedBox(width: 4),
+                                    StreamBuilder<List<Member>>(
+                                      stream: _membersStream(community.id),
+                                      builder: (context, snapshot) {
+                                        final count =
+                                            snapshot.data?.length ??
+                                            community.memberCount;
+                                        return Text(
+                                          "( $count )",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    } else {
+                      // ➡️ Show Join Request Card if not an approved member
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) =>
+                                      _showJoinSheet(context, community),
+                                );
+                              },
+                              icon: const Icon(Icons.group_add),
+                              label: const Text('View Join Instructions'),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      );
+                    }
+                  },
                 ),
 
-                const SizedBox(height: 8),
-
-                // --- All Community Members Button ---
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CommunityMembersPage(community: community),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("All Community Members"),
-                          const SizedBox(width: 4),
-                          StreamBuilder<List<Member>>(
-                            stream: _membersStream(community.id),
-                            builder: (context, snapshot) {
-                              final count =
-                                  snapshot.data?.length ??
-                                  community.memberCount;
-                              return Text(
-                                "( $count )",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // --- Admin Section: Manage Community ---
+                // --- Admin Section: Manage Community (Keep this outside the member check but inside the admin check) ---
                 if (community.admin.contains(uid))
                   Card(
                     margin: const EdgeInsets.only(bottom: 8),
@@ -596,6 +772,139 @@ class CommunityDetailsPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  // 🔽 Join/Cancel join sheet
+  _showJoinSheet(BuildContext context, Community community) {
+    final memberDoc = FirebaseFirestore.instance
+        .collection('communities')
+        .doc(community.id)
+        .collection('members')
+        .doc(_currentUserId);
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: memberDoc.snapshots(),
+      builder: (context, snapshot) {
+        bool isRequested = false;
+
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          if (data['member'] == false) {
+            isRequested = true;
+          }
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                Text(
+                  community.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${community.subDistrict}, ${community.district}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Community Code: ${community.code}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Instructions to join:\n1. Press the Join Request button below.\n2. Wait for approval from community admin.',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (!isRequested) {
+                        await memberDoc.set({
+                          'uid': _currentUserId,
+                          'member': false, // Request state
+                          'createdAt': FieldValue.serverTimestamp(),
+                        });
+
+                        await FCMSender.sendToTopic(
+                          topic: community.id,
+                          title: 'New Join Request',
+                          body: 'Someone requested to join ${community.name}',
+                          data: {
+                            'type': 'community',
+                            'communityId': community.id,
+                          },
+                        );
+
+                        await Future.wait(
+                          community.admin.map((adminUid) {
+                            return NotificationService.addNotification(
+                              title: 'New Join Request',
+                              body:
+                                  'Someone requested to join your ${community.name}.',
+                              type: 'community',
+                              data: {'communityId': community.id},
+                              userId: adminUid,
+                            );
+                          }),
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Join request sent')),
+                        );
+                      } else {
+                        await memberDoc.delete();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Join request canceled'),
+                          ),
+                        );
+                      }
+                      // Close the bottom sheet after action
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isRequested ? Colors.grey : Colors.red,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      isRequested ? 'Cancel Join Request' : 'Send Join Request',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
