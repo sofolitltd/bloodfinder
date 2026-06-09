@@ -1,39 +1,40 @@
-// lib/router_config.dart
 import 'dart:async';
 
-import 'package:bloodfinder/features/blood_request/my_blood_request.dart';
-import 'package:bloodfinder/features/chat/archieve_message_page.dart';
-import 'package:bloodfinder/features/community/edit_community.dart';
+import 'package:bloodfinder/features/blood_request/presentation/pages/my_blood_request_page.dart';
+import 'package:bloodfinder/features/chat/presentation/pages/archieve_message_page.dart';
+import 'package:bloodfinder/features/community/presentation/pages/edit_community_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import '/features/auth/login.dart';
-import '/features/auth/registration.dart';
-import '/features/blood_bank/blood_bank.dart';
-import '/features/blood_request/post_blood_request.dart';
-import '/features/chat/chat_detail_page.dart';
-import '/features/chat/chat_page.dart';
-import '/features/community/community_details.dart';
-import '/features/community/community_page.dart';
-import '/features/donation/donation_history.dart';
-import '/features/emergency_donor/emergency_donor_page.dart';
-import '/features/feed/feed.dart';
-import '/features/home/home_page.dart';
-import '/features/profile/profile_page.dart';
-import '../data/models/community.dart';
-import '../features/auth/forgot_password.dart';
+import '../features/auth/presentation/pages/login_page.dart';
+import '../features/auth/presentation/pages/registration_page.dart';
+import '../features/blood_bank/presentation/pages/blood_bank_page.dart';
+import '../features/blood_request/presentation/pages/post_blood_request_page.dart';
+import '../features/chat/presentation/pages/chat_detail_page.dart';
+import '../features/chat/presentation/pages/chat_page.dart';
+import '../features/community/presentation/pages/community_details_page.dart';
+import '../features/community/presentation/pages/community_page.dart';
+import '../features/donation/presentation/pages/donation_history_page.dart';
+import '../features/emergency_donor/presentation/pages/emergency_donor_page.dart';
+import '../features/my_circle/presentation/pages/my_circle_page.dart';
+import '../features/feed/presentation/pages/feed_page.dart';
+import '../features/home/presentation/pages/home_page.dart';
+import '../features/profile/presentation/pages/profile_page.dart';
+import '../features/events/presentation/pages/events_page.dart';
+import '../features/community/models/community.dart';
+import '../features/auth/presentation/pages/forgot_password_page.dart';
+
 import 'app_route.dart';
 
-// Global key for the root navigator, essential for GoRouter
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final FirebaseAuth _auth = FirebaseAuth.instance;
 
-final GoRouter routerConfig = GoRouter(
+final routerConfig = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: AppRoute.home.path,
   redirect: (BuildContext context, GoRouterState state) {
-    final isLoggedIn = _auth.currentUser != null;
+    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
     final isLoggingIn =
         state.uri.toString() == AppRoute.login.path ||
         state.uri.toString() == AppRoute.registration.path;
@@ -43,8 +44,9 @@ final GoRouter routerConfig = GoRouter(
 
     return null;
   },
-  refreshListenable: GoRouterRefreshStream(_auth.authStateChanges()),
-  routes: [
+  refreshListenable: GoRouterRefreshStream(
+      FirebaseAuth.instance.authStateChanges()),
+    routes: [
     // StatefulShellRoute is used for persistent UI
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -111,8 +113,6 @@ final GoRouter routerConfig = GoRouter(
       path: '/chats/:chatId',
       pageBuilder: (context, state) {
         final chatId = state.pathParameters['chatId']!;
-        final extra =
-            state.extra as Map<String, String>?; // donorId / requesterId
         return MaterialPage(child: ChatDetailPage(chatId: chatId));
       },
     ),
@@ -224,6 +224,22 @@ final GoRouter routerConfig = GoRouter(
       pageBuilder: (context, state) =>
           NoTransitionPage(child: DonationHistoryPage()),
     ),
+
+    // my circle
+    GoRoute(
+      name: AppRoute.myCircle.name,
+      path: AppRoute.myCircle.path,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: MyCirclePage()),
+    ),
+
+    // events
+    GoRoute(
+      name: AppRoute.events.name,
+      path: AppRoute.events.path,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: EventsPage()),
+    ),
   ],
 );
 
@@ -240,25 +256,25 @@ class ScaffoldWithNavBar extends StatelessWidget {
           navigationShell, // Displays the content of the currently selected branch
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
+            icon: Icon(PhosphorIcons.house),
+            selectedIcon: Icon(PhosphorIcons.house),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.feed_outlined),
-            selectedIcon: Icon(Icons.feed),
+            icon: Icon(PhosphorIcons.rss),
+            selectedIcon: Icon(PhosphorIcons.rss),
             label: 'Feed',
           ),
           NavigationDestination(
-            icon: Icon(Icons.chat_bubble_outline),
-            selectedIcon: Icon(Icons.chat_bubble),
+            icon: Icon(PhosphorIcons.chat),
+            selectedIcon: Icon(PhosphorIcons.chat),
             label: 'Chats',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
+            icon: Icon(PhosphorIcons.user),
+            selectedIcon: Icon(PhosphorIcons.user),
             label: 'Profile',
           ),
         ],

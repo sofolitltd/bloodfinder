@@ -1,37 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/notification.dart';
+
+import '../../features/notification/models/notification.dart';
+import '../repositories/community_repository.dart';
+import 'repository_providers.dart';
 
 class NotificationRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CommunityRepository _communityRepository;
+
+  NotificationRepository(this._communityRepository);
 
   Stream<List<NotificationModel>> getNotifications({
     required String userId,
-    int limit = 20,
-    DocumentSnapshot? startAfter,
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
   }) {
-    Query query = _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('notifications')
-        .orderBy('createdAt', descending: true)
-        .limit(limit);
-
-    if (startAfter != null) {
-      query = query.startAfterDocument(startAfter);
-    }
-
-    return query.snapshots().map(
+    return _communityRepository
+        .userNotificationsStream(userId, startAfter: startAfter)
+        .map(
       (snapshot) =>
           snapshot.docs.map((doc) => NotificationModel.fromDoc(doc)).toList(),
     );
   }
 }
 
-// Repository provider
 final notificationRepositoryProvider = Provider(
-  (ref) => NotificationRepository(),
+  (ref) => NotificationRepository(ref.watch(communityRepositoryProvider)),
 );
 
 // Notification stream provider (paginated)

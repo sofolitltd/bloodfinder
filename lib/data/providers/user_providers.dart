@@ -1,31 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/user_model.dart';
 
-/// StreamProvider for current user profile
+import '../models/user_model.dart';
+import 'repository_providers.dart';
+
 final userProvider = StreamProvider<UserModel?>((ref) {
-  final user = FirebaseAuth.instance.currentUser;
+  final auth = ref.watch(authRepositoryProvider);
+  final user = auth.currentUser;
   if (user == null) return const Stream.empty();
 
-  return FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .snapshots()
+  final userRepo = ref.watch(userRepositoryProvider);
+  return userRepo
+      .userStream(user.uid)
       .map((doc) => doc.exists ? UserModel.fromJson(doc.data()!) : null);
 });
 
-/// StreamProvider for user's donation collection
+final userDocProvider =
+    StreamProvider<DocumentSnapshot<Map<String, dynamic>>?>((ref) {
+  final auth = ref.watch(authRepositoryProvider);
+  final user = auth.currentUser;
+  if (user == null) return const Stream.empty();
+  return ref.watch(userRepositoryProvider).userStream(user.uid);
+});
+
 final donationProvider = StreamProvider<List<DocumentSnapshot>>((ref) {
-  final user = FirebaseAuth.instance.currentUser;
+  final auth = ref.watch(authRepositoryProvider);
+  final user = auth.currentUser;
   if (user == null) return const Stream.empty();
 
-  return FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .collection('donation')
-      .orderBy('donationDate', descending: true)
-      .snapshots()
+  final userRepo = ref.watch(userRepositoryProvider);
+  return userRepo
+      .donationsStream(user.uid)
       .map((snapshot) => snapshot.docs);
 });

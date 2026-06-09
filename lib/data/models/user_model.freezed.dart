@@ -15,7 +15,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get uid; String get firstName; String get lastName; String get email; String get mobileNumber; String get gender; DateTime get dateOfBirth; String get currentAddress; String get district; String get subdistrict; List<String> get communities; String get bloodGroup; bool get isDonor; bool get isEmergencyDonor; String get token; String? get createdAt; bool get isOnline; String get image;
+ String get uid; String get firstName; String get lastName; String get email; String get mobileNumber; String get gender; DateTime get dateOfBirth; List<String> get communities; String get bloodGroup; bool get isDonor; bool get isEmergencyDonor; String get token; String get createdAt; bool get isOnline; String get image;// Location fields — used for geohash proximity search
+ double? get latitude; double? get longitude; String? get geohash;// Human-readable address from reverse geocoding (display only, never queried)
+ String? get locationAddress;// Saved addresses for the user
+ List<AddressModel> get savedAddresses;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +31,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.mobileNumber, mobileNumber) || other.mobileNumber == mobileNumber)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&(identical(other.currentAddress, currentAddress) || other.currentAddress == currentAddress)&&(identical(other.district, district) || other.district == district)&&(identical(other.subdistrict, subdistrict) || other.subdistrict == subdistrict)&&const DeepCollectionEquality().equals(other.communities, communities)&&(identical(other.bloodGroup, bloodGroup) || other.bloodGroup == bloodGroup)&&(identical(other.isDonor, isDonor) || other.isDonor == isDonor)&&(identical(other.isEmergencyDonor, isEmergencyDonor) || other.isEmergencyDonor == isEmergencyDonor)&&(identical(other.token, token) || other.token == token)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isOnline, isOnline) || other.isOnline == isOnline)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.mobileNumber, mobileNumber) || other.mobileNumber == mobileNumber)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&const DeepCollectionEquality().equals(other.communities, communities)&&(identical(other.bloodGroup, bloodGroup) || other.bloodGroup == bloodGroup)&&(identical(other.isDonor, isDonor) || other.isDonor == isDonor)&&(identical(other.isEmergencyDonor, isEmergencyDonor) || other.isEmergencyDonor == isEmergencyDonor)&&(identical(other.token, token) || other.token == token)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isOnline, isOnline) || other.isOnline == isOnline)&&(identical(other.image, image) || other.image == image)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.geohash, geohash) || other.geohash == geohash)&&(identical(other.locationAddress, locationAddress) || other.locationAddress == locationAddress)&&const DeepCollectionEquality().equals(other.savedAddresses, savedAddresses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,firstName,lastName,email,mobileNumber,gender,dateOfBirth,currentAddress,district,subdistrict,const DeepCollectionEquality().hash(communities),bloodGroup,isDonor,isEmergencyDonor,token,createdAt,isOnline,image);
+int get hashCode => Object.hashAll([runtimeType,uid,firstName,lastName,email,mobileNumber,gender,dateOfBirth,const DeepCollectionEquality().hash(communities),bloodGroup,isDonor,isEmergencyDonor,token,createdAt,isOnline,image,latitude,longitude,geohash,locationAddress,const DeepCollectionEquality().hash(savedAddresses)]);
 
 @override
 String toString() {
-  return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, email: $email, mobileNumber: $mobileNumber, gender: $gender, dateOfBirth: $dateOfBirth, currentAddress: $currentAddress, district: $district, subdistrict: $subdistrict, communities: $communities, bloodGroup: $bloodGroup, isDonor: $isDonor, isEmergencyDonor: $isEmergencyDonor, token: $token, createdAt: $createdAt, isOnline: $isOnline, image: $image)';
+  return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, email: $email, mobileNumber: $mobileNumber, gender: $gender, dateOfBirth: $dateOfBirth, communities: $communities, bloodGroup: $bloodGroup, isDonor: $isDonor, isEmergencyDonor: $isEmergencyDonor, token: $token, createdAt: $createdAt, isOnline: $isOnline, image: $image, latitude: $latitude, longitude: $longitude, geohash: $geohash, locationAddress: $locationAddress, savedAddresses: $savedAddresses)';
 }
 
 
@@ -48,7 +51,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String uid, String firstName, String lastName, String email, String mobileNumber, String gender, DateTime dateOfBirth, String currentAddress, String district, String subdistrict, List<String> communities, String bloodGroup, bool isDonor, bool isEmergencyDonor, String token, String? createdAt, bool isOnline, String image
+ String uid, String firstName, String lastName, String email, String mobileNumber, String gender, DateTime dateOfBirth, List<String> communities, String bloodGroup, bool isDonor, bool isEmergencyDonor, String token, String createdAt, bool isOnline, String image, double? latitude, double? longitude, String? geohash, String? locationAddress, List<AddressModel> savedAddresses
 });
 
 
@@ -65,7 +68,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? mobileNumber = null,Object? gender = null,Object? dateOfBirth = null,Object? currentAddress = null,Object? district = null,Object? subdistrict = null,Object? communities = null,Object? bloodGroup = null,Object? isDonor = null,Object? isEmergencyDonor = null,Object? token = null,Object? createdAt = freezed,Object? isOnline = null,Object? image = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? mobileNumber = null,Object? gender = null,Object? dateOfBirth = null,Object? communities = null,Object? bloodGroup = null,Object? isDonor = null,Object? isEmergencyDonor = null,Object? token = null,Object? createdAt = null,Object? isOnline = null,Object? image = null,Object? latitude = freezed,Object? longitude = freezed,Object? geohash = freezed,Object? locationAddress = freezed,Object? savedAddresses = null,}) {
   return _then(_self.copyWith(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
@@ -74,18 +77,20 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,mobileNumber: null == mobileNumber ? _self.mobileNumber : mobileNumber // ignore: cast_nullable_to_non_nullable
 as String,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String,dateOfBirth: null == dateOfBirth ? _self.dateOfBirth : dateOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime,currentAddress: null == currentAddress ? _self.currentAddress : currentAddress // ignore: cast_nullable_to_non_nullable
-as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
-as String,subdistrict: null == subdistrict ? _self.subdistrict : subdistrict // ignore: cast_nullable_to_non_nullable
-as String,communities: null == communities ? _self.communities : communities // ignore: cast_nullable_to_non_nullable
+as DateTime,communities: null == communities ? _self.communities : communities // ignore: cast_nullable_to_non_nullable
 as List<String>,bloodGroup: null == bloodGroup ? _self.bloodGroup : bloodGroup // ignore: cast_nullable_to_non_nullable
 as String,isDonor: null == isDonor ? _self.isDonor : isDonor // ignore: cast_nullable_to_non_nullable
 as bool,isEmergencyDonor: null == isEmergencyDonor ? _self.isEmergencyDonor : isEmergencyDonor // ignore: cast_nullable_to_non_nullable
 as bool,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as String?,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
 as bool,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,
+as String,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,geohash: freezed == geohash ? _self.geohash : geohash // ignore: cast_nullable_to_non_nullable
+as String?,locationAddress: freezed == locationAddress ? _self.locationAddress : locationAddress // ignore: cast_nullable_to_non_nullable
+as String?,savedAddresses: null == savedAddresses ? _self.savedAddresses : savedAddresses // ignore: cast_nullable_to_non_nullable
+as List<AddressModel>,
   ));
 }
 
@@ -170,10 +175,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  String currentAddress,  String district,  String subdistrict,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String? createdAt,  bool isOnline,  String image)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String createdAt,  bool isOnline,  String image,  double? latitude,  double? longitude,  String? geohash,  String? locationAddress,  List<AddressModel> savedAddresses)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.currentAddress,_that.district,_that.subdistrict,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image);case _:
+return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image,_that.latitude,_that.longitude,_that.geohash,_that.locationAddress,_that.savedAddresses);case _:
   return orElse();
 
 }
@@ -191,10 +196,10 @@ return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobil
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  String currentAddress,  String district,  String subdistrict,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String? createdAt,  bool isOnline,  String image)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String createdAt,  bool isOnline,  String image,  double? latitude,  double? longitude,  String? geohash,  String? locationAddress,  List<AddressModel> savedAddresses)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.currentAddress,_that.district,_that.subdistrict,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image);case _:
+return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image,_that.latitude,_that.longitude,_that.geohash,_that.locationAddress,_that.savedAddresses);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +216,10 @@ return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobil
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  String currentAddress,  String district,  String subdistrict,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String? createdAt,  bool isOnline,  String image)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String firstName,  String lastName,  String email,  String mobileNumber,  String gender,  DateTime dateOfBirth,  List<String> communities,  String bloodGroup,  bool isDonor,  bool isEmergencyDonor,  String token,  String createdAt,  bool isOnline,  String image,  double? latitude,  double? longitude,  String? geohash,  String? locationAddress,  List<AddressModel> savedAddresses)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.currentAddress,_that.district,_that.subdistrict,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image);case _:
+return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobileNumber,_that.gender,_that.dateOfBirth,_that.communities,_that.bloodGroup,_that.isDonor,_that.isEmergencyDonor,_that.token,_that.createdAt,_that.isOnline,_that.image,_that.latitude,_that.longitude,_that.geohash,_that.locationAddress,_that.savedAddresses);case _:
   return null;
 
 }
@@ -226,7 +231,7 @@ return $default(_that.uid,_that.firstName,_that.lastName,_that.email,_that.mobil
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.uid, required this.firstName, required this.lastName, required this.email, required this.mobileNumber, required this.gender, required this.dateOfBirth, required this.currentAddress, required this.district, required this.subdistrict, required final  List<String> communities, required this.bloodGroup, required this.isDonor, required this.isEmergencyDonor, required this.token, required this.createdAt, required this.isOnline, required this.image}): _communities = communities;
+  const _UserModel({required this.uid, required this.firstName, required this.lastName, required this.email, required this.mobileNumber, required this.gender, required this.dateOfBirth, required final  List<String> communities, required this.bloodGroup, required this.isDonor, required this.isEmergencyDonor, required this.token, required this.createdAt, required this.isOnline, required this.image, this.latitude, this.longitude, this.geohash, this.locationAddress, final  List<AddressModel> savedAddresses = const []}): _communities = communities,_savedAddresses = savedAddresses;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String uid;
@@ -236,9 +241,6 @@ class _UserModel implements UserModel {
 @override final  String mobileNumber;
 @override final  String gender;
 @override final  DateTime dateOfBirth;
-@override final  String currentAddress;
-@override final  String district;
-@override final  String subdistrict;
  final  List<String> _communities;
 @override List<String> get communities {
   if (_communities is EqualUnmodifiableListView) return _communities;
@@ -250,9 +252,24 @@ class _UserModel implements UserModel {
 @override final  bool isDonor;
 @override final  bool isEmergencyDonor;
 @override final  String token;
-@override final  String? createdAt;
+@override final  String createdAt;
 @override final  bool isOnline;
 @override final  String image;
+// Location fields — used for geohash proximity search
+@override final  double? latitude;
+@override final  double? longitude;
+@override final  String? geohash;
+// Human-readable address from reverse geocoding (display only, never queried)
+@override final  String? locationAddress;
+// Saved addresses for the user
+ final  List<AddressModel> _savedAddresses;
+// Saved addresses for the user
+@override@JsonKey() List<AddressModel> get savedAddresses {
+  if (_savedAddresses is EqualUnmodifiableListView) return _savedAddresses;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_savedAddresses);
+}
+
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -267,16 +284,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.mobileNumber, mobileNumber) || other.mobileNumber == mobileNumber)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&(identical(other.currentAddress, currentAddress) || other.currentAddress == currentAddress)&&(identical(other.district, district) || other.district == district)&&(identical(other.subdistrict, subdistrict) || other.subdistrict == subdistrict)&&const DeepCollectionEquality().equals(other._communities, _communities)&&(identical(other.bloodGroup, bloodGroup) || other.bloodGroup == bloodGroup)&&(identical(other.isDonor, isDonor) || other.isDonor == isDonor)&&(identical(other.isEmergencyDonor, isEmergencyDonor) || other.isEmergencyDonor == isEmergencyDonor)&&(identical(other.token, token) || other.token == token)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isOnline, isOnline) || other.isOnline == isOnline)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.mobileNumber, mobileNumber) || other.mobileNumber == mobileNumber)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&const DeepCollectionEquality().equals(other._communities, _communities)&&(identical(other.bloodGroup, bloodGroup) || other.bloodGroup == bloodGroup)&&(identical(other.isDonor, isDonor) || other.isDonor == isDonor)&&(identical(other.isEmergencyDonor, isEmergencyDonor) || other.isEmergencyDonor == isEmergencyDonor)&&(identical(other.token, token) || other.token == token)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isOnline, isOnline) || other.isOnline == isOnline)&&(identical(other.image, image) || other.image == image)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.geohash, geohash) || other.geohash == geohash)&&(identical(other.locationAddress, locationAddress) || other.locationAddress == locationAddress)&&const DeepCollectionEquality().equals(other._savedAddresses, _savedAddresses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,firstName,lastName,email,mobileNumber,gender,dateOfBirth,currentAddress,district,subdistrict,const DeepCollectionEquality().hash(_communities),bloodGroup,isDonor,isEmergencyDonor,token,createdAt,isOnline,image);
+int get hashCode => Object.hashAll([runtimeType,uid,firstName,lastName,email,mobileNumber,gender,dateOfBirth,const DeepCollectionEquality().hash(_communities),bloodGroup,isDonor,isEmergencyDonor,token,createdAt,isOnline,image,latitude,longitude,geohash,locationAddress,const DeepCollectionEquality().hash(_savedAddresses)]);
 
 @override
 String toString() {
-  return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, email: $email, mobileNumber: $mobileNumber, gender: $gender, dateOfBirth: $dateOfBirth, currentAddress: $currentAddress, district: $district, subdistrict: $subdistrict, communities: $communities, bloodGroup: $bloodGroup, isDonor: $isDonor, isEmergencyDonor: $isEmergencyDonor, token: $token, createdAt: $createdAt, isOnline: $isOnline, image: $image)';
+  return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, email: $email, mobileNumber: $mobileNumber, gender: $gender, dateOfBirth: $dateOfBirth, communities: $communities, bloodGroup: $bloodGroup, isDonor: $isDonor, isEmergencyDonor: $isEmergencyDonor, token: $token, createdAt: $createdAt, isOnline: $isOnline, image: $image, latitude: $latitude, longitude: $longitude, geohash: $geohash, locationAddress: $locationAddress, savedAddresses: $savedAddresses)';
 }
 
 
@@ -287,7 +304,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String firstName, String lastName, String email, String mobileNumber, String gender, DateTime dateOfBirth, String currentAddress, String district, String subdistrict, List<String> communities, String bloodGroup, bool isDonor, bool isEmergencyDonor, String token, String? createdAt, bool isOnline, String image
+ String uid, String firstName, String lastName, String email, String mobileNumber, String gender, DateTime dateOfBirth, List<String> communities, String bloodGroup, bool isDonor, bool isEmergencyDonor, String token, String createdAt, bool isOnline, String image, double? latitude, double? longitude, String? geohash, String? locationAddress, List<AddressModel> savedAddresses
 });
 
 
@@ -304,7 +321,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? mobileNumber = null,Object? gender = null,Object? dateOfBirth = null,Object? currentAddress = null,Object? district = null,Object? subdistrict = null,Object? communities = null,Object? bloodGroup = null,Object? isDonor = null,Object? isEmergencyDonor = null,Object? token = null,Object? createdAt = freezed,Object? isOnline = null,Object? image = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? mobileNumber = null,Object? gender = null,Object? dateOfBirth = null,Object? communities = null,Object? bloodGroup = null,Object? isDonor = null,Object? isEmergencyDonor = null,Object? token = null,Object? createdAt = null,Object? isOnline = null,Object? image = null,Object? latitude = freezed,Object? longitude = freezed,Object? geohash = freezed,Object? locationAddress = freezed,Object? savedAddresses = null,}) {
   return _then(_UserModel(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
@@ -313,18 +330,20 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,mobileNumber: null == mobileNumber ? _self.mobileNumber : mobileNumber // ignore: cast_nullable_to_non_nullable
 as String,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String,dateOfBirth: null == dateOfBirth ? _self.dateOfBirth : dateOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime,currentAddress: null == currentAddress ? _self.currentAddress : currentAddress // ignore: cast_nullable_to_non_nullable
-as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
-as String,subdistrict: null == subdistrict ? _self.subdistrict : subdistrict // ignore: cast_nullable_to_non_nullable
-as String,communities: null == communities ? _self._communities : communities // ignore: cast_nullable_to_non_nullable
+as DateTime,communities: null == communities ? _self._communities : communities // ignore: cast_nullable_to_non_nullable
 as List<String>,bloodGroup: null == bloodGroup ? _self.bloodGroup : bloodGroup // ignore: cast_nullable_to_non_nullable
 as String,isDonor: null == isDonor ? _self.isDonor : isDonor // ignore: cast_nullable_to_non_nullable
 as bool,isEmergencyDonor: null == isEmergencyDonor ? _self.isEmergencyDonor : isEmergencyDonor // ignore: cast_nullable_to_non_nullable
 as bool,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as String?,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
 as bool,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,
+as String,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,geohash: freezed == geohash ? _self.geohash : geohash // ignore: cast_nullable_to_non_nullable
+as String?,locationAddress: freezed == locationAddress ? _self.locationAddress : locationAddress // ignore: cast_nullable_to_non_nullable
+as String?,savedAddresses: null == savedAddresses ? _self._savedAddresses : savedAddresses // ignore: cast_nullable_to_non_nullable
+as List<AddressModel>,
   ));
 }
 

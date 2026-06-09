@@ -62,4 +62,14 @@ class AppRoute {
     name: 'blood-request-history',
     path: '/blood-request-history',
   );
+
+  static const myCircle = AppRoute(
+    name: 'my-circle',
+    path: '/my-circle',
+  );
+
+  static const events = AppRoute(
+    name: 'events',
+    path: '/events',
+  );
 }

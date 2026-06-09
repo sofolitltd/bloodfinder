@@ -14,9 +14,6 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   mobileNumber: json['mobileNumber'] as String,
   gender: json['gender'] as String,
   dateOfBirth: DateTime.parse(json['dateOfBirth'] as String),
-  currentAddress: json['currentAddress'] as String,
-  district: json['district'] as String,
-  subdistrict: json['subdistrict'] as String,
   communities: (json['communities'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
@@ -24,9 +21,18 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   isDonor: json['isDonor'] as bool,
   isEmergencyDonor: json['isEmergencyDonor'] as bool,
   token: json['token'] as String,
-  createdAt: json['createdAt'] as String?,
+  createdAt: json['createdAt'] as String,
   isOnline: json['isOnline'] as bool,
   image: json['image'] as String,
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
+  geohash: json['geohash'] as String?,
+  locationAddress: json['locationAddress'] as String?,
+  savedAddresses:
+      (json['savedAddresses'] as List<dynamic>?)
+          ?.map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -38,9 +44,6 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'mobileNumber': instance.mobileNumber,
       'gender': instance.gender,
       'dateOfBirth': instance.dateOfBirth.toIso8601String(),
-      'currentAddress': instance.currentAddress,
-      'district': instance.district,
-      'subdistrict': instance.subdistrict,
       'communities': instance.communities,
       'bloodGroup': instance.bloodGroup,
       'isDonor': instance.isDonor,
@@ -49,4 +52,9 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'createdAt': instance.createdAt,
       'isOnline': instance.isOnline,
       'image': instance.image,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'geohash': instance.geohash,
+      'locationAddress': instance.locationAddress,
+      'savedAddresses': instance.savedAddresses.map((e) => e.toJson()).toList(),
     };
