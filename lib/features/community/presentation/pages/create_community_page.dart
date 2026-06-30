@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../widgets/community_form.dart';
@@ -20,19 +21,19 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 PhosphorIcons.usersFour,
                 color: Colors.red.shade600,
-                size: 18,
+                size: 18.w,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 1.w),
             const Text(
               'Create Community',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -41,11 +42,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
         child: Column(
           children: [
             const ExpandableInfoCard(),
-            const SizedBox(height: 16),
+            SizedBox(height: 1.h),
             CommunityForm(
               onCommunityCreated: () => Navigator.pop(context),
             ),

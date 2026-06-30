@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -46,11 +47,11 @@ class FormFieldsSection extends StatelessWidget {
           'Community Information',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 16.sp,
           ),
         ),
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Community Name
         TextFormField(
@@ -67,7 +68,7 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Mobile Number
         TextFormField(
@@ -84,7 +85,7 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Address
         TextFormField(
@@ -100,9 +101,9 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
-        // ── Map Location Picker ─────────────────────────────────────────────
+                    // ── Map Location Picker ─────────────────────────────────────────────
         FormField<double>(
           validator: (_) =>
               selectedLatitude == null ? 'Please pick a location' : null,
@@ -123,15 +124,15 @@ class FormFieldsSection extends StatelessWidget {
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 14),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 12.w, vertical: 14.h),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: state.hasError
                             ? Theme.of(context).colorScheme.error
                             : Colors.grey.shade400,
                       ),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.grey.shade900
                           : Colors.grey.shade50,
@@ -142,7 +143,7 @@ class FormFieldsSection extends StatelessWidget {
                             color: selectedLatitude != null
                                 ? Colors.red.shade600
                                 : Colors.grey.shade600),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,11 +163,11 @@ class FormFieldsSection extends StatelessWidget {
                               ),
                               if (selectedLocationAddress != null &&
                                   selectedLocationAddress!.isNotEmpty) ...[
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Text(
                                   selectedLocationAddress!,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     color: Colors.grey.shade600,
                                   ),
                                   maxLines: 1,
@@ -185,12 +186,12 @@ class FormFieldsSection extends StatelessWidget {
                 ),
                 if (state.hasError)
                   Padding(
-                    padding: const EdgeInsets.only(left: 12, top: 8),
+                    padding: EdgeInsets.only(left: 12.w, top: 8.h),
                     child: Text(
                       state.errorText!,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ),
@@ -199,28 +200,28 @@ class FormFieldsSection extends StatelessWidget {
           },
         ),
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         Text(
           'Social Media Links',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         SocialMediaInput(
           initialLinks: socialMediaLinks,
           onLinksChanged: onSocialLinksChanged,
         ),
 
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         Text(
           'Community Image',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 16.sp,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         //Image Picker
         ImagePickerSection(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/utils/geohash.dart';
@@ -80,16 +81,41 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
     }
   }
 
-  void _removeAddress(AddressModel address) {
+  Future<void> _removeAddress(AddressModel address) async {
     if (widget.savedAddresses.length <= 1) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('You must have at least one saved address.'),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).colorScheme.surface,
+        title: const Text('Remove Address'),
+        content: Text('Remove "${address.label}" from your saved addresses?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
 
     final newList = List<AddressModel>.from(widget.savedAddresses)
       ..removeWhere((a) => a.id == address.id);
@@ -102,57 +128,74 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
     }
   }
 
-  void _setActiveAddress(AddressModel address) {
+  Future<void> _setActiveAddress(AddressModel address) async {
+    if (widget.activeGeohash == address.geohash) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).colorScheme.surface,
+        title: const Text('Change Active Address'),
+        content: Text('Set "${address.label}" as your active location?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Set Active'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
     widget.onActiveAddressChanged(address);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bool hasNoLocation = widget.activeGeohash == null;
     final bool isWarning = widget.isDonor && hasNoLocation;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: isWarning ? Colors.red : (isDark ? Colors.grey.shade700.withValues(alpha: 0.3) : Colors.grey.shade300),
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'My Locations',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               TextButton.icon(
                 onPressed: _addNewAddress,
-                icon: const Icon(Icons.add_location_alt, size: 18),
+                icon: Icon(Icons.add_location_alt, size: 18.w),
                 label: const Text('Add New'),
               ),
             ],
           ),
           if (isWarning)
-            const Padding(
-              padding: EdgeInsets.only(bottom: 12),
+            Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
               child: Text(
                 'Location is required to be visible as a donor. Please add and select a location.',
-                style: TextStyle(color: Colors.red, fontSize: 13),
+                style: TextStyle(color: Colors.red, fontSize: 13.sp),
               ),
             ),
-          const Divider(height: 1),
+          Divider(height: 1.h),
           if (widget.savedAddresses.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.h),
               child: Center(
                 child: Text(
                   'No saved addresses.\nAdd a new one to be visible in searches.',
@@ -166,61 +209,74 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.savedAddresses.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              separatorBuilder: (_, __) => Divider(height: 1.h),
               itemBuilder: (context, index) {
                 final address = widget.savedAddresses[index];
                 // In case of multiple exact same geohashes (rare but possible),
                 // we compare ID if available, else fallback to geohash match for active state.
                 final bool isActive = widget.activeGeohash == address.geohash;
 
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Radio<String>(
-                    value: address.geohash,
-                    groupValue: widget.activeGeohash,
-                    activeColor: Colors.green,
-                    onChanged: (_) => _setActiveAddress(address),
+                return Ink(
+                  decoration: BoxDecoration(
+                    color: isActive ? Colors.green.shade50 : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
-                  title: Row(
+                  child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      Text(
-                        address.label,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      if (isActive)
-                        Container(
-                          margin: const EdgeInsets.only(left: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.green.shade200),
-                          ),
-                          child: const Text(
-                            'Active',
-                            style: TextStyle(fontSize: 10, color: Colors.green),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.only(
+                          left: 8.w,
+                          right: 40.w,
+                          top: 4.h,
+                          bottom: 4.h,
                         ),
+                        title: Row(
+                          children: [
+                            Text(
+                              address.label,
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            if (isActive)
+                              Container(
+                                margin: EdgeInsets.only(left: 8.w),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 6.w, vertical: 2.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(4.r),
+                                  border: Border.all(color: Colors.green.shade200),
+                                ),
+                                child: Text(
+                                  'Active',
+                                  style: TextStyle(fontSize: 10.sp, color: Colors.green),
+                                ),
+                              ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          address.addressText,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                        onTap: () => _setActiveAddress(address),
+                      ),
+                      Positioned(
+                        right: 4.w,
+                        top: 10.h,
+                        child: IconButton(
+                          icon: Icon(Icons.delete_outline,
+                              color: Colors.redAccent, size: 20.w),
+                          onPressed: () => _removeAddress(address),
+                        ),
+                      ),
                     ],
                   ),
-                  subtitle: Text(
-                    address.addressText,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        color: Colors.redAccent, size: 20),
-                    onPressed: () => _removeAddress(address),
-                  ),
-                  onTap: () => _setActiveAddress(address),
                 );
               },
             ),
         ],
-      ),
-    );
+      );
   }
 }

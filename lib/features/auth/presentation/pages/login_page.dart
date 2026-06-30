@@ -4,6 +4,7 @@ import 'package:bloodfinder/routes/router_config.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -65,7 +66,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
         content: Text(message),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? Colors.red.shade700 : Colors.green.shade700,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       ),
     );
   }
@@ -170,7 +171,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                     Colors.red.shade400,
                   ],
                 ),
-                borderRadius: const BorderRadius.vertical(
+                borderRadius: BorderRadius.vertical(
                   bottom: Radius.elliptical(300, 50),
                 ),
               ),
@@ -181,22 +182,22 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 16),
+                      SizedBox(height: 1.h),
                       // Logo
                       Container(
-                        width: 80,
-                        height: 80,
-                        decoration: const BoxDecoration(
+                        width: 80.w,
+                        height: 80.h,
+                        decoration: BoxDecoration(
                           color: Colors.white24,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           PhosphorIcons.drop,
                           color: Colors.white,
-                          size: 44,
+                          size: 44.w,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 1.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: 4,
@@ -204,7 +205,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           Text(
                             'Blood',
                             style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 30.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.2,
@@ -213,7 +214,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           Text(
                             'Finder',
                             style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 30.sp,
                               fontWeight: FontWeight.w300,
                               color: Colors.white.withValues(alpha: 0.9),
                               letterSpacing: 1.2,
@@ -221,11 +222,11 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         'Find donors. Save lives.',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.white.withValues(alpha: 0.8),
                           letterSpacing: 0.5,
                         ),
@@ -242,7 +243,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                  padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 24.h),
                   child: Column(
                     children: [
                       // Welcome text
@@ -251,31 +252,31 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         child: Text(
                           'Welcome back',
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 22.sp,
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Sign in to your account',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 16.h),
 
                       // Card
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(color: Colors.grey.shade200, width: 0.5),
                           boxShadow: [
                             BoxShadow(
@@ -285,7 +286,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.all(20.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -295,9 +296,9 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         controller: _emailController,
                         focusNode: _emailFocusNode,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Email',
-                          prefixIcon: Icon(PhosphorIcons.envelope, size: 20),
+                          prefixIcon: Icon(PhosphorIcons.envelope, size: 20.w),
                         ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
@@ -313,7 +314,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
 
                       // Password
                       TextFormField(
@@ -322,13 +323,13 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          prefixIcon: const Icon(PhosphorIcons.lock, size: 20),
+                          prefixIcon: Icon(PhosphorIcons.lock, size: 20.w),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              size: 20,
+                              size: 20.w,
                             ),
                             onPressed: () {
                               setState(() {
@@ -352,7 +353,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           return null;
                         },
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 1.h),
 
                       // Forgot password
                       Align(
@@ -375,30 +376,30 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
 
                       // Log In button
                       SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: 50.h,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _handleLogin,
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                           ),
                           child: _isLoading
-                              ? const SizedBox(
-                                  height: 22,
-                                  width: 22,
+                              ? SizedBox(
+                                  height: 22.h,
+                                  width: 22.w,
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                     strokeWidth: 2.5,
                                   ),
                                 )
-                              : const Text(
+                              : Text(
                                   'Log In',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -408,26 +409,26 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
+              SizedBox(height: 20.h),
 
                   // Divider with "or"
                       Row(
                         children: [
                           Expanded(child: Divider(color: Colors.grey.shade300)),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: Text(
                               'or',
                               style: TextStyle(
                                 color: Colors.grey.shade500,
-                                fontSize: 13,
+                                fontSize: 13.sp,
                               ),
                             ),
                           ),
                           Expanded(child: Divider(color: Colors.grey.shade300)),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 10.h),
 
                       // Sign up
                       Row(
@@ -437,13 +438,13 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                             "Don't have an account? ",
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                             ),
                           ),
                           TextButton(
                             onPressed: () => context.push(AppRoute.registration.path),
                             style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                               visualDensity: VisualDensity.compact,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -452,7 +453,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                               style: TextStyle(
                                 color: Colors.red.shade600,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                               ),
                             ),
                           ),

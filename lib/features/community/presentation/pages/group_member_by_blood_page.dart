@@ -3,6 +3,7 @@ import 'package:bloodfinder/shared/widgets/start_chat_btn.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,7 +28,8 @@ class BloodGroupMembersScreen extends ConsumerWidget {
     final userRepo = ref.read(userRepositoryProvider);
 
     return communityRepo
-        .membersCollection(communityId)
+        .membersCollection()
+        .where('communityId', isEqualTo: communityId)
         .snapshots()
         .asyncMap((snapshot) async {
       final userIds =
@@ -86,9 +88,9 @@ class BloodGroupMembersScreen extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             itemCount: members.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
             itemBuilder: (context, index) {
               final member = members[index];
               String otherUserId = member['uid'];
@@ -104,7 +106,7 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: ListTile(
                       leading: CircleAvatar(
@@ -118,15 +120,15 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 20.sp,
                                 ),
                               )
                             : ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
+                                borderRadius: BorderRadius.circular(50.r),
                                 child: CachedNetworkImage(
                                   imageUrl: member['image'],
-                                  width: 40,
-                                  height: 40,
+                                  width: 40.w,
+                                  height: 40.h,
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) =>
                                       CircularProgressIndicator(strokeWidth: 2),
@@ -143,10 +145,10 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Address: $address'),
-                          SizedBox(height: 8),
+                          SizedBox(height: 8.h),
 
                           StartChatButton(otherUserId: otherUserId),
-                          SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                         ],
                       ),
                     ),
@@ -156,14 +158,14 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                     right: 8,
                     top: 8,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                      padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w),
                       decoration: BoxDecoration(
                         color: Colors.red,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(
                         bloodGroup,
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

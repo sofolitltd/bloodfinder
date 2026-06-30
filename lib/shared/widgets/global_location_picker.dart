@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:country_state_city_selector/country_state_city_selector.dart';
 
@@ -187,7 +188,7 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
+        locationSettings: LocationSettings(
           accuracy: LocationAccuracy.high,
         ),
       );
@@ -240,7 +241,7 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
           const SizedBox(height: 8.0),
           Row(
             children: [
-              const Icon(Icons.location_on, color: Colors.redAccent),
+              Icon(Icons.location_on, color: Colors.redAccent),
               const SizedBox(width: 8.0),
               Expanded(
                 child: Text(
@@ -268,13 +269,13 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
           const SizedBox(height: 16.0),
           SizedBox(
             width: double.infinity,
-            height: 48,
+            height: 48.h,
             child: OutlinedButton.icon(
               onPressed: _isLoadingGps || _isGeocoding ? null : _getLocationFromGps,
               icon: _isLoadingGps
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
+                  ? SizedBox(
+                      width: 20.w,
+                      height: 20.h,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
@@ -285,7 +286,7 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
                 _isLoadingGps ? 'Locating...' : 'Use Current Location',
               ),
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.redAccent),
+                side: BorderSide(color: Colors.redAccent),
                 foregroundColor: Colors.redAccent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
@@ -298,7 +299,7 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
             children: [
               const Expanded(child: Divider()),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
                 child: Text(
                   'OR SELECT MANUALLY',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

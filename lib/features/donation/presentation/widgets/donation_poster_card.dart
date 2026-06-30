@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -9,7 +10,7 @@ import 'package:bloodfinder/features/blood_request/models/blood_request.dart';
 class DonationPosterCard extends ConsumerWidget {
   final BloodRequest request;
 
-  const DonationPosterCard({super.key, required this.request});
+  DonationPosterCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,14 +42,14 @@ class DonationPosterCard extends ConsumerWidget {
                   ? Text(
                       posterName.isNotEmpty ? posterName[0].toUpperCase() : '?',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.red.shade600,
                       ),
                     )
                   : null,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 1.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,16 +57,16 @@ class DonationPosterCard extends ConsumerWidget {
                   Text(
                     posterName,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(
                     DateFormat('dd MMM yyy - hh:mm a').format(request.createdAt),
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                     ),
                   ),

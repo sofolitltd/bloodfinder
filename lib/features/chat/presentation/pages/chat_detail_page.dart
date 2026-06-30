@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -216,10 +217,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         titleSpacing: 0,
         title: _showOverlay
             ? (_isEditing
-                  ? const Text(
+                  ? Text(
                       "Edit Message",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     )

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,7 +45,8 @@ class CommunityMembersPage extends ConsumerWidget {
         final updatedCommunity = communitySnapshot.data!;
 
         final membersStream = communityRepo
-            .membersCollection(updatedCommunity.id)
+            .membersCollection()
+            .where('communityId', isEqualTo: updatedCommunity.id)
             .snapshots();
 
         return StreamBuilder<QuerySnapshot>(
@@ -64,8 +66,8 @@ class CommunityMembersPage extends ConsumerWidget {
                 centerTitle: true,
               ),
               body: ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                separatorBuilder: (_, __) => SizedBox(height: 8.h),
                 itemCount: memberDocs.length,
                 itemBuilder: (context, index) {
                   final memberId = memberDocs[index].id;
@@ -104,10 +106,10 @@ class CommunityMembersPage extends ConsumerWidget {
                                                 ? user.firstName[0]
                                                       .toUpperCase()
                                                 : '',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 20,
+                                              fontSize: 20.sp,
                                             ),
                                           )
                                         : ClipRRect(
@@ -116,8 +118,8 @@ class CommunityMembersPage extends ConsumerWidget {
                                             ),
                                             child: CachedNetworkImage(
                                               imageUrl: user.image,
-                                              width: 36,
-                                              height: 36,
+                                              width: 36.w,
+                                              height: 36.h,
                                               fit: BoxFit.cover,
                                               placeholder: (context, url) =>
                                                   const CircularProgressIndicator(
@@ -132,7 +134,7 @@ class CommunityMembersPage extends ConsumerWidget {
                                           ),
                                   ),
                                   if (isAdmin)
-                                    const Text(
+                                    Text(
                                       'Admin',
                                       style: TextStyle(color: Colors.red),
                                     ),
@@ -142,10 +144,10 @@ class CommunityMembersPage extends ConsumerWidget {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: 4.h),
 
                                   Text('Address: $address'),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8.h),
                                   Row(
                                     spacing: 8,
                                     children: [
@@ -213,7 +215,7 @@ class CommunityMembersPage extends ConsumerWidget {
                                                             context,
                                                             true,
                                                           ),
-                                                      child: const Text(
+                                                      child: Text(
                                                         'Remove',
                                                         style: TextStyle(
                                                           color: Colors.red,
@@ -282,7 +284,7 @@ class CommunityMembersPage extends ConsumerWidget {
                                         ),
                                     ],
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: 4.h),
                                 ],
                               ),
                             ),
@@ -291,17 +293,17 @@ class CommunityMembersPage extends ConsumerWidget {
                             right: 12,
                             top: 12,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 8,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2.h,
+                                horizontal: 8.w,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
                               child: Text(
                                 bloodGroup,
-                                style: const TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),

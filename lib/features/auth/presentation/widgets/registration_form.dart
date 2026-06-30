@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'auth_section.dart';
-import 'contact_section.dart';
 import 'donor_info_section.dart';
+import 'location_section.dart';
 import 'user_info_section.dart';
 
 class RegistrationForm extends StatelessWidget {
@@ -67,70 +69,197 @@ class RegistrationForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
-        spacing: 16,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section 1: Profile Info
-          _sectionHeader('Profile Info', Icons.person_outline),
-          UserInfoSection(
-            firstNameController: firstNameController,
-            lastNameController: lastNameController,
-            mobileController: mobileController,
-            pickedImage: pickedImage,
-            onPickImage: onPickImage,
+          _SectionHeader(icon: PhosphorIcons.user, title: 'Profile Info'),
+          SizedBox(height: 12.h),
+          _SectionCard(
+            child: UserInfoSection(
+              firstNameController: firstNameController,
+              lastNameController: lastNameController,
+              mobileController: mobileController,
+              pickedImage: pickedImage,
+              onPickImage: onPickImage,
+            ),
           ),
+
+          SizedBox(height: 24.h),
 
           // Section 2: Medical Info
-          _sectionHeader('Medical Info', Icons.medical_information_outlined),
-          DonorInfoSection(
-            bloodGroup: bloodGroup,
-            onBloodGroupChanged: onBloodGroupChanged,
-            gender: gender,
-            onGenderChanged: onGenderChanged,
-            dob: dob,
-            onSelectDate: onSelectDate,
+          _SectionHeader(
+            icon: PhosphorIcons.heart,
+            title: 'Medical Info',
+          ),
+          SizedBox(height: 12.h),
+          _SectionCard(
+            child: DonorInfoSection(
+              bloodGroup: bloodGroup,
+              onBloodGroupChanged: onBloodGroupChanged,
+              gender: gender,
+              onGenderChanged: onGenderChanged,
+              dob: dob,
+              onSelectDate: onSelectDate,
+              isDonor: isDonor,
+              onDonorTap: onDonorTap,
+              donorError: donorError,
+            ),
           ),
 
-          // Section 3: Donor Status
-          _sectionHeader('Donor Status', Icons.bloodtype_outlined),
-          ContactSection(
-            selectedLatitude: selectedLatitude,
-            selectedLongitude: selectedLongitude,
-            locationAddress: locationAddress,
-            isDonor: isDonor,
-            donorError: donorError,
-            onDonorTap: onDonorTap,
-            onLocationPicked: onLocationPicked,
+          SizedBox(height: 24.h),
+
+          // Section 3: Location
+          _SectionHeader(icon: PhosphorIcons.mapPin, title: 'Location'),
+          SizedBox(height: 12.h),
+          _SectionCard(
+            child: LocationSection(
+              selectedLatitude: selectedLatitude,
+              selectedLongitude: selectedLongitude,
+              locationAddress: locationAddress,
+              onLocationPicked: onLocationPicked,
+            ),
           ),
+
+          SizedBox(height: 24.h),
 
           // Section 4: Authentication
-          _sectionHeader('Authentication', Icons.lock_outline),
-          AuthSection(
-            emailController: emailController,
-            passwordController: passwordController,
-            obscurePassword: obscurePassword,
-            onTogglePasswordVisibility: onTogglePasswordVisibility,
-            isLoading: isLoading,
-            onRegister: onRegister,
+          _SectionHeader(icon: PhosphorIcons.lock, title: 'Authentication'),
+          SizedBox(height: 12.h),
+          _SectionCard(
+            child: AuthSection(
+              emailController: emailController,
+              passwordController: passwordController,
+              obscurePassword: obscurePassword,
+              onTogglePasswordVisibility: onTogglePasswordVisibility,
+            ),
           ),
+
+          SizedBox(height: 32.h),
+
+          // Create Account button
+          SizedBox(
+            width: double.infinity,
+            height: 50.h,
+            child: ElevatedButton(
+              onPressed: isLoading ? null : onRegister,
+              style: ElevatedButton.styleFrom(elevation: 0),
+              child: isLoading
+                  ? SizedBox(
+                      height: 22.h,
+                      width: 22.w,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                  : Text(
+                      'Create Account',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+
+          // Back to Login
+          const Center(child: _BackToLoginLink()),
+
           SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
         ],
       ),
     );
   }
+}
 
-  Widget _sectionHeader(String title, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 2),
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _SectionHeader({required this.icon, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 28.w,
+          height: 28.h,
+          decoration: BoxDecoration(
+            color: Colors.red.shade50,
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Icon(icon, size: 15, color: Colors.red.shade600),
+        ),
+        SizedBox(width: 8.w),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  final Widget child;
+
+  const _SectionCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(16.w),
+      child: child,
+    );
+  }
+}
+
+class _BackToLoginLink extends StatelessWidget {
+  const _BackToLoginLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => Navigator.pop(context),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+        visualDensity: VisualDensity.compact,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
       child: Row(
-        spacing: 8,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 20, color: Colors.red.shade600),
+          Icon(
+            Icons.arrow_back_rounded,
+            size: 18.w,
+            color: Colors.red.shade600,
+          ),
+          SizedBox(width: 4.w),
           Text(
-            title,
+            'Back to Login',
             style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey.shade800,
+              color: Colors.red.shade600,
+              fontWeight: FontWeight.w500,
+              fontSize: 14.sp,
             ),
           ),
         ],

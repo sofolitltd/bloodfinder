@@ -5,14 +5,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-
 import 'package:image_picker/image_picker.dart';
 
 
+import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../shared/models/social_media_link.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
@@ -77,19 +76,19 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 PhosphorIcons.usersFour,
                 color: Colors.red.shade600,
-                size: 18,
+                size: 18.w,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 1.w),
             const Text(
               'Edit Community',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -98,7 +97,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
         child: Form(
           key: _formKey,
           child: Column(
@@ -108,27 +107,27 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 icon: PhosphorIcons.usersFour,
                 title: 'Community Information',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 1.h),
               _SectionCard(
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Community Name',
                       hintText: 'Enter community name',
-                      prefixIcon: Icon(PhosphorIcons.usersFour, size: 20),
+                      prefixIcon: Icon(PhosphorIcons.usersFour, size: 20.w),
                     ),
                     keyboardType: TextInputType.name,
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Enter a name' : null,
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 1.h),
                   TextFormField(
                     controller: _mobileController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Admin Mobile',
                       hintText: 'Enter mobile number',
-                      prefixIcon: Icon(PhosphorIcons.phone, size: 20),
+                      prefixIcon: Icon(PhosphorIcons.phone, size: 20.w),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (v) =>
@@ -137,26 +136,26 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 2.h),
 
               _SectionHeader(
                 icon: PhosphorIcons.mapPin,
                 title: 'Location',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 1.h),
               _SectionCard(
                 children: [
                   TextFormField(
                     controller: _addressController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Address',
                       hintText: 'Enter community address',
-                      prefixIcon: Icon(PhosphorIcons.mapPin, size: 20),
+                      prefixIcon: Icon(PhosphorIcons.mapPin, size: 20.w),
                     ),
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Enter address' : null,
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 1.h),
                   GestureDetector(
                     onTap: () async {
                       final result = await MapLocationPickerPage.show(context);
@@ -169,23 +168,23 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                       }
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 14),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 14.w, vertical: 14.h),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.red.shade200, width: 1),
-                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red.shade200, width: 1.w),
+                        borderRadius: BorderRadius.circular(12.r),
                         color: Colors.red.shade50,
                       ),
                       child: Row(
                         children: [
                           Icon(
                             PhosphorIcons.mapPin,
-                            size: 20,
+                            size: 20.w,
                             color: hasLocation
                                 ? Colors.red.shade600
                                 : Colors.red.shade300,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 1.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +194,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                                       ? 'Location Picked'
                                       : 'Pick Community Location',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     fontWeight: hasLocation
                                         ? FontWeight.w500
                                         : FontWeight.normal,
@@ -207,11 +206,11 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                                 if (_selectedLocationAddress != null &&
                                     _selectedLocationAddress!.isNotEmpty)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 2),
+                                    padding: EdgeInsets.only(top: 2.h),
                                     child: Text(
                                       _selectedLocationAddress!,
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         color: Colors.grey.shade500,
                                       ),
                                       maxLines: 1,
@@ -221,12 +220,12 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Icon(
                             hasLocation
                                 ? PhosphorIcons.pencilSimple
                                 : PhosphorIcons.mapPinArea,
-                            size: 18,
+                            size: 18.w,
                             color: Colors.red.shade400,
                           ),
                         ],
@@ -236,13 +235,13 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 2.h),
 
               _SectionHeader(
                 icon: PhosphorIcons.shareNetwork,
                 title: 'Social Media Links',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 1.h),
               _SectionCard(
                 children: [
                   SocialMediaInput(
@@ -254,13 +253,13 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 2.h),
 
               _SectionHeader(
                 icon: PhosphorIcons.image,
                 title: 'Community Image',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 1.h),
               _SectionCard(
                 children: [
                   GestureDetector(
@@ -269,11 +268,11 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          height: 140,
-                          width: 140,
+                          height: 140.h,
+                          width: 140.w,
                           decoration: BoxDecoration(
                             color: Colors.red.shade50.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: _pickedImage != null
                               ? Image.file(
@@ -282,7 +281,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                                 )
                               : _existingImageUrl != null
                               ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8.r),
                                   child: Image.network(
                                     _existingImageUrl!,
                                     fit: BoxFit.cover,
@@ -290,7 +289,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                                 )
                               : Icon(
                                   PhosphorIcons.image,
-                                  size: 50,
+                                  size: 50.w,
                                   color: Colors.red.shade100,
                                 ),
                         ),
@@ -308,7 +307,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                               child: CircleAvatar(
                                 radius: 12,
                                 backgroundColor: Colors.red,
-                                child: Icon(PhosphorIcons.x, size: 14, color: Colors.white),
+                                child: Icon(PhosphorIcons.x, size: 14.w, color: Colors.white),
                               ),
                             ),
                           ),
@@ -318,32 +317,32 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 ],
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 3.h),
 
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 52.h,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _updateCommunity,
                   style: ElevatedButton.styleFrom(elevation: 0),
                   child: _isLoading
-                      ? const SizedBox(
-                          height: 22,
-                          width: 22,
+                      ? SizedBox(
+                          height: 22.h,
+                          width: 22.w,
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2.5,
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(PhosphorIcons.usersFour, size: 20),
-                            SizedBox(width: 8),
+                            Icon(PhosphorIcons.usersFour, size: 20.w),
+                            SizedBox(width: 8.w),
                             Text(
                               'Save Changes',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -374,7 +373,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
 
       final updatedData = {
         'name': _nameController.text.trim(),
-        'mobile': _mobileController.text.trim(),
+        'mobile': PhoneUtils.toCanonical(_mobileController.text.trim()),
         'address': _addressController.text.trim(),
         if (_selectedLatitude != null) 'latitude': _selectedLatitude,
         if (_selectedLongitude != null) 'longitude': _selectedLongitude,
@@ -396,7 +395,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
           content: const Text('Community updated successfully!'),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
           ),
         ),
       );
@@ -412,7 +411,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
           content: Text('Error updating: $e'),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
           ),
         ),
       );
@@ -465,19 +464,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28,
-          height: 28,
+          width: 28.w,
+          height: 28.h,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(icon, size: 15, color: Colors.red.shade600),
+          child: Icon(icon, size: 15.w, color: Colors.red.shade600),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),
@@ -498,7 +497,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -507,7 +506,7 @@ class _SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,

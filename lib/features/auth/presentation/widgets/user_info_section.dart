@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -23,33 +23,21 @@ class UserInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200, width: 0.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8.h,
+      children: [
           // Avatar
           GestureDetector(
             onTap: onPickImage,
             child: Stack(
               children: [
                 Container(
-                  height: 90,
-                  width: 90,
+                  height: 90.h,
+                  width: 90.w,
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                     image: pickedImage != null
                         ? DecorationImage(
                             image: FileImage(File(pickedImage!.path)),
@@ -61,11 +49,11 @@ class UserInfoSection extends StatelessWidget {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(PhosphorIcons.camera, size: 28, color: Colors.red.shade400),
-                            const SizedBox(height: 2),
+                            Icon(PhosphorIcons.camera, size: 28.w, color: Colors.red.shade400),
+                            SizedBox(height: 2.h),
                             Text(
                               'Add Photo',
-                              style: TextStyle(fontSize: 10, color: Colors.red.shade400),
+                              style: TextStyle(fontSize: 10.sp, color: Colors.red.shade400),
                             ),
                           ],
                         )
@@ -76,57 +64,56 @@ class UserInfoSection extends StatelessWidget {
                     bottom: 0,
                     right: -2,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.w),
                       decoration: BoxDecoration(
                         color: Colors.red.shade500,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: Colors.white, width: 2.w),
                       ),
-                      child: const Icon(Icons.edit, size: 14, color: Colors.white),
+                      child: Icon(Icons.edit, size: 14.w, color: Colors.white),
                     ),
                   ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 2.h),
 
           // First name
           TextFormField(
             controller: firstNameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'First Name',
-              prefixIcon: Icon(PhosphorIcons.user, size: 20),
+              prefixIcon: Icon(PhosphorIcons.user, size: 20.w),
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           // Last name
           TextFormField(
             controller: lastNameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Last Name',
-              prefixIcon: Icon(PhosphorIcons.user, size: 20),
+              prefixIcon: Icon(PhosphorIcons.user, size: 20.w),
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           // Mobile
           TextFormField(
             controller: mobileController,
             keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Mobile Number',
-              prefixIcon: Icon(PhosphorIcons.phone, size: 20),
+              prefixIcon: Icon(PhosphorIcons.phone, size: 20.w),
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return 'Required';
               return null;
             },
           ),
-        ],
-      ),
+          ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -31,7 +32,7 @@ class MemberContentSection extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -40,42 +41,42 @@ class MemberContentSection extends ConsumerWidget {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 28,
-                    height: 28,
+                    width: 28.w,
+                    height: 28.h,
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Icon(PhosphorIcons.drop,
                         size: 15, color: Colors.red.shade600),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     'Members by Blood Group',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey.shade800,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               if (!hasAnyMember)
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
                     child: Text(
                       'No approved members yet',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: Colors.grey.shade500,
                       ),
                     ),
@@ -112,16 +113,16 @@ class MemberContentSection extends ConsumerWidget {
                           color: isAvailable
                               ? Colors.red.shade50
                               : Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
                             color: isAvailable
                                 ? Colors.red.shade200
                                 : Colors.grey.shade200,
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 4),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.h, horizontal: 4.w),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -132,15 +133,15 @@ class MemberContentSection extends ConsumerWidget {
                                     ? Colors.red.shade700
                                     : Colors.grey.shade400,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 6),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 6.h),
                               child: Container(
-                                height: 1,
-                                width: 24,
+                                height: 1.h,
+                                width: 24.w,
                                 color: isAvailable
                                     ? Colors.red.shade200
                                     : Colors.grey.shade300,
@@ -149,7 +150,7 @@ class MemberContentSection extends ConsumerWidget {
                             Text(
                               '$count',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
                                 color: isAvailable
                                     ? Colors.red.shade600
@@ -159,7 +160,7 @@ class MemberContentSection extends ConsumerWidget {
                             Text(
                               'member${count == 1 ? '' : 's'}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 color: isAvailable
                                     ? Colors.grey.shade600
                                     : Colors.grey.shade400,
@@ -175,7 +176,7 @@ class MemberContentSection extends ConsumerWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         // All Community Members button
         SizedBox(
@@ -190,35 +191,35 @@ class MemberContentSection extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(PhosphorIcons.usersThree, size: 20),
+            icon: Icon(PhosphorIcons.usersThree, size: 20.w),
             label: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'All Community Members',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 ref.watch(membersStreamProvider(community.id)).when(
                   data: (members) => Text(
                     '(${members.length})',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                     ),
                   ),
                   loading: () => Text(
                     '(${community.memberCount})',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                     ),
                   ),
                   error: (_, __) => Text(
                     '(${community.memberCount})',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),
@@ -231,7 +232,7 @@ class MemberContentSection extends ConsumerWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
       ],
     );
   }

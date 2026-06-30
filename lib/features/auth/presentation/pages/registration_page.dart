@@ -1,18 +1,9 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:uuid/uuid.dart';
-
-import '../../../../core/utils/geohash.dart';
-import '../../../../data/models/address_model.dart';
-import '../../../../data/models/user_model.dart';
-import '../../../../data/providers/repository_providers.dart';
+import '../../providers/registration_provider.dart';
 import '../widgets/eligibility_bottom_sheet.dart';
 import '../widgets/registration_form.dart';
 
@@ -33,18 +24,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
   final _passwordController = TextEditingController();
   final _mobileController = TextEditingController();
 
-  DateTime? _dob;
-  String? _gender;
-  double? _latitude;
-  double? _longitude;
-  String? _locationAddress;
-  String? _bloodGroup;
-  bool isDonor = false;
-  String? _donorError;
-  XFile? _pickedImage;
-
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -57,7 +37,10 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
-    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOut,
+    );
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.06),
       end: Offset.zero,
@@ -76,86 +59,41 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final compressed = await _compressImage(File(pickedFile.path));
-      setState(() => _pickedImage = compressed);
-    }
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    final ext = file.path.split('.').last.toLowerCase();
-    final isPng = ext == 'png';
-    final format = isPng ? CompressFormat.png : CompressFormat.jpeg;
-    final newExt = isPng ? 'png' : 'jpg';
-    final targetPath =
-        '${file.parent.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.$newExt';
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 70,
-      minWidth: 500,
-      minHeight: 500,
-      format: format,
+  Future<void> _selectDate() async {
+    final state = ref.read(registrationProvider);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: state.dob ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
     );
-    return result != null ? XFile(result.path) : null;
-  }
-
-  Future<String> _uploadImage(File file, String uid) async {
-    final storageRepo = ref.read(storageRepositoryProvider);
-    return await storageRepo.uploadFile(file, 'users/$uid.jpg');
-  }
-
-  int _calculateAge(DateTime dob) {
-    final now = DateTime.now();
-    int age = now.year - dob.year;
-    if (now.month < dob.month ||
-        (now.month == dob.month && now.day < dob.day)) {
-      age--;
+    if (picked != null) {
+      ref.read(registrationProvider.notifier).setDob(picked);
     }
-    return age;
   }
 
   Future<void> _handleDonorToggle() async {
-    if (_dob == null) {
-      setState(() => _donorError = 'Date of Birth is required');
-      return;
-    }
+    final notifier = ref.read(registrationProvider.notifier);
+    final state = ref.read(registrationProvider);
 
-    final age = _calculateAge(_dob!);
-    if (age < 18) {
-      setState(
-        () => _donorError =
-            'You must be at least 18 years old to register as a donor.',
-      );
+    final error = notifier.validateDonorEligibility(state.dob);
+    if (error != null) {
+      notifier.setDonorError(error);
       return;
     }
 
     final eligible = await showEligibilityBottomSheet(context);
     if (eligible == true && mounted) {
-      setState(() {
-        isDonor = true;
-        _donorError = null;
-      });
+      notifier.setDonor(true);
     }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _dob ?? DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) setState(() => _dob = picked);
   }
 
   Future<void> _handleRegistration() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (isDonor && (_latitude == null || _longitude == null)) {
+    final state = ref.read(registrationProvider);
+
+    if (state.isDonor && (state.latitude == null || state.longitude == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
@@ -163,104 +101,55 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
           ),
           backgroundColor: Colors.red.shade700,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.r),
+          ),
         ),
       );
       return;
     }
 
     try {
-      setState(() => _isLoading = true);
-
-      final userCredential = await ref.read(authRepositoryProvider).signUp(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-          );
-
-      final uid = userCredential.user!.uid;
-      String imageUrl = '';
-
-      if (_pickedImage != null) {
-        imageUrl = await _uploadImage(File(_pickedImage!.path), uid);
-      }
-
-      final createdAt = DateTime.now().toIso8601String();
-      final token =
-          await ref.read(firebaseDataSourceProvider).messaging.getToken();
-
-      final geohash = (_latitude != null && _longitude != null)
-          ? Geohash.encode(_latitude!, _longitude!)
-          : null;
-
-      final savedAddresses = <AddressModel>[];
-      if (_latitude != null && _longitude != null && geohash != null) {
-        savedAddresses.add(AddressModel(
-          id: const Uuid().v4(),
-          label: 'Home',
-          latitude: _latitude!,
-          longitude: _longitude!,
-          geohash: geohash,
-          addressText: _locationAddress ?? 'Selected Location',
-        ));
-      }
-
-      final user = UserModel(
-        uid: uid,
+      final notifier = ref.read(registrationProvider.notifier);
+      await notifier.register(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
         mobileNumber: _mobileController.text.trim(),
-        gender: _gender!,
-        dateOfBirth: _dob!,
-        communities: [],
-        bloodGroup: _bloodGroup!,
-        isDonor: isDonor,
-        isEmergencyDonor: false,
-        token: token ?? '',
-        createdAt: createdAt,
-        isOnline: false,
-        image: imageUrl,
-        latitude: _latitude,
-        longitude: _longitude,
-        geohash: geohash,
-        locationAddress: _locationAddress,
-        savedAddresses: savedAddresses,
       );
 
-      await ref.read(userRepositoryProvider).createUser(uid, user.toJson());
-
-      setState(() => _isLoading = false);
       if (mounted) Navigator.pushReplacementNamed(context, '/');
     } on FirebaseAuthException catch (e) {
-      log('FirebaseAuth Error: ${e.code} - ${e.message}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.message ?? 'Authentication error'),
             backgroundColor: Colors.red.shade700,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
           ),
         );
       }
-      setState(() => _isLoading = false);
     } catch (e) {
-      log('Registration Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unexpected error occurred'),
+          SnackBar(
+            content: const Text('Unexpected error occurred'),
             backgroundColor: Colors.red,
           ),
         );
       }
-      setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final regState = ref.watch(registrationProvider);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -268,7 +157,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
             // Hero section
             Container(
               width: size.width,
-              height: size.height * 0.3,
+              height: size.height * 0.25,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -279,7 +168,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                     Colors.red.shade400,
                   ],
                 ),
-                borderRadius: const BorderRadius.vertical(
+                borderRadius: BorderRadius.vertical(
                   bottom: Radius.elliptical(300, 45),
                 ),
               ),
@@ -301,50 +190,54 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                     ),
                     Center(
                       child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 12),
-                          Container(
-                        width: 64,
-                        height: 64,
-                        decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.person_add_outlined,
-                          color: Colors.white,
-                          size: 34,
+                        opacity: _fadeAnimation,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 32.w,
+                                  height: 32.h,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white24,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.person_add_outlined,
+                                    color: Colors.white,
+                                    size: 16.w,
+                                  ),
+                                ),
+                                SizedBox(width: 4.h),
+                                Text(
+                                  'Create Account',
+                                  style: TextStyle(
+                                    fontSize: 26.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              'Join BloodFinder and start saving lives',
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Create Account',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Join BloodFinder and start saving lives',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
 
             // Form
             SlideTransition(
@@ -352,7 +245,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                  padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 24.h),
                   child: RegistrationForm(
                     formKey: _formKey,
                     firstNameController: _firstNameController,
@@ -360,27 +253,28 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                     emailController: _emailController,
                     passwordController: _passwordController,
                     mobileController: _mobileController,
-                    dob: _dob,
-                    gender: _gender,
-                    selectedLatitude: _latitude,
-                    selectedLongitude: _longitude,
-                    locationAddress: _locationAddress,
-                    bloodGroup: _bloodGroup,
-                    isDonor: isDonor,
-                    donorError: _donorError,
-                    pickedImage: _pickedImage,
+                    dob: regState.dob,
+                    gender: regState.gender,
+                    selectedLatitude: regState.latitude,
+                    selectedLongitude: regState.longitude,
+                    locationAddress: regState.locationAddress,
+                    bloodGroup: regState.bloodGroup,
+                    isDonor: regState.isDonor,
+                    donorError: regState.donorError,
+                    pickedImage: regState.pickedImage,
                     obscurePassword: _obscurePassword,
-                    isLoading: _isLoading,
-                    onPickImage: _pickImage,
-                    onSelectDate: () => _selectDate(context),
-                    onGenderChanged: (v) => setState(() => _gender = v),
-                    onBloodGroupChanged: (v) => setState(() => _bloodGroup = v),
+                    isLoading: regState.isLoading,
+                    onPickImage: () =>
+                        ref.read(registrationProvider.notifier).pickImage(),
+                    onSelectDate: _selectDate,
+                    onGenderChanged: (v) =>
+                        ref.read(registrationProvider.notifier).setGender(v),
+                    onBloodGroupChanged: (v) =>
+                        ref.read(registrationProvider.notifier).setBloodGroup(v),
                     onDonorTap: _handleDonorToggle,
-                    onLocationPicked: (lat, lon, address) => setState(() {
-                      _latitude = lat;
-                      _longitude = lon;
-                      _locationAddress = address;
-                    }),
+                    onLocationPicked: (lat, lon, address) =>
+                        ref.read(registrationProvider.notifier)
+                            .setLocation(lat, lon, address),
                     onTogglePasswordVisibility: () =>
                         setState(() => _obscurePassword = !_obscurePassword),
                     onRegister: _handleRegistration,

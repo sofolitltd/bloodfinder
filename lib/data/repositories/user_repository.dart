@@ -42,7 +42,8 @@ abstract class UserRepository {
   Future<void> updateToken(String uid, String token);
   Future<void> updateOnlineStatus(String uid, bool isOnline);
 
-  CollectionReference<Map<String, dynamic>> donationCollection(String uid);
+  /// Top-level donations collection.
+  CollectionReference<Map<String, dynamic>> donationCollection();
   Future<DocumentReference<Map<String, dynamic>>> addDonation(
       String uid, Map<String, dynamic> data);
   Future<void> deleteDonation(String uid, String docId);
@@ -211,21 +212,25 @@ class FirebaseUserRepository implements UserRepository {
       updateUser(uid, {'isOnline': isOnline});
 
   @override
-  CollectionReference<Map<String, dynamic>> donationCollection(String uid) =>
-      _dataSource.collection('$_col/$uid/donation');
+  CollectionReference<Map<String, dynamic>> donationCollection() =>
+      _dataSource.collection('donations');
 
   @override
   Future<DocumentReference<Map<String, dynamic>>> addDonation(
-          String uid, Map<String, dynamic> data) =>
-      donationCollection(uid).add(data);
+      String uid, Map<String, dynamic> data) {
+    // Ensure the uid field is always set for top-level queries.
+    data['uid'] = uid;
+    return donationCollection().add(data);
+  }
 
   @override
   Future<void> deleteDonation(String uid, String docId) =>
-      donationCollection(uid).doc(docId).delete();
+      donationCollection().doc(docId).delete();
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> donationsStream(String uid) =>
-      donationCollection(uid)
+      donationCollection()
+          .where('uid', isEqualTo: uid)
           .orderBy('donationDate', descending: true)
           .snapshots();
 }

@@ -4,6 +4,7 @@ import 'package:bloodfinder/features/blood_bank/models/blood_bank.dart';
 import 'package:bloodfinder/features/blood_bank/presentation/widgets/blood_bank_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -174,19 +175,19 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 Icons.local_hospital,
                 color: Colors.red.shade600,
-                size: 18,
+                size: 18.w,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 8.w),
             const Text(
               'Blood Bank',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -207,10 +208,10 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.add, size: 20),
+        icon: Icon(Icons.add, size: 20.w),
         label: const Text('Add Bank'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         onPressed: () {
           showModalBottomSheet(
@@ -240,21 +241,21 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     if (_latitude == null || _longitude == null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(PhosphorIcons.mapPinLine, size: 48, color: Colors.grey.shade300),
-              const SizedBox(height: 12),
+              Icon(PhosphorIcons.mapPinLine, size: 48.w, color: Colors.grey.shade300),
+              SizedBox(height: 1.h),
               Text(
                 'Set your location to see nearby banks',
-                style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 1.h),
               ElevatedButton.icon(
                 onPressed: _openLocationPicker,
-                icon: const Icon(Icons.location_on, size: 20),
+                icon: Icon(Icons.location_on, size: 20.w),
                 label: const Text('Set Location'),
               ),
             ],
@@ -266,10 +267,10 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
               color: isDark ? Colors.transparent : Colors.grey.shade200,
               width: 0.5,
@@ -283,42 +284,42 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
                   onTap: _openLocationPicker,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: isDark ? Colors.grey.shade700.withValues(alpha: 0.3) : Colors.grey.shade300,
                       ),
                     ),
                     child: Row(
                       children: [
-                        Icon(PhosphorIcons.mapPin, color: Colors.red.shade400, size: 20),
-                        const SizedBox(width: 10),
+                        Icon(PhosphorIcons.mapPin, color: Colors.red.shade400, size: 20.w),
+                        SizedBox(width: 1.w),
                         Expanded(
                           child: Text(
                             _locationAddress ?? 'Set search location',
                             style: TextStyle(
                               color: isDark ? Colors.grey.shade300 : Colors.black87,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Icon(Icons.edit, color: Colors.grey.shade400, size: 16),
+                        Icon(Icons.edit, color: Colors.grey.shade400, size: 16.w),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 1.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -327,21 +328,21 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
                         '${_radiusInKm.round()} km',
                         style: TextStyle(
                           color: Colors.red.shade600,
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ),
@@ -372,23 +373,23 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(PhosphorIcons.hospital, size: 48, color: Colors.grey.shade300),
-                          const SizedBox(height: 12),
+                          Icon(PhosphorIcons.hospital, size: 48.w, color: Colors.grey.shade300),
+                          SizedBox(height: 1.h),
                           Text(
                             'No nearby blood banks found',
-                            style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
+                            style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
                           ),
                         ],
                       ),
                     )
                   : ListView.builder(
                       controller: _nearbyScrollCtrl,
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
                       itemCount: _nearbyBanks.length + (_nearbyHasMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index >= _nearbyBanks.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
                             child: Center(child: CircularProgressIndicator()),
                           );
                         }
@@ -412,11 +413,11 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(PhosphorIcons.hospital, size: 48, color: Colors.grey.shade300),
-            const SizedBox(height: 12),
+            Icon(PhosphorIcons.hospital, size: 48.w, color: Colors.grey.shade300),
+            SizedBox(height: 1.h),
             Text(
               'No blood banks found',
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -424,12 +425,12 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     }
     return ListView.builder(
       controller: _allScrollCtrl,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
       itemCount: _allBanks.length + (_allHasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index >= _allBanks.length) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.h),
             child: Center(child: CircularProgressIndicator()),
           );
         }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -62,12 +63,12 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
             children: [
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
+                  width: 40.w,
+                  height: 4.h,
+                  margin: EdgeInsets.only(bottom: 20.h),
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
               ),
@@ -75,58 +76,58 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
                 spacing: 10,
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: 36.w,
+                    height: 36.h,
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Icon(
                       PhosphorIcons.hospital,
                       color: Colors.red.shade600,
-                      size: 20,
+                      size: 20.w,
                     ),
                   ),
                   Text(
                     'Add Blood Bank',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey.shade800,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 2.h),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Blood Bank Name',
-                  prefixIcon: Icon(Icons.local_hospital, size: 20),
+                  prefixIcon: Icon(Icons.local_hospital, size: 20.w),
                 ),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 1.h),
               TextFormField(
                 controller: _addressController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Address',
-                  prefixIcon: Icon(Icons.location_on, size: 20),
+                  prefixIcon: Icon(Icons.location_on, size: 20.w),
                 ),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 1.h),
               Row(
                 spacing: 12,
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _mobile1Controller,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Mobile 1',
-                        prefixIcon: Icon(Icons.phone, size: 20),
+                        prefixIcon: Icon(Icons.phone, size: 20.w),
                       ),
                       keyboardType: TextInputType.phone,
                       validator: (v) => (v == null || v.trim().isEmpty)
@@ -137,54 +138,54 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
                   Expanded(
                     child: TextFormField(
                       controller: _mobile2Controller,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Mobile 2 (optional)',
-                        prefixIcon: Icon(Icons.phone, size: 20),
+                        prefixIcon: Icon(Icons.phone, size: 20.w),
                       ),
                       keyboardType: TextInputType.phone,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 2.h),
               Text(
                 'Social Media Links',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               SocialMediaInput(
                 initialLinks: _socialMediaLinks,
                 onLinksChanged: (links) {
                   _socialMediaLinks = links;
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 2.h),
               Text(
                 'Blood Bank Image',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               ImagePickerSection(
                 pickedImage: _pickedImage,
                 onPickImage: _pickImage,
                 onClearImage: () => setState(() => _pickedImage = null),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 1.h),
               InkWell(
                 onTap: _pickLocation,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
                       color: _latitude != null ? Colors.red.shade300 : Colors.grey.shade300,
                     ),
@@ -193,22 +194,22 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
                     children: [
                       Icon(
                         PhosphorIcons.mapPin,
-                        size: 20,
+                        size: 20.w,
                         color: _latitude != null ? Colors.red.shade600 : Colors.grey,
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 1.w),
                       Expanded(
                         child: Text(
                           _locationAddress ?? 'Pick location on map',
                           style: TextStyle(
                             color: _latitude != null ? Colors.black87 : Colors.grey.shade600,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                           ),
                         ),
                       ),
                       if (_latitude != null)
                         IconButton(
-                          icon: const Icon(Icons.close, size: 18),
+                          icon: Icon(Icons.close, size: 18.w),
                           onPressed: () => setState(() {
                             _latitude = null;
                             _longitude = null;
@@ -219,28 +220,28 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 2.h),
               SizedBox(
-                height: 50,
+                height: 50.h,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _addBloodBank,
                   style: ElevatedButton.styleFrom(elevation: 0),
                   child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
+                      ? SizedBox(
+                          height: 20.h,
+                          width: 20.w,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text(
+                      : Text(
                           'Save Blood Bank',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 2.h),
             ],
           ),
         ),

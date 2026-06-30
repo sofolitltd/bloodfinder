@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 
@@ -40,10 +38,10 @@ class HomePage extends ConsumerWidget {
             Container(
               width: double.infinity,
               padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 16,
-                left: 24,
-                right: 8,
-                bottom: 32,
+                top: MediaQuery.of(context).padding.top + 16.h,
+                left: 24.w,
+                right: 8.w,
+                bottom: 32.h,
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -55,8 +53,8 @@ class HomePage extends ConsumerWidget {
                     Colors.red.shade400,
                   ],
                 ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.elliptical(300, 40),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.elliptical(300.w, 40.h),
                 ),
               ),
               child: Column(
@@ -73,16 +71,16 @@ class HomePage extends ConsumerWidget {
                             Text(
                               greeting,
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 color: Colors.white.withValues(alpha: 0.85),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2.h),
                             Text(
                               displayName,
-                              style: const TextStyle(
-                                fontSize: 26,
+                              style: TextStyle(
+                                fontSize: 26.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -95,28 +93,28 @@ class HomePage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 16.h),
                   // Blood drop + tagline
                   Row(
                     children: [
                       Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
+                        width: 20.w,
+                        height: 20.h,
+                        decoration: BoxDecoration(
                           color: Colors.white24,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           PhosphorIcons.drop,
                           color: Colors.white,
-                          size: 22,
+                          size: 16.w,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Text(
                         'Ready to make a difference?',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.white.withValues(alpha: 0.9),
                           fontWeight: FontWeight.w400,
                         ),
@@ -126,23 +124,23 @@ class HomePage extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             // Sections
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: EdgeInsets.symmetric(horizontal: 0.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   HomeFindDonorSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   HomeActionButtonsSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   HomeCommunityContributionSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   HomeUpcomingEventsSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   HomeBloodRequestsSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                 ],
               ),
             ),
@@ -182,28 +180,30 @@ class NotificationIconButton extends ConsumerWidget {
               ),
             );
           },
-          icon: Icon(PhosphorIcons.bell, size: 24, color: Colors.white),
+          icon: Icon(PhosphorIcons.bell, size: 24.w, color: Colors.white),
         ),
+
+        //
         unreadAsync.when(
           data: (count) => count > 0
               ? Positioned(
-                  right: 8,
-                  top: 6,
+                  right: 8.w,
+                  top: 6.h,
                   child: Container(
-                    padding: const EdgeInsets.all(2),
+                    padding: EdgeInsets.all(2.w),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
+                    constraints: BoxConstraints(
+                      minWidth: 16.w,
+                      minHeight: 16.h,
                     ),
                     child: Text(
                       count.toString(),
                       style: TextStyle(
                         color: Colors.red.shade700,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -212,7 +212,7 @@ class NotificationIconButton extends ConsumerWidget {
                 )
               : const SizedBox(),
           loading: () => const SizedBox(),
-          error: (_, __) => const SizedBox(),
+          error: (_, _) => const SizedBox(),
         ),
       ],
     );

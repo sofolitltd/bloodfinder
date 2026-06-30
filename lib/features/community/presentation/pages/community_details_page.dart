@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,14 +65,14 @@ class CommunityDetailsPage extends ConsumerWidget {
                   child: SafeArea(
                     bottom: false,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 4, 16, 28),
+                      padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   PhosphorIcons.arrowLeft,
                                   color: Colors.white,
                                 ),
@@ -100,7 +101,7 @@ class CommunityDetailsPage extends ConsumerWidget {
                                                   Navigator.of(context).pop(),
                                             ),
                                             TextButton(
-                                              child: const Text(
+                                              child: Text(
                                                 "Delete",
                                                 style: TextStyle(
                                                     color: Colors.red),
@@ -122,10 +123,10 @@ class CommunityDetailsPage extends ConsumerWidget {
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16),
+                                EdgeInsets.symmetric(horizontal: 16.w),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -133,12 +134,12 @@ class CommunityDetailsPage extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 56,
-                                      height: 56,
+                                      width: 56.w,
+                                      height: 56.h,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius:
-                                            BorderRadius.circular(16),
+                                            BorderRadius.circular(16.r),
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.black
@@ -157,7 +158,7 @@ class CommunityDetailsPage extends ConsumerWidget {
                                                         .toUpperCase()
                                                     : '',
                                                 style: TextStyle(
-                                                  fontSize: 22,
+                                                  fontSize: 22.sp,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.red.shade600,
                                                 ),
@@ -166,12 +167,12 @@ class CommunityDetailsPage extends ConsumerWidget {
                                           : CachedNetworkImage(
                                               imageUrl:
                                                   community.images.first,
-                                              width: 56,
-                                              height: 56,
+                                              width: 56.w,
+                                              height: 56.h,
                                               fit: BoxFit.cover,
                                             ),
                                     ),
-                                    const SizedBox(width: 14),
+                                    SizedBox(width: 14.w),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -179,30 +180,30 @@ class CommunityDetailsPage extends ConsumerWidget {
                                         children: [
                                           Text(
                                             community.name,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 20,
+                                              fontSize: 20.sp,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
+                                          SizedBox(height: 4.h),
                                           Text(
                                             community.address,
                                             style: TextStyle(
                                               color: Colors.white
                                                   .withValues(alpha: 0.8),
-                                              fontSize: 14,
+                                              fontSize: 14.sp,
                                             ),
                                           ),
                                           if (community.locationAddress != null &&
                                               community.locationAddress!.isNotEmpty)
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 2),
+                                              padding: EdgeInsets.only(top: 2.h),
                                               child: Text(
                                                 community.locationAddress!,
                                                 style: TextStyle(
                                                   color: Colors.white.withValues(alpha: 0.65),
-                                                  fontSize: 12,
+                                                  fontSize: 12.sp,
                                                 ),
                                               ),
                                             ),
@@ -223,12 +224,12 @@ class CommunityDetailsPage extends ConsumerWidget {
 
               // Content
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     CommunityInfoSection(community: community, uid: uid),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     StreamBuilder<DocumentSnapshot>(
                       stream: communityRepo.memberStream(
@@ -255,7 +256,7 @@ class CommunityDetailsPage extends ConsumerWidget {
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(16.r),
                               boxShadow: [
                                 BoxShadow(
                                   color:
@@ -265,7 +266,7 @@ class CommunityDetailsPage extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16.w),
                             child: SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
@@ -294,7 +295,7 @@ class CommunityDetailsPage extends ConsumerWidget {
 
                     if (community.admin.contains(uid))
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: EdgeInsets.only(top: 16.h),
                         child: AdminManagementSection(
                             community: community, uid: uid),
                       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/blood_bank_form.dart';
 
 class AddBloodBank extends StatefulWidget {
@@ -17,7 +17,7 @@ class _AddBloodBankState extends State<AddBloodBank> {
       body: SingleChildScrollView(
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: const BloodBankForm(),
           ),
         ),

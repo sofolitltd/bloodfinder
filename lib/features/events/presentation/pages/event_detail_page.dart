@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -89,8 +90,8 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.elliptical(300, 40),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.elliptical(300.r, 40.r),
                 ),
               ),
               clipBehavior: Clip.antiAlias,
@@ -99,7 +100,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                   if (widget.event.imageUrl != null &&
                       widget.event.imageUrl!.isNotEmpty)
                     SizedBox(
-                      height: 280,
+                      height: 280.h,
                       width: double.infinity,
                       child: Image.network(
                         widget.event.imageUrl!,
@@ -108,7 +109,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                       ),
                     ),
                   Container(
-                    height: 280,
+                    height: 280.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -120,21 +121,21 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                           Colors.red.shade400,
                         ],
                       ),
-                      borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.elliptical(300, 40),
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.elliptical(300.r, 40.r),
                       ),
                     ),
                     child: SafeArea(
                       bottom: false,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 4, 16, 28),
+                        padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
                                 IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     PhosphorIcons.arrowLeft,
                                     color: Colors.white,
                                   ),
@@ -143,19 +144,19 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                 const Spacer(),
                                 if (isOrganizer)
                                   _deleteLoading
-                                      ? const Padding(
-                                          padding: EdgeInsets.all(16),
-                                          child: SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color: Colors.white,
-                                            ),
+                                    ? Padding(
+                                        padding: EdgeInsets.all(16.r),
+                                        child: SizedBox(
+                                          width: 20.w,
+                                          height: 20.h,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
                                           ),
-                                        )
+                                        ),
+                                      )
                                       : PopupMenuButton<String>(
-                                          icon: const Icon(
+                                          icon: Icon(
                                             PhosphorIcons.dotsThreeVertical,
                                             color: Colors.white,
                                           ),
@@ -165,24 +166,24 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                               _deleteEvent();
                                           },
                                           itemBuilder: (_) => [
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'edit',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.edit, size: 20),
-                                                  SizedBox(width: 8),
+                                                  Icon(Icons.edit, size: 20.w),
+                                                  SizedBox(width: 8.w),
                                                   Text('Edit Event'),
                                                 ],
                                               ),
                                             ),
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'delete',
                                               child: Row(
                                                 children: [
                                                   Icon(Icons.delete,
                                                       size: 20,
                                                       color: Colors.red),
-                                                  SizedBox(width: 8),
+                                                  SizedBox(width: 8.w),
                                                   Text('Delete Event',
                                                       style: TextStyle(
                                                           color: Colors.red)),
@@ -194,34 +195,34 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                               ],
                             ),
                             const Spacer(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.event.title,
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.event.title,
+                                        style: TextStyle(
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 6.h),
+                                      Text(
+                                        'by ${widget.event.organizerName}',
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color:
+                                              Colors.white.withValues(alpha: 0.8),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'by ${widget.event.organizerName}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color:
-                                          Colors.white.withValues(alpha: 0.8),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
                           ],
                         ),
                       ),
@@ -235,16 +236,16 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
             child: Transform.translate(
               offset: const Offset(0, -16),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   color: theme.colorScheme.surface,
                   margin: EdgeInsets.zero,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     child: Column(
                       children: [
                         _InfoTile(
@@ -254,7 +255,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                           value: widget.event.dateDisplay,
                           isDark: isDark,
                         ),
-                        const Divider(height: 20),
+                        Divider(height: 20.h),
                         _InfoTile(
                           icon: PhosphorIcons.mapPin,
                           iconColor: Colors.grey.shade500,
@@ -262,7 +263,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                           value: widget.event.locationAddress,
                           isDark: isDark,
                         ),
-                        const Divider(height: 20),
+                        Divider(height: 20.h),
                         _InfoTile(
                           icon: PhosphorIcons.user,
                           iconColor: Colors.blue.shade400,
@@ -280,16 +281,16 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
           if (widget.event.description.isNotEmpty)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 0.h),
                 child: Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   color: theme.colorScheme.surface,
                   margin: EdgeInsets.zero,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -297,7 +298,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                           children: [
                             Icon(PhosphorIcons.info,
                                 size: 20, color: Colors.red.shade400),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8.w),
                             Text(
                               'About this event',
                               style: theme.textTheme.titleMedium?.copyWith(
@@ -306,12 +307,12 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         Text(
                           widget.event.description,
                           style: TextStyle(
                             height: 1.5,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: isDark
                                 ? Colors.grey.shade300
                                 : Colors.grey.shade700,
@@ -325,12 +326,12 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
             ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
               child: Row(
                 children: [
                   Expanded(
                     child: SizedBox(
-                      height: 48,
+                      height: 48.h,
                       child: OutlinedButton.icon(
                         onPressed: () {
                           final text =
@@ -345,17 +346,17 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                             ),
                           );
                         },
-                        icon: const Icon(PhosphorIcons.shareNetwork, size: 20),
+                        icon: Icon(PhosphorIcons.shareNetwork, size: 20.w),
                         label: const Text('Share'),
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Expanded(
                     flex: 2,
                     child: StreamBuilder<
@@ -365,7 +366,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                         final hasRsvpd = snap.hasData && snap.data!.exists;
 
                         return SizedBox(
-                          height: 48,
+                          height: 48.h,
                           child: FilledButton.icon(
                             onPressed: () async {
                               if (hasRsvpd) {
@@ -387,12 +388,12 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                 ? FilledButton.styleFrom(
                                     backgroundColor: Colors.grey.shade400,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                     ),
                                   )
                                 : FilledButton.styleFrom(
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                     ),
                                   ),
                           ),
@@ -430,7 +431,7 @@ class _InfoTile extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 20, color: iconColor),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,15 +439,15 @@ class _InfoTile extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2.h),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                 ),

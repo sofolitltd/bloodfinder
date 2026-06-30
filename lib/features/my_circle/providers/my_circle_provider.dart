@@ -4,10 +4,11 @@ import '../../../data/providers/repository_providers.dart';
 import '../models/my_circle_contact.dart';
 
 final myCircleProvider = StreamProvider<List<MyCircleContact>>((ref) {
-  final repo = ref.watch(myCircleRepositoryProvider);
-  final uid = ref.watch(authRepositoryProvider).currentUser!.uid;
+  final currentUser = ref.watch(currentUserProvider).asData?.value;
+  if (currentUser == null) return const Stream.empty();
 
-  return repo.contactsStream(uid).map(
+  final repo = ref.watch(myCircleRepositoryProvider);
+  return repo.contactsStream(currentUser.uid).map(
         (list) => list.map((json) => MyCircleContact.fromJson(json)).toList(),
       );
 });

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../feedback/models/app_feedback.dart';
 import '../../../../data/providers/repository_providers.dart';
 
@@ -72,9 +72,9 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 20,
-        right: 20,
-        top: 20,
+        left: 20.w,
+        right: 20.w,
+        top: 20.h,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -93,7 +93,7 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           DropdownButtonFormField<String>(
             initialValue: _categories[0],
             decoration: const InputDecoration(
@@ -105,7 +105,7 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
                 .toList(),
             onChanged: (v) => _categoryController.text = v ?? '',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextFormField(
             controller: _messageController,
             maxLines: 5,
@@ -116,18 +116,18 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
               alignLabelWithHint: true,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           FilledButton(
             onPressed: _submitting ? null : _submit,
             child: _submitting
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.h,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Text('Submit'),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       ),
     );

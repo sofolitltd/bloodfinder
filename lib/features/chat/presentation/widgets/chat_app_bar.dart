@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ChatAppBar extends StatelessWidget {
   final String? otherUserName;
   final String? otherUserImage;
@@ -20,20 +20,20 @@ class ChatAppBar extends StatelessWidget {
         Stack(
           children: [
             CircleAvatar(
-              radius: 16,
+              radius: 16.r,
               backgroundColor: Colors.redAccent.shade200,
               child:
                   (otherUserImage != null && otherUserImage!.isNotEmpty)
                       ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(50.r),
                           child: CachedNetworkImage(
                             imageUrl: otherUserImage!,
-                            width: 38,
-                            height: 38,
+                            width: 38.w,
+                            height: 38.h,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => const SizedBox(
-                              width: 20,
-                              height: 20,
+                            placeholder: (context, url) => SizedBox(
+                              width: 20.w,
+                              height: 20.h,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                               ),
@@ -44,10 +44,10 @@ class ChatAppBar extends StatelessWidget {
                                         otherUserName!.isNotEmpty
                                     ? otherUserName![0].toUpperCase()
                                     : '',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 20.sp,
                                 ),
                               ),
                             ),
@@ -59,10 +59,10 @@ class ChatAppBar extends StatelessWidget {
                                     otherUserName!.isNotEmpty
                                 ? otherUserName![0].toUpperCase()
                                 : '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 20.sp,
                             ),
                           ),
                         ),
@@ -72,8 +72,8 @@ class ChatAppBar extends StatelessWidget {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  width: 12,
-                  height: 12,
+                  width: 12.w,
+                  height: 12.h,
                   decoration: BoxDecoration(
                     color: Colors.green,
                     shape: BoxShape.circle,
@@ -86,11 +86,11 @@ class ChatAppBar extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           otherUserName ?? '',
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
         ),

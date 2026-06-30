@@ -17,13 +17,12 @@ class NotificationService {
     if (uid == null) return;
 
     final docRef = _firestore
-        .collection('users')
-        .doc(uid)
         .collection('notifications')
         .doc(); // auto-generated ID
 
     await docRef.set({
       'id': docRef.id,
+      'uid': uid,
       'title': title,
       'body': body,
       'type': type,

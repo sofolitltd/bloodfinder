@@ -3,11 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
 
 
@@ -32,6 +30,9 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) setState(() {});
+    });
   }
 
   @override
@@ -47,27 +48,10 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                PhosphorIcons.usersFour,
-                color: Colors.red.shade600,
-                size: 18,
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Community',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
+        centerTitle: true,
+        title: const Text(
+          'Community',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         bottom: TabBar(
           controller: _tabController,
@@ -81,13 +65,14 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: _tabController.index == 0
+          ? FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: const Icon(PhosphorIcons.plusBold, size: 20),
+        icon: Icon(PhosphorIcons.plusBold, size: 20.w),
         label: const Text('Create Community'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         onPressed: () {
           Navigator.push(
@@ -97,7 +82,8 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
             ),
           );
         },
-      ),
+      )
+          : null,
       body: StreamBuilder<QuerySnapshot>(
         stream: communityRepo.allCommunitiesStream(),
         builder: (context, allCommunitiesSnap) {
@@ -182,16 +168,16 @@ class _CommunityTabState extends State<_CommunityTab> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
           child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search by name...',
-                prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20),
+                prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20.w),
                 suffixIcon: _searchController.text.isEmpty
                     ? null
                     : IconButton(
-                        icon: Icon(PhosphorIcons.x, size: 18),
+                        icon: Icon(PhosphorIcons.x, size: 18.w),
                         onPressed: () {
                           _searchController.clear();
                           setState(() => searchQuery = '');
@@ -216,37 +202,37 @@ class _CommunityTabState extends State<_CommunityTab> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 72.w,
+              height: 72.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               child: Icon(
                 PhosphorIcons.usersFour,
-                size: 34,
+                size: 34.w,
                 color: Colors.red.shade300,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 1.h),
             Text(
               widget.showNearby
                   ? 'No nearby communities'
                   : 'No communities found',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               widget.showNearby
                   ? 'Check back later or explore other tabs'
                   : 'Create a new community or join one',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 height: 1.4,
               ),
@@ -257,7 +243,7 @@ class _CommunityTabState extends State<_CommunityTab> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
       itemCount: communities.length,
       itemBuilder: (context, index) {
         final community = communities[index];
@@ -273,7 +259,7 @@ class _CommunityTabState extends State<_CommunityTab> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -283,17 +269,17 @@ class _CommunityTabState extends State<_CommunityTab> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: 48.w,
+                      height: 48.h,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: community.images.isEmpty
@@ -302,26 +288,26 @@ class _CommunityTabState extends State<_CommunityTab> {
                                   ? community.name[0].toUpperCase()
                                   : '',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red.shade600,
                               ),
                             )
                           : CachedNetworkImage(
                               imageUrl: community.images.first,
-                              width: 48,
-                              height: 48,
+                              width: 48.w,
+                              height: 48.h,
                               fit: BoxFit.cover,
                               placeholder: (context, url) =>
                                   const CupertinoActivityIndicator(),
                               errorWidget: (context, url, error) => Icon(
                                 PhosphorIcons.warningCircle,
                                 color: Colors.red.shade300,
-                                size: 22,
+                                size: 22.w,
                               ),
                             ),
                     ),
-                    const SizedBox(width: 14),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,23 +316,23 @@ class _CommunityTabState extends State<_CommunityTab> {
                             community.name,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Row(
                             children: [
                               Icon(PhosphorIcons.mapPin,
-                                  size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                              const SizedBox(width: 6),
+                                  size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                              SizedBox(width: 6.w),
                               Expanded(
                                 child: Text(
                                   community.address,
                                   style: TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 13.sp,
                                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -354,37 +340,37 @@ class _CommunityTabState extends State<_CommunityTab> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 3.h),
                                 decoration: BoxDecoration(
                                   color: Colors.blue.shade50,
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(6.r),
                                 ),
                                 child: Text(
                                   'Code: ${community.code}',
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 11.sp,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.blue.shade700,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 3.h),
                                 decoration: BoxDecoration(
                                   color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(6.r),
                                 ),
                                 child: Text(
                                   '${community.memberCount} members',
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 11.sp,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.green.shade700,
                                   ),
@@ -395,11 +381,11 @@ class _CommunityTabState extends State<_CommunityTab> {
                         ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.w),
                       child: Icon(
                         PhosphorIcons.caretRight,
-                        size: 16,
+                        size: 16.w,
                         color: Colors.grey,
                       ),
                     ),

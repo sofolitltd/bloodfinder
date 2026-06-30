@@ -1,6 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 //
 // import '../data/models/notification.dart';
 // import '../features/chat/chat_detail_page.dart';
@@ -47,7 +48,7 @@
 //
 //           return ListView.separated(
 //             itemCount: notifications.length,
-//             separatorBuilder: (_, __) => const Divider(height: 1),
+//             separatorBuilder: (_, __) => Divider(height: 1.h),
 //             itemBuilder: (context, index) {
 //               final notif = notifications[index];
 //               return Card(
@@ -110,10 +111,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 import '../../models/notification.dart';
 
 import '../../../../data/providers/notification_provider.dart';
@@ -160,8 +158,6 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
     final snapshot = await stream.first;
     if (snapshot.isNotEmpty) {
       lastDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userId)
           .collection('notifications')
           .doc(snapshot.last.id)
           .get();
@@ -184,7 +180,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         data: (list) {
           notifications = list;
           return ListView.separated(
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, __) => Divider(height: 1.h),
             controller: _controller,
             itemCount: notifications.length,
             itemBuilder: (context, index) {
@@ -209,7 +205,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       Expanded(child: Text(n.title)),
                       Text(
                         timeAgo(n.createdAt),
-                        style: const TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 12.sp),
                       ),
                     ],
                   ),
@@ -218,8 +214,6 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                   onTap: () async {
                     // mark as read
                     await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(widget.userId)
                         .collection('notifications')
                         .doc(n.id)
                         .update({'read': true});

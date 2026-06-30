@@ -2,11 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import '../../../../core/utils/geohash.dart';
+import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/models/address_model.dart';
 import '../../../../data/models/user_model.dart';
 import '../../../../data/providers/repository_providers.dart';
@@ -80,7 +81,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
       log('Error fetching user data: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Failed to load profile data'),
             backgroundColor: Colors.red,
           ),
@@ -96,7 +97,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
     if (isDonor && _activeGeohash == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
               'Please add and select a location to be visible as a donor'),
           backgroundColor: Colors.red,
@@ -124,7 +125,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
       await ref.read(userRepositoryProvider).updateUser(uid, {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
-        'mobileNumber': _mobileNumberController.text.trim(),
+        'mobileNumber': PhoneUtils.toCanonical(_mobileNumberController.text.trim()),
         'gender': _selectedGender,
         'dateOfBirth': _selectedDOB?.toIso8601String(),
         'bloodGroup': _selectedBloodGroup,
@@ -149,7 +150,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
       log('Error updating user: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Failed to update profile'),
             backgroundColor: Colors.red,
           ),
@@ -205,19 +206,19 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 PhosphorIcons.user,
                 color: Colors.red.shade600,
-                size: 18,
+                size: 18.w,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 8.w),
             const Text(
               'Edit Profile',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -226,7 +227,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
         child: Form(
           key: _formKey,
           child: Column(
@@ -235,136 +236,69 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
               if (showLocationBanner)
                 Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(12),
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
                     color: Colors.orange.shade50,
                     border: Border.all(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.warning_amber, color: Colors.orange),
-                      SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Expanded(
                         child: Text(
                           'You are not visible to blood seekers.\nSet your location on the map below.',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontSize: 13.sp),
                         ),
                       ),
                     ],
                   ),
                 ),
 
-              _SectionHeader(
-                icon: PhosphorIcons.userCircle,
-                title: 'Profile Image',
-              ),
-              const SizedBox(height: 12),
-              _SectionCard(
-                children: [
-                  Center(
-                    child: AvatarPicker(
-                      selectedImage: _selectedImage,
-                      profileImageUrl: _profileImageUrl,
-                      onPickImage: _pickImage,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 24),
-
+              // Section 1: Profile Information
               _SectionHeader(
                 icon: PhosphorIcons.user,
-                title: 'Personal Information',
+                title: 'Profile Information',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _SectionCard(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: TextFormField(
-                          controller: _firstNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'First Name',
-                            prefixIcon:
-                                Icon(PhosphorIcons.user, size: 20),
-                          ),
-                          validator: (v) =>
-                              v == null || v.isEmpty ? 'Required' : null,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 2,
-                        child: TextFormField(
-                          controller: _lastNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Last Name',
-                          ),
-                          validator: (v) =>
-                              v == null || v.isEmpty ? 'Required' : null,
-                        ),
-                      ),
-                    ],
+                  AvatarPicker(
+                    selectedImage: _selectedImage,
+                    profileImageUrl: _profileImageUrl,
+                    onPickImage: _pickImage,
                   ),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: DropdownButtonFormField<String>(
-                          value: _selectedGender,
-                          decoration: const InputDecoration(
-                            labelText: 'Gender',
-                            prefixIcon:
-                                Icon(PhosphorIcons.genderIntersex, size: 20),
-                          ),
-                          items: ['Male', 'Female']
-                              .map((g) => DropdownMenuItem(
-                                  value: g, child: Text(g)))
-                              .toList(),
-                          onChanged: (v) =>
-                              setState(() => _selectedGender = v),
-                          validator: (v) =>
-                              v == null ? 'Required' : null,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 2,
-                        child: GestureDetector(
-                          onTap: _selectDate,
-                          child: AbsorbPointer(
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Date of Birth',
-                                prefixIcon: Icon(
-                                    PhosphorIcons.calendarBlank, size: 20),
-                              ),
-                              controller: TextEditingController(
-                                text: _selectedDOB == null
-                                    ? ''
-                                    : '${_selectedDOB!.day}/${_selectedDOB!.month}/${_selectedDOB!.year}',
-                              ),
-                              validator: (v) =>
-                                  _selectedDOB == null ? 'Required' : null,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 14.h),
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: InputDecoration(
+                      labelText: 'First Name',
+                      prefixIcon:
+                          Icon(PhosphorIcons.user, size: 20.w),
+                    ),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Required' : null,
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration: InputDecoration(
+                      labelText: 'Last Name',
+                      prefixIcon:
+                          Icon(PhosphorIcons.user, size: 20.w),
+                    ),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                  SizedBox(height: 14.h),
                   TextFormField(
                     controller: _mobileNumberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
                       prefixIcon:
-                          Icon(PhosphorIcons.phone, size: 20),
+                          Icon(PhosphorIcons.phone, size: 20.w),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (v) {
@@ -375,13 +309,143 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
+              // Section 2: Medical Info
+              _SectionHeader(
+                icon: PhosphorIcons.heart,
+                title: 'Medical Info',
+              ),
+              SizedBox(height: 12.h),
+              _SectionCard(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _selectedBloodGroup,
+                          decoration: InputDecoration(
+                            labelText: 'Blood Group',
+                            prefixIcon:
+                                Icon(PhosphorIcons.drop, size: 20.w),
+                          ),
+                          items: [
+                            'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+                          ]
+                              .map((b) => DropdownMenuItem(
+                                  value: b, child: Text(b)))
+                              .toList(),
+                          onChanged: (v) =>
+                              setState(() => _selectedBloodGroup = v),
+                          validator: (v) => v == null ? 'Required' : null,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _selectedGender,
+                          decoration: InputDecoration(
+                            labelText: 'Gender',
+                            prefixIcon: Icon(
+                                PhosphorIcons.genderIntersex, size: 20.w),
+                          ),
+                          items: ['Male', 'Female']
+                              .map((g) => DropdownMenuItem(
+                                  value: g, child: Text(g)))
+                              .toList(),
+                          onChanged: (v) =>
+                              setState(() => _selectedGender = v),
+                          validator: (v) => v == null ? 'Required' : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 14.h),
+                  GestureDetector(
+                    onTap: _selectDate,
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Date of Birth',
+                          prefixIcon: Icon(
+                              PhosphorIcons.calendarBlank, size: 20.w),
+                        ),
+                        controller: TextEditingController(
+                          text: _selectedDOB == null
+                              ? ''
+                              : '${_selectedDOB!.day}/${_selectedDOB!.month}/${_selectedDOB!.year}',
+                        ),
+                        validator: (_) =>
+                            _selectedDOB == null ? 'Required' : null,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 14.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 16.w, vertical: 12.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: isDonor
+                            ? Colors.red.shade200
+                            : Colors.grey.shade200,
+                      ),
+                      color: isDonor
+                          ? Colors.red.shade50
+                          : Colors.grey.shade50,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Listed as a donor',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.sp,
+                                  color: isDonor
+                                      ? Colors.red.shade800
+                                      : Colors.grey.shade700,
+                                ),
+                              ),
+                              Text(
+                                isDonor
+                                    ? "You're ready to save lives"
+                                    : 'Enable to be visible to blood seekers',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: isDonor
+                                      ? Colors.red.shade400
+                                      : Colors.grey.shade500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: isDonor,
+                          onChanged: (v) =>
+                              setState(() => isDonor = v),
+                          activeTrackColor: Colors.red.shade200,
+                          activeThumbColor: Colors.red.shade500,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 24.h),
+
+              // Section 3: Location
               _SectionHeader(
                 icon: PhosphorIcons.mapPin,
                 title: 'Location',
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _SectionCard(
                 children: [
                   AddressManagementSection(
@@ -396,67 +460,32 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 ],
               ),
 
-              const SizedBox(height: 24),
-
-              _SectionHeader(
-                icon: PhosphorIcons.drop,
-                title: 'Blood Group & Donor Status',
-              ),
-              const SizedBox(height: 12),
-              _SectionCard(
-                children: [
-                  DropdownButtonFormField<String>(
-                    value: _selectedBloodGroup,
-                    decoration: const InputDecoration(
-                      labelText: 'Blood Group',
-                      prefixIcon:
-                          Icon(PhosphorIcons.drop, size: 20),
-                    ),
-                    items: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
-                        .map((b) =>
-                            DropdownMenuItem(value: b, child: Text(b)))
-                        .toList(),
-                    onChanged: (v) =>
-                        setState(() => _selectedBloodGroup = v),
-                    validator: (v) => v == null ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 8),
-                  CheckboxListTile(
-                    title: const Text('Listed as Donor'),
-                    value: isDonor,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (v) => setState(() => isDonor = v!),
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 32),
+              SizedBox(height: 24.h),
 
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 52.h,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _updateUser,
                   style: ElevatedButton.styleFrom(elevation: 0),
                   child: _isLoading
-                      ? const SizedBox(
-                          height: 22,
-                          width: 22,
+                      ? SizedBox(
+                          height: 22.h,
+                          width: 22.w,
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2.5,
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(PhosphorIcons.check, size: 20),
-                            SizedBox(width: 8),
+                            Icon(PhosphorIcons.check, size: 20.w),
+                            SizedBox(width: 8.w),
                             Text(
                               'Save Changes',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -483,19 +512,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28,
-          height: 28,
+          width: 28.w,
+          height: 28.h,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(icon, size: 15, color: Colors.red.shade600),
+          child: Icon(icon, size: 15.w, color: Colors.red.shade600),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),
@@ -516,7 +545,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -525,7 +554,7 @@ class _SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,

@@ -3,9 +3,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../../core/utils/phone_utils.dart';
+
 import 'package:flutter/material.dart';
-
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'blood_bank_seed_data.dart';
@@ -111,7 +112,7 @@ class _BloodBankFormState extends State<BloodBankForm> {
             validator: (val) =>
                 val == null || val.trim().isEmpty ? 'Enter name' : null,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           _buildLabel('Slug (auto-generated)'),
           TextFormField(
@@ -122,11 +123,11 @@ class _BloodBankFormState extends State<BloodBankForm> {
               fillColor: Colors.grey.shade100,
               border: const OutlineInputBorder(),
               suffixIcon: _checkingSlug
-                  ? const Padding(
-                      padding: EdgeInsets.all(12),
+                  ? Padding(
+                      padding: EdgeInsets.all(12.w),
                       child: SizedBox(
-                        width: 16,
-                        height: 16,
+                        width: 16.w,
+                        height: 16.h,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
@@ -142,7 +143,7 @@ class _BloodBankFormState extends State<BloodBankForm> {
                   : Icon(PhosphorIcons.xCircle, color: Colors.red),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           _buildLabel('Address'),
           TextFormField(
@@ -155,7 +156,7 @@ class _BloodBankFormState extends State<BloodBankForm> {
                 ? 'Enter address'
                 : null,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           _buildLabel('Mobile'),
           Row(
@@ -190,7 +191,7 @@ class _BloodBankFormState extends State<BloodBankForm> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 1.h),
 
           _buildLabel('Website (optional)'),
           TextFormField(
@@ -210,7 +211,7 @@ class _BloodBankFormState extends State<BloodBankForm> {
               return null;
             },
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 3.h),
 
           SizedBox(
             width: double.infinity,
@@ -228,9 +229,19 @@ class _BloodBankFormState extends State<BloodBankForm> {
                       .get();
 
                   if (query.docs.isEmpty) {
+                    // Normalize phone numbers to canonical format
+                    final normalized = Map<String, dynamic>.from(bloodBank);
+                    if (normalized['mobile1'] != null) {
+                      normalized['mobile1'] =
+                          PhoneUtils.toCanonical(normalized['mobile1']);
+                    }
+                    if (normalized['mobile2'] != null) {
+                      normalized['mobile2'] =
+                          PhoneUtils.toCanonical(normalized['mobile2']);
+                    }
                     await firestore
                         .collection('blood_bank')
-                        .add(bloodBank);
+                        .add(normalized);
                     log('Added: ${bloodBank['name']}');
                   } else {
                     log(
@@ -243,22 +254,22 @@ class _BloodBankFormState extends State<BloodBankForm> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
               ),
-              child: const Text(
+              child: Text(
                 'Add Blood Bank',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18.sp, color: Colors.white),
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
       ),
     );
   }
 
   Widget _buildLabel(String text) => Padding(
-    padding: const EdgeInsets.only(bottom: 6),
+    padding: EdgeInsets.only(bottom: 6.h),
     child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
   );
 }

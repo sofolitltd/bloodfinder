@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:bloodfinder/features/blood_request/presentation/pages/my_blood_request_page.dart';
-import 'package:bloodfinder/features/chat/presentation/pages/archieve_message_page.dart';
-import 'package:bloodfinder/features/community/presentation/pages/edit_community_page.dart';
+import '/features/blood_request/presentation/pages/my_blood_request_page.dart';
+import '/features/chat/presentation/pages/archieve_message_page.dart';
+import '/features/community/presentation/pages/edit_community_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -254,37 +255,48 @@ class ScaffoldWithNavBar extends StatelessWidget {
     return Scaffold(
       body:
           navigationShell, // Displays the content of the currently selected branch
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
-        destinations: [
-          NavigationDestination(
-            icon: Icon(PhosphorIcons.house),
-            selectedIcon: Icon(PhosphorIcons.house),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.grey.shade300,
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(PhosphorIcons.rss),
-            selectedIcon: Icon(PhosphorIcons.rss),
-            label: 'Feed',
-          ),
-          NavigationDestination(
-            icon: Icon(PhosphorIcons.chat),
-            selectedIcon: Icon(PhosphorIcons.chat),
-            label: 'Chats',
-          ),
-          NavigationDestination(
-            icon: Icon(PhosphorIcons.user),
-            selectedIcon: Icon(PhosphorIcons.user),
-            label: 'Profile',
-          ),
-        ],
-        onDestinationSelected: (int index) {
-          // Navigates to the selected branch using goBranch.
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          );
-        },
+        ),
+        child: NavigationBar(
+          selectedIndex: navigationShell.currentIndex,
+          height: 70.h,
+          labelPadding: .zero,
+          destinations: [
+            NavigationDestination(
+              icon: Icon(PhosphorIcons.house),
+              selectedIcon: Icon(PhosphorIcons.house),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(PhosphorIcons.rss),
+              selectedIcon: Icon(PhosphorIcons.rss),
+              label: 'Feed',
+            ),
+            NavigationDestination(
+              icon: Icon(PhosphorIcons.chat),
+              selectedIcon: Icon(PhosphorIcons.chat),
+              label: 'Chats',
+            ),
+            NavigationDestination(
+              icon: Icon(PhosphorIcons.user),
+              selectedIcon: Icon(PhosphorIcons.user),
+              label: 'Profile',
+            ),
+          ],
+          onDestinationSelected: (int index) {
+            // Navigates to the selected branch using goBranch.
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
+          },
+        ),
       ),
     );
   }

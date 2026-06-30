@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 
@@ -24,7 +25,7 @@ class AdminManagementSection extends ConsumerWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -33,40 +34,40 @@ class AdminManagementSection extends ConsumerWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 28.w,
+                height: 28.h,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(PhosphorIcons.shieldChevron,
-                    size: 15, color: Colors.red.shade600),
+                    size: 15.w, color: Colors.red.shade600),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 'Manage Community',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 12.w,
+            mainAxisSpacing: 12.h,
             childAspectRatio: 1.3,
             children: [
               // All Members
@@ -80,27 +81,27 @@ class AdminManagementSection extends ConsumerWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.r),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         PhosphorIcons.usersThree,
-                        size: 28,
+                        size: 28.w,
                         color: Colors.red.shade600,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       ref.watch(membersStreamProvider(community.id)).when(
                         data: (members) => Text(
                           '${members.length}',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.red.shade600,
                           ),
@@ -108,7 +109,7 @@ class AdminManagementSection extends ConsumerWidget {
                         loading: () => Text(
                           '${community.memberCount}',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.red.shade600,
                           ),
@@ -116,17 +117,17 @@ class AdminManagementSection extends ConsumerWidget {
                         error: (_, __) => Text(
                           '${community.memberCount}',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.red.shade600,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         'Members',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.w500,
                         ),
@@ -147,53 +148,53 @@ class AdminManagementSection extends ConsumerWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.r),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         PhosphorIcons.userCirclePlus,
-                        size: 28,
+                        size: 28.w,
                         color: Colors.orange.shade600,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       ref.watch(joinRequestsStreamProvider(community.id)).when(
                         data: (requests) => Text(
                           '${requests.length}',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.shade600,
                           ),
                         ),
-                        loading: () => const Text(
+                        loading: () => Text(
                           '0',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange,
                           ),
                         ),
-                        error: (_, __) => const Text(
+                        error: (_, __) => Text(
                           '0',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         'Requests',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.w500,
                         ),

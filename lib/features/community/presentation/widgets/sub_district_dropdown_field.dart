@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_data.dart';
 import '../pages/search_page.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -30,7 +30,7 @@ class SubDistrictDropdownField extends StatelessWidget {
       enabled: selectedDistrict != null,
       decoration: InputDecoration(
         hintText: selectedSubDistrict ?? 'Select Subdistrict',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: selectedSubDistrict != null
             ? IconButton(
                 icon: Icon(PhosphorIcons.x),

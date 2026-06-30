@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../core/constants/app_data.dart';
@@ -41,7 +42,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
         SnackBar(
           content: const Text('Please select a blood group'),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         ),
       );
       return;
@@ -52,7 +53,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
           content: const Text('Please set a search location on the map'),
           backgroundColor: Colors.red.shade700,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         ),
       );
       return;
@@ -78,10 +79,10 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
     final bool hasLocation = _latitude != null && _longitude != null;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: isDark ? Colors.transparent : Colors.grey.shade200,
           width: 0.5,
@@ -94,7 +95,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -103,16 +104,16 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
             spacing: 10,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 40.w,
+                height: 48.h,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
                   PhosphorIcons.drop,
                   color: Colors.red.shade500,
-                  size: 22,
+                  size: 22.w,
                 ),
               ),
               Column(
@@ -121,7 +122,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                   Text(
                     'Find a Blood Donor',
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                     ),
@@ -129,7 +130,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                   Text(
                     'Search for donors near you',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                     ),
                   ),
@@ -137,30 +138,33 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Blood Group
-          DropdownButtonFormField<String>(
-            value: _selectedBloodGroup,
-            decoration: const InputDecoration(
-              labelText: 'Blood Group *',
-              prefixIcon: Icon(PhosphorIcons.dropHalfBottom, size: 20),
+          ButtonTheme(
+            alignedDropdown: true,
+            child: DropdownButtonFormField<String>(
+              initialValue: _selectedBloodGroup,
+              decoration: InputDecoration(
+                labelText: 'Blood Group *',
+                prefixIcon: Icon(PhosphorIcons.dropHalfBottom, size: 20.w),
+              ),
+              items: AppData.bloodGroups
+                  .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
+                  .toList(),
+              onChanged: (val) => setState(() => _selectedBloodGroup = val),
             ),
-            items: AppData.bloodGroups
-                .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
-                .toList(),
-            onChanged: (val) => setState(() => _selectedBloodGroup = val),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // Location picker
           InkWell(
             onTap: _openLocationPicker,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                   color: hasLocation ? Colors.green.shade300 : Colors.grey.shade300,
                 ),
@@ -170,9 +174,9 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                   Icon(
                     hasLocation ? Icons.location_on : Icons.location_off,
                     color: hasLocation ? Colors.green.shade600 : Colors.grey,
-                    size: 20,
+                    size: 20.w,
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
                       hasLocation
@@ -180,7 +184,7 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                           : 'Tap to set search location',
                       style: TextStyle(
                         color: hasLocation ? Colors.black87 : Colors.grey.shade600,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -189,13 +193,13 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                   Icon(
                     PhosphorIcons.mapPin,
                     color: Colors.red.shade400,
-                    size: 20,
+                    size: 20.w,
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // Radius slider
           Row(
@@ -206,21 +210,21 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
                   '${_radiusInKm.round()} km',
                   style: TextStyle(
                     color: Colors.red.shade600,
                     fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                    fontSize: 13.sp,
                   ),
                 ),
               ),
@@ -236,18 +240,18 @@ class _HomeFindDonorSectionState extends State<HomeFindDonorSection> {
             inactiveColor: Colors.red.shade100,
             onChanged: (val) => setState(() => _radiusInKm = val),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
 
           // Search button
           SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 50.h,
             child: ElevatedButton(
               onPressed: _search,
               style: ElevatedButton.styleFrom(elevation: 0),
-              child: const Text(
+              child: Text(
                 'Find Donors',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 Future<bool?> showEligibilityBottomSheet(BuildContext context) {
   return showModalBottomSheet<bool>(
     context: context,
@@ -16,56 +16,56 @@ class _EligibilityBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+      padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 32.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 12.h),
           Text(
             'Are you eligible to be a donor?',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 8.h),
           Text(
             'To ensure your safety and the safety of others, please confirm that:',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 16.h),
           _ChecklistItem(
             icon: Icons.monitor_weight,
             text: 'I weigh at least 50 kg (110 lbs).',
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 12.h),
           _ChecklistItem(
             icon: Icons.favorite,
             text: 'I am generally in good health.',
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 12.h),
           _ChecklistItem(
             icon: Icons.healing,
             text: 'I haven\'t had a tattoo or major surgery in the last 6 months.',
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 12.h),
           TextButton(
             onPressed: () => _showLearnMore(context),
             child: const Text('Learn More about eligibility'),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 16.h),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
@@ -73,7 +73,7 @@ class _EligibilityBottomSheet extends StatelessWidget {
             ),
             child: const Text('I Confirm'),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           OutlinedButton(
             onPressed: () => Navigator.of(context).pop(false),
             style: OutlinedButton.styleFrom(
@@ -91,7 +91,7 @@ class _EligibilityBottomSheet extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Blood Donation Eligibility'),
-        content: const SingleChildScrollView(
+        content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -100,26 +100,26 @@ class _EligibilityBottomSheet extends StatelessWidget {
                 'Basic eligibility guidelines based on WHO recommendations:',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 8.h),
               Text('• Be at least 18 years old'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• Weigh at least 50 kg (110 lbs)'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• Be in good general health'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• Have adequate hemoglobin levels'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• No new tattoo or piercing in last 6 months'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• No major surgery in last 6 months'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• Not pregnant or breastfeeding'),
-              SizedBox(height: 6),
+              SizedBox(height: 8.h),
               Text('• No high-risk activities or recent travel to malaria-endemic areas'),
-              SizedBox(height: 16),
+              SizedBox(height: 1.h),
               Text(
                 'These are general guidelines. Final eligibility may vary based on local regulations and health screening at the donation center.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey),
               ),
             ],
           ),
@@ -149,8 +149,8 @@ class _ChecklistItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 22, color: Colors.red.shade400),
-        const SizedBox(width: 12),
+        Icon(icon, size: 22.w, color: Colors.red.shade400),
+        SizedBox(width: 12.w),
         Expanded(
           child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ),

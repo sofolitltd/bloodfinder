@@ -3,10 +3,8 @@ import 'package:bloodfinder/features/notification/services/fcm_sender.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 import '../../models/community.dart';
 import '../../models/member.dart';
 import '../../../../data/models/user_model.dart';
@@ -47,7 +45,7 @@ class CommunityMemberRequestPage extends ConsumerWidget {
               .toList();
 
           return ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
+            separatorBuilder: (context, index) => SizedBox(height: 8.h),
             itemCount: requests.length,
             itemBuilder: (context, index) {
               final member = requests[index];
@@ -79,7 +77,7 @@ class CommunityMemberRequestPage extends ConsumerWidget {
                           Text('Email: $email'),
                           Text('Address: $address'),
 
-                          SizedBox(height: 8),
+                          SizedBox(height: 8.h),
 
                           Row(
                             spacing: 8,
@@ -93,7 +91,7 @@ class CommunityMemberRequestPage extends ConsumerWidget {
                                   'Accept',
                                   style: TextStyle(color: Colors.green),
                                 ),
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.check,
                                   color: Colors.green,
                                 ),

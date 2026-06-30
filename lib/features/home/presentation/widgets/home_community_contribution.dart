@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../community/presentation/pages/create_community_page.dart';
@@ -12,7 +13,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (ctx) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -21,7 +22,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
               'What do you want to add?',
               style: Theme.of(ctx).textTheme.titleMedium,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             FilledButton.icon(
               onPressed: () {
                 Navigator.of(ctx).pop();
@@ -34,7 +35,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
               icon: const Icon(Icons.people),
               label: const Text('Community'),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             OutlinedButton.icon(
               onPressed: () {
                 Navigator.of(ctx).pop();
@@ -47,7 +48,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
               icon: const Icon(Icons.local_hospital),
               label: const Text('Blood Bank'),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
           ],
         ),
       ),
@@ -60,12 +61,12 @@ class HomeCommunityContributionSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(16),
-          bottomRight: Radius.circular(16),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16.r),
+          bottomRight: Radius.circular(16.r),
         ),
         border: Border.all(
           color: isDark ? Colors.transparent : Colors.grey.shade200,
@@ -100,7 +101,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -108,20 +109,20 @@ class HomeCommunityContributionSection extends StatelessWidget {
                   spacing: 10,
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 40.w,
+                      height: 48.h,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.red.shade600, Colors.red.shade400],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         PhosphorIcons.globeHemisphereWest,
                         color: Colors.white,
-                        size: 22,
+                        size: 22.w,
                       ),
                     ),
                     Column(
@@ -130,7 +131,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
                         Text(
                           'Help Us Expand',
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                           ),
@@ -138,7 +139,7 @@ class HomeCommunityContributionSection extends StatelessWidget {
                         Text(
                           'Community-driven growth',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                           ),
                         ),
@@ -146,43 +147,43 @@ class HomeCommunityContributionSection extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   'BloodFinder is community-driven. Help us grow by adding local resources or sharing your feedback.',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13.sp,
                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Row(
                   children: [
                     Expanded(
                       child: SizedBox(
-                        height: 44,
+                        height: 44.h,
                         child: ElevatedButton.icon(
                           onPressed: () => _showAddOptions(context),
-                          icon: const Icon(Icons.add_location_alt, size: 18),
-                          label: const Text(
+                          icon: Icon(Icons.add_location_alt, size: 18.w),
+                          label: Text(
                             'Add Local Resource',
-                            style: TextStyle(fontSize: 12),
+                            style: TextStyle(fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
                           ),
                           style: ElevatedButton.styleFrom(elevation: 0),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: SizedBox(
-                        height: 44,
+                        height: 44.h,
                         child: OutlinedButton.icon(
                           onPressed: () => showFeedbackSheet(context),
-                          icon: const Icon(Icons.feedback_outlined, size: 18),
-                          label: const Text(
+                          icon: Icon(Icons.feedback_outlined, size: 18.w),
+                          label: Text(
                             'Share Feedback',
-                            style: TextStyle(fontSize: 12),
+                            style: TextStyle(fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),

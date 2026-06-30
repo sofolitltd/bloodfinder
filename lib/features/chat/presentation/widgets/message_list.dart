@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../data/providers/repository_providers.dart';
 import '../../models/chat_model.dart';
 import 'message_bubble.dart';
@@ -61,7 +61,7 @@ class MessageList extends ConsumerWidget {
 
         return ListView.builder(
           controller: scrollController,
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final msg = messages[index];

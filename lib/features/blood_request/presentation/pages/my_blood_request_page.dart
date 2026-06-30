@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -36,8 +37,9 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
             MaterialPageRoute(builder: (_) => const BloodRequestPage()),
           );
         },
-        icon: const Icon(PhosphorIcons.plusBold),
-        label: const Text('Post Blood Request'),
+        backgroundColor: Colors.red.shade600,
+        icon: Icon(PhosphorIcons.plusBold, color: Colors.white),
+        label: const Text('Post Blood Request', style: TextStyle(color: Colors.white)),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: bloodRequestRepo.userRequestsStream(uid),
@@ -47,31 +49,39 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
+            return Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(PhosphorIcons.drop, size: 64, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
+                  Icon(PhosphorIcons.drop, size: 64.w, color: Colors.grey.shade300),
+                  SizedBox(height: 1.h),
                   Text(
                     'No blood requests yet',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  OutlinedButton.icon(
+                  SizedBox(height: 16.h),
+                  ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const BloodRequestPage()),
                       );
                     },
-                    icon: const Icon(PhosphorIcons.plus),
-                    label: const Text('Post Your First Request'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade600,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: Icon(PhosphorIcons.plus, color: Colors.white),
+                    label: const Text('Post Your First Request', style: TextStyle(color: Colors.white)),
                   ),
                 ],
+              ),
               ),
             );
           }
@@ -83,9 +93,9 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
               .toList();
 
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             itemCount: requests.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, __) => SizedBox(height: 1.h),
             itemBuilder: (context, index) {
               final req = requests[index];
 

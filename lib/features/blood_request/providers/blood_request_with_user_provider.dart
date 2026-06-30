@@ -7,8 +7,7 @@ import '../../../data/providers/repository_providers.dart';
 
 final bloodRequestsWithUsersProvider =
     StreamProvider<List<BloodRequestWithUser>>((ref) {
-      final auth = ref.watch(authRepositoryProvider);
-      final currentUser = auth.currentUser;
+      final currentUser = ref.watch(currentUserProvider).asData?.value;
       if (currentUser == null) return const Stream.empty();
 
       final requestRepo = ref.watch(bloodRequestRepositoryProvider);

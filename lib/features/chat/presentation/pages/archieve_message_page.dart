@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -56,10 +57,10 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                 children: [
                   Icon(
                     PhosphorIcons.archive,
-                    size: 100,
+                    size: 100.w,
                     color: Colors.grey.shade300,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   const Text("No archived chats"),
                 ],
               ),
@@ -79,8 +80,8 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
 
           return ListView.separated(
             itemCount: chatDocs.length,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            separatorBuilder: (_, __) => SizedBox(height: 12.h),
             itemBuilder: (context, index) {
               final chatDoc = chatDocs[index];
               final chatData = chatDoc.data();
@@ -125,61 +126,61 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                         selectedChatId = chatId;
                       });
                     },
-                    child: Card(
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
-                        horizontalTitleGap: 8,
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.redAccent.shade200,
-                          child: image.isEmpty
-                              ? Text(
-                                  avatarLetter,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                      child: Card(
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                          ),
+                          horizontalTitleGap: 8.w,
+                          leading: CircleAvatar(
+                            radius: 20.r,
+                            backgroundColor: Colors.redAccent.shade200,
+                            child: image.isEmpty
+                                ? Text(
+                                    avatarLetter,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.sp,
+                                    ),
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(50.r),
+                                    child: Image.network(
+                                      image,
+                                      width: 40.w,
+                                      height: 40.h,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    image,
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
+                          ),
+                          title: Row(
+                            children: [
+                              Expanded(child: Text(name)),
+                              if (timestamp != null)
+                                Text(
+                                  timeAgo(timestamp),
+                                  style: TextStyle(fontSize: 12.sp),
                                 ),
-                        ),
-                        title: Row(
-                          children: [
-                            Expanded(child: Text(name)),
-                            if (timestamp != null)
-                              Text(
-                                timeAgo(timestamp),
-                                style: const TextStyle(fontSize: 12),
-                              ),
                           ],
                         ),
                         subtitle: Row(
                           children: [
                             if (lastSenderId == uid &&
                                 !seenBy.contains(otherUserId))
-                              const Icon(
+                              Icon(
                                 Icons.check,
-                                size: 16,
+                                size: 16.w,
                                 color: Colors.grey,
                               ),
                             if (lastSenderId == uid &&
                                 seenBy.contains(otherUserId))
-                              const Icon(
+                              Icon(
                                 Icons.done_all,
-                                size: 16,
+                                size: 16.w,
                                 color: Colors.blue,
                               ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Expanded(
                               child: Text(
                                 lastText,

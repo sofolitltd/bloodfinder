@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/geohash.dart';
@@ -23,7 +24,7 @@ class _CreateEventSheet extends StatefulWidget {
   final WidgetRef ref;
   final BloodEvent? event;
 
-  const _CreateEventSheet({required this.ref, this.event});
+  _CreateEventSheet({required this.ref, this.event});
 
   @override
   State<_CreateEventSheet> createState() => _CreateEventSheetState();
@@ -232,9 +233,9 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
+        left: 16.w,
+        right: 16.w,
+        top: 16.h,
       ),
       child: Form(
         key: _formKey,
@@ -256,7 +257,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
@@ -266,7 +267,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               TextFormField(
                 controller: _descController,
                 maxLines: 3,
@@ -276,66 +277,66 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                   alignLabelWithHint: true,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _pickDate,
-                      icon: const Icon(Icons.calendar_today, size: 18),
+                      icon: Icon(Icons.calendar_today, size: 18.w),
                       label:
-                          Text(dateText, style: const TextStyle(fontSize: 13)),
+                          Text(dateText, style: TextStyle(fontSize: 13.sp)),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _pickTime,
-                      icon: const Icon(Icons.access_time, size: 18),
+                      icon: Icon(Icons.access_time, size: 18.w),
                       label:
-                          Text(timeText, style: const TextStyle(fontSize: 13)),
+                          Text(timeText, style: TextStyle(fontSize: 13.sp)),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               OutlinedButton.icon(
                 onPressed: _pickEndDate,
-                icon: const Icon(Icons.date_range, size: 18),
+                icon: Icon(Icons.date_range, size: 18.w),
                 label: Text(endDateText,
-                    style: const TextStyle(fontSize: 13)),
+                    style: TextStyle(fontSize: 13.sp)),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               OutlinedButton.icon(
                 onPressed: _pickLocation,
-                icon: const Icon(Icons.location_on, size: 18),
+                icon: Icon(Icons.location_on, size: 18.w),
                 label: Text(locText,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 13)),
+                    style: TextStyle(fontSize: 13.sp)),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               OutlinedButton.icon(
                 onPressed: _pickImage,
-                icon: const Icon(Icons.image, size: 18),
+                icon: Icon(Icons.image, size: 18.w),
                 label: Text(
                   _image != null || widget.event?.imageUrl != null
                       ? 'Image selected'
                       : 'Add Cover Image',
-                  style: const TextStyle(fontSize: 13),
+                  style: TextStyle(fontSize: 13.sp),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               FilledButton(
                 onPressed: _loading ? null : _submit,
                 child: _loading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
+                    ? SizedBox(
+                        width: 20.w,
+                        height: 20.h,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(_isEditing ? 'Save Changes' : 'Create Event'),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),

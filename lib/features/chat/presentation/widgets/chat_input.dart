@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ChatInput extends StatelessWidget {
@@ -19,16 +20,16 @@ class ChatInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         child: Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
           ),
           margin: EdgeInsets.zero,
           child: Container(
-            padding: const EdgeInsets.only(top: 10, left: 12, bottom: 10),
+            padding: EdgeInsets.only(top: 10.h, left: 12.w, bottom: 10.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: Row(
@@ -47,9 +48,9 @@ class ChatInput extends StatelessWidget {
                         hintText: isEditing
                             ? "Edit message..."
                             : "Type a message...",
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 0,
-                          vertical: 0,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 0.w,
+                          vertical: 0.h,
                         ),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -64,7 +65,7 @@ class ChatInput extends StatelessWidget {
                   GestureDetector(
                     onTap: onSend,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 4, right: 8),
+                      padding: EdgeInsets.only(left: 4.w, right: 8.w),
                       child: Icon(
                         PhosphorIcons.paperPlaneRight,
                         color: Colors.red,

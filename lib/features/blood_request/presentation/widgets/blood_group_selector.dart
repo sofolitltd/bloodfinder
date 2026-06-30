@@ -1,5 +1,6 @@
 import 'package:bloodfinder/core/constants/app_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class BloodGroupSelector extends StatelessWidget {
@@ -24,9 +25,9 @@ class BloodGroupSelector extends StatelessWidget {
       children: [
         Expanded(
           child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Blood Group',
-              prefixIcon: Icon(PhosphorIcons.drop, size: 20),
+              prefixIcon: Icon(PhosphorIcons.drop, size: 20.w),
             ),
             initialValue: selectedBloodGroup,
             items: AppData.bloodGroups
@@ -41,12 +42,12 @@ class BloodGroupSelector extends StatelessWidget {
             validator: (val) => val == null ? 'Required' : null,
           ),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 10.w),
         Expanded(
           child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Bag(s)',
-              prefixIcon: Icon(PhosphorIcons.dropHalf, size: 20),
+              prefixIcon: Icon(PhosphorIcons.dropHalf, size: 20.w),
             ),
             initialValue: selectedBag,
             items: bagOptions

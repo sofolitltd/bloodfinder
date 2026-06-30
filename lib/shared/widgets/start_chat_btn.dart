@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -85,11 +86,11 @@ class _StartChatButtonState extends ConsumerState<StartChatButton> {
         backgroundColor: isSelf ? Colors.grey : Colors.blue.shade300,
         visualDensity: VisualDensity.compact,
       ),
-      icon: Icon(PhosphorIcons.chatDots, size: 14),
+      icon: Icon(PhosphorIcons.chatDots, size: 14.w),
       label: isLoading
-          ? const SizedBox(
-              width: 18,
-              height: 18,
+          ? SizedBox(
+              width: 18.w,
+              height: 18.h,
               child: CircularProgressIndicator(
                 color: Colors.white,
                 strokeWidth: 2,

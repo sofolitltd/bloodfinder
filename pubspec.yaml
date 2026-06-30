@@ -49,6 +49,8 @@ dependencies:
   geolocator: ^14.0.2
   country_state_city_selector: ^1.0.5
   gal: ^2.3.2
+  flutter_screenutil: ^5.9.3
+  flutter_contacts: ^1.1.9+2
   
 dev_dependencies:
   flutter_test:

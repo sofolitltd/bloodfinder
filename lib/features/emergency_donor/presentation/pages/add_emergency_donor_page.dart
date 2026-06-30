@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -51,7 +52,7 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
         );
@@ -68,7 +69,7 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
             backgroundColor: Colors.green.shade600,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
         );
@@ -154,11 +155,11 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 PhosphorIcons.shieldChevron,
@@ -166,7 +167,7 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                 size: 18,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             const Text(
               'Manage Emergency Donors',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -178,12 +179,12 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
         children: [
           // Search bar
           Container(
-            margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
             decoration: BoxDecoration(
               color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
             ),
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -200,20 +201,20 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                             size: 20,
                           ),
                           filled: false,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 12.h,
                           ),
                         ),
                         onSubmitted: (_) => _onSearchPressed(),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     SizedBox(
-                      height: 44,
+                      height: 44.h,
                       child: ElevatedButton(
                         onPressed: _onSearchPressed,
                         style: ElevatedButton.styleFrom(elevation: 0),
-                        child: const Text(
+                        child: Text(
                           'Search',
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
@@ -221,34 +222,34 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Search by full mobile number',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade500,
                       ),
                     ),
                     InkWell(
                       onTap: _onResetSearch,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 4,
-                          horizontal: 10,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 10.w,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: Text(
                           'Reset',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey.shade600,
                           ),
@@ -261,7 +262,7 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // User list
           Expanded(
@@ -271,11 +272,11 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 64,
-                          height: 64,
+                          width: 64.w,
+                          height: 64.h,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                           ),
                           child: Icon(
                             PhosphorIcons.users,
@@ -283,11 +284,11 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                             color: Colors.grey.shade400,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         Text(
                           'No users found',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey.shade600,
                           ),
@@ -296,18 +297,18 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
                     ),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     itemCount: _users.length + 1,
                     itemBuilder: (context, index) {
                       if (index == _users.length) {
                         if (_hasMore) {
                           _fetchUsers();
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
                             child: Center(
                               child: SizedBox(
-                                width: 24,
-                                height: 24,
+                                width: 24.w,
+                                height: 24.h,
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               ),
                             ),
@@ -377,7 +378,7 @@ class _UserCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -387,24 +388,24 @@ class _UserCard extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.w),
         child: Row(
           children: [
             // Blood group avatar
             Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: isEmergencyDonor
                     ? Colors.red.shade50
                     : Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
               child: Center(
                 child: Text(
                   bloodGroup,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
                     color: isEmergencyDonor
                         ? Colors.red.shade600
@@ -413,7 +414,7 @@ class _UserCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14.w),
             // Details
             Expanded(
               child: Column(
@@ -422,14 +423,14 @@ class _UserCard extends StatelessWidget {
                   Text(
                     '$firstName $lastName',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey.shade800,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
                       Icon(
@@ -437,11 +438,11 @@ class _UserCard extends StatelessWidget {
                         size: 12,
                         color: Colors.grey.shade500,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         mobileNumber,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
@@ -452,12 +453,12 @@ class _UserCard extends StatelessWidget {
             ),
             // Toggle button
             SizedBox(
-              height: 34,
+              height: 34.h,
               child: ElevatedButton(
                 onPressed: onToggle,
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  padding: EdgeInsets.symmetric(horizontal: 14.w),
                   backgroundColor: isEmergencyDonor
                       ? Colors.red.shade50
                       : Colors.green.shade50,
@@ -465,7 +466,7 @@ class _UserCard extends StatelessWidget {
                       ? Colors.red.shade700
                       : Colors.green.shade700,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
                 child: Row(
@@ -477,11 +478,11 @@ class _UserCard extends StatelessWidget {
                           : PhosphorIcons.plusBold,
                       size: 14,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Text(
                       isEmergencyDonor ? 'Remove' : 'Add',
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: TextStyle(
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SearchPage extends StatefulWidget {
@@ -46,11 +46,11 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(title: Text('Search ${widget.title}'), centerTitle: true),
       body: Column(
         children: [
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
           //
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: TextFormField(
                 controller: _searchController,
                 autofocus: true,
@@ -73,17 +73,17 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
 
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
           //
           Expanded(
             child: Card(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: 8.h),
                 itemCount: _filteredItems.length,
                 itemBuilder: (context, index) {
                   final item = _filteredItems[index];
                   return ListTile(
-                    leading: Icon(PhosphorIcons.mapPin, size: 18),
+                    leading: Icon(PhosphorIcons.mapPin, size: 18.w),
                     title: Text(item),
                     onTap: () {
                       Navigator.pop(context, item);
@@ -94,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
 
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
       ),
     );

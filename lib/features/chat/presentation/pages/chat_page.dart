@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -104,14 +105,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 ),
 
               //
-              if (!hasArchived) SizedBox(height: 8),
+              if (!hasArchived) SizedBox(height: 8.h),
 
               Expanded(
                 child: filteredChats.isEmpty
                     ? const Center(child: Text("No active chats"))
                     : ListView.separated(
                         itemCount: filteredChats.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        separatorBuilder: (_, __) => SizedBox(height: 8.h),
                         itemBuilder: (context, index) {
                           final chatDoc = filteredChats[index];
                           final chatData = chatDoc.data();
@@ -159,85 +160,85 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                               return GestureDetector(
                                 onLongPress: () =>
                                     setState(() => selectedChatId = chatId),
-                                child: Card(
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                    ),
-                                    horizontalTitleGap: 8,
-                                    leading: CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor:
-                                          Colors.redAccent.shade200,
-                                      child: image.isEmpty
-                                          ? Text(
-                                              avatarLetter,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            )
-                                          : ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
-                                              child: CachedNetworkImage(
-                                                imageUrl: image,
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                                placeholder: (context, url) =>
-                                                    const CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                                errorWidget:
-                                                    (
-                                                      context,
-                                                      url,
-                                                      error,
-                                                    ) => Center(
-                                                      child: Text(
-                                                        avatarLetter,
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 20,
+                                  child: Card(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.w,
+                                      ),
+                                      horizontalTitleGap: 8.w,
+                                      leading: CircleAvatar(
+                                        radius: 20.r,
+                                        backgroundColor:
+                                            Colors.redAccent.shade200,
+                                        child: image.isEmpty
+                                            ? Text(
+                                                avatarLetter,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.sp,
+                                                ),
+                                              )
+                                            : ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(50.r),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: image,
+                                                  width: 40.w,
+                                                  height: 40.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                      ),
+                                                  errorWidget:
+                                                      (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                      ) => Center(
+                                                        child: Text(
+                                                          avatarLetter,
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20.sp,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                ),
+                                              ),
+                                      ),
+                                      title: Row(
+                                        children: [
+                                          Expanded(child: Text(name)),
+                                          if (timestamp != null)
+                                            Text(
+                                              timeAgo(timestamp),
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
                                               ),
                                             ),
-                                    ),
-                                    title: Row(
-                                      children: [
-                                        Expanded(child: Text(name)),
-                                        if (timestamp != null)
-                                          Text(
-                                            timeAgo(timestamp),
-                                            style: const TextStyle(
-                                              fontSize: 12,
+                                        ],
+                                      ),
+                                      subtitle: Row(
+                                        children: [
+                                          if (lastSenderId == uid &&
+                                              !seenBy.contains(otherUserId))
+                                            Icon(
+                                              Icons.check,
+                                              size: 16.w,
+                                              color: Colors.grey,
                                             ),
-                                          ),
-                                      ],
-                                    ),
-                                    subtitle: Row(
-                                      children: [
-                                        if (lastSenderId == uid &&
-                                            !seenBy.contains(otherUserId))
-                                          const Icon(
-                                            Icons.check,
-                                            size: 16,
-                                            color: Colors.grey,
-                                          ),
-                                        if (lastSenderId == uid &&
-                                            seenBy.contains(otherUserId))
-                                          const Icon(
-                                            Icons.done_all,
-                                            size: 16,
-                                            color: Colors.blue,
-                                          ),
-                                        const SizedBox(width: 4),
+                                          if (lastSenderId == uid &&
+                                              seenBy.contains(otherUserId))
+                                            Icon(
+                                              Icons.done_all,
+                                              size: 16.w,
+                                              color: Colors.blue,
+                                            ),
+                                          SizedBox(width: 4.w),
                                         Expanded(
                                           child: Text(
                                             lastText,

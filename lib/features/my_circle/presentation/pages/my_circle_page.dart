@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../models/my_circle_contact.dart';
 import '../../providers/my_circle_provider.dart';
+import '../../../chat/models/chat_model.dart';
 import '../widgets/add_contact_sheet.dart';
 
 class MyCirclePage extends ConsumerStatefulWidget {
@@ -17,12 +22,22 @@ class MyCirclePage extends ConsumerStatefulWidget {
 }
 
 class _MyCirclePageState extends ConsumerState<MyCirclePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   TabController? _tabController;
 
   static const _bloodGroupOrder = [
-    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
   ];
+
+  /// Ensures the auto-link check only runs once per page lifecycle.
+  bool _autoLinkChecked = false;
 
   @override
   void dispose() {
@@ -34,25 +49,34 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
   Widget build(BuildContext context) {
     final contactsAsync = ref.watch(myCircleProvider);
 
+    // Auto-link: once per page load, check non-app-user contacts
+    // to see if they've since joined the app.
+    ref.listen(myCircleProvider, (prev, next) {
+      next.whenData((contacts) => _autoLinkUnlinkedContacts(contacts));
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 32.w,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 PhosphorIcons.usersThree,
                 color: Colors.red.shade600,
-                size: 18,
+                size: 18.w,
               ),
             ),
-            const SizedBox(width: 10),
-            const Text('My Circle', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(width: 8.w),
+            const Text(
+              'My Circle',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         bottom: contactsAsync.maybeWhen(
@@ -64,7 +88,9 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
               grouped[c.bloodGroup]!.add(c);
             }
             final available = _bloodGroupOrder
-                .where((bg) => grouped.containsKey(bg) && grouped[bg]!.isNotEmpty)
+                .where(
+                  (bg) => grouped.containsKey(bg) && grouped[bg]!.isNotEmpty,
+                )
                 .toList();
             if (available.isEmpty) return null as PreferredSizeWidget?;
 
@@ -80,7 +106,9 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
               labelColor: Colors.red.shade700,
               unselectedLabelColor: Colors.grey,
               indicatorColor: Colors.red.shade700,
-              tabs: available.map((bg) => Tab(text: '$bg (${grouped[bg]!.length})')).toList(),
+              tabs: available
+                  .map((bg) => Tab(text: '$bg (${grouped[bg]!.length})'))
+                  .toList(),
             );
           },
           orElse: () => null as PreferredSizeWidget?,
@@ -89,10 +117,10 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: const Icon(PhosphorIcons.plusBold, size: 20),
+        icon: Icon(PhosphorIcons.plusBold, size: 20.w),
         label: const Text('Add Contact'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         onPressed: () {
           showModalBottomSheet(
@@ -114,7 +142,10 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
   }
 
   Widget _buildBody(
-      BuildContext context, WidgetRef ref, List<MyCircleContact> contacts) {
+    BuildContext context,
+    WidgetRef ref,
+    List<MyCircleContact> contacts,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (contacts.isEmpty) {
@@ -123,33 +154,33 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 72.w,
+              height: 72.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               child: Icon(
                 PhosphorIcons.usersThree,
-                size: 34,
+                size: 34.w,
                 color: Colors.red.shade300,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 1.h),
             Text(
               'No contacts yet',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               "Tap + to add family & friends\nto your circle",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 height: 1.4,
               ),
@@ -171,10 +202,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
 
     if (_tabController == null || _tabController!.length != available.length) {
       _tabController?.dispose();
-      _tabController = TabController(
-        length: available.length,
-        vsync: this,
-      );
+      _tabController = TabController(length: available.length, vsync: this);
     }
 
     return TabBarView(
@@ -182,7 +210,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
       children: available.map((bg) {
         final bgContacts = grouped[bg]!;
         return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 96.h),
           itemCount: bgContacts.length,
           itemBuilder: (context, index) {
             return Padding(
@@ -196,11 +224,15 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
   }
 
   Widget _buildContactCard(
-      BuildContext context, WidgetRef ref, MyCircleContact contact, bool isDark) {
+    BuildContext context,
+    WidgetRef ref,
+    MyCircleContact contact,
+    bool isDark,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -210,59 +242,93 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(12.w),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 40.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Center(
                 child: Text(
-                  contact.name.isNotEmpty
-                      ? contact.name[0].toUpperCase()
-                      : '?',
+                  contact.name.isNotEmpty ? contact.name[0].toUpperCase() : '?',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.red.shade600,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 8.w),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: .start,
                     children: [
                       Expanded(
-                        child: Text(
-                          contact.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Text(
+                              contact.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                                height: 1.2,
+                                color: isDark
+                                    ? Colors.grey.shade200
+                                    : Colors.grey.shade800,
+                              ),
+                            ),
+
+                            SizedBox(height: 2.h),
+
+                            Row(
+                              children: [
+                                Icon(
+                                  PhosphorIcons.usersThree,
+                                  size: 14.w,
+                                  color: isDark
+                                      ? Colors.grey.shade500
+                                      : Colors.grey.shade400,
+                                ),
+                                SizedBox(width: 6.w),
+                                Text(
+                                  contact.relation,
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       if (contact.isAppUser)
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 3.h,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
                             'App User',
                             style: TextStyle(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               color: Colors.green.shade700,
                               fontWeight: FontWeight.w600,
                             ),
@@ -270,35 +336,29 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
-                      Icon(PhosphorIcons.phone,
-                          size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                      const SizedBox(width: 6),
+                      Icon(
+                        PhosphorIcons.phone,
+                        size: 14.w,
+                        color: isDark
+                            ? Colors.grey.shade500
+                            : Colors.grey.shade400,
+                      ),
+                      SizedBox(width: 6.w),
                       Text(
                         contact.phone,
                         style: TextStyle(
-                            fontSize: 13,
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
+                          fontSize: 13.sp,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade700,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(PhosphorIcons.usersThree,
-                          size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                      const SizedBox(width: 6),
-                      Text(
-                        contact.relation,
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 6.h),
                   Row(
                     children: [
                       _ActionButton(
@@ -307,7 +367,14 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                         color: Colors.green.shade600,
                         onTap: () => _callNumber(contact.phone),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
+                      if (contact.isAppUser)
+                        _ActionButton(
+                          icon: PhosphorIcons.chatDots,
+                          label: 'Message',
+                          color: Colors.blue.shade600,
+                          onTap: () => _messageContact(contact),
+                        ),
                       if (!contact.isAppUser)
                         _ActionButton(
                           icon: PhosphorIcons.shareNetwork,
@@ -333,6 +400,40 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
     );
   }
 
+  /// For contacts that were added before their phone number was linked to
+  /// an app user, check if they've registered since and update accordingly.
+  ///
+  /// Only runs once per page lifecycle (guarded by [_autoLinkChecked]).
+  Future<void> _autoLinkUnlinkedContacts(List<MyCircleContact> contacts) async {
+    if (_autoLinkChecked) return;
+    _autoLinkChecked = true;
+
+    final unlinked = contacts
+        .where((c) => !c.isAppUser && c.phone.isNotEmpty)
+        .toList();
+    if (unlinked.isEmpty) return;
+
+    try {
+      final repo = ref.read(myCircleRepositoryProvider);
+
+      // Batch check all unlinked contact phones
+      final appUsers = await repo.findRegisteredUsersByPhones(
+        unlinked.map((c) => c.phone).toList(),
+      );
+      if (appUsers.isEmpty) return;
+
+      // Link each matching contact
+      for (final contact in unlinked) {
+        final userId = appUsers[PhoneUtils.normalize(contact.phone)];
+        if (userId != null) {
+          await repo.linkContactToUser(contact.id, userId);
+        }
+      }
+    } catch (e) {
+      debugPrint('autoLinkUnlinkedContacts error: $e');
+    }
+  }
+
   Future<void> _callNumber(String phone) async {
     final uri = Uri.parse('tel:$phone');
     try {
@@ -352,8 +453,62 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
     );
   }
 
+  Future<void> _messageContact(MyCircleContact contact) async {
+    final otherUserId = contact.linkedUserId;
+    if (otherUserId == null) return;
+
+    try {
+      final currentUserId = ref.read(authRepositoryProvider).currentUser!.uid;
+      final communityRepo = ref.read(communityRepositoryProvider);
+
+      final existingChats = await communityRepo.getExistingChat(
+        currentUserId,
+        otherUserId,
+      );
+
+      DocumentSnapshot<Map<String, dynamic>>? chatDoc;
+      if (existingChats.isNotEmpty) {
+        chatDoc = existingChats.first;
+      }
+
+      if (chatDoc == null) {
+        final emptyMsg = MessageModel(
+          id: '',
+          senderId: '',
+          text: 'Hi! Feel free to send your first message.',
+          timestamp: DateTime.now(),
+          seenBy: [],
+        );
+
+        final newChatRef = await communityRepo.addChat({
+          'participants': [currentUserId, otherUserId],
+          'lastMessage': emptyMsg.toMap(),
+          'lastTime': FieldValue.serverTimestamp(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'archivedBy': [],
+          'deletedBy': [],
+        });
+        chatDoc = await newChatRef.get();
+      }
+
+      if (context.mounted) {
+        context.push('/chats/${chatDoc.id}');
+      }
+    } catch (e) {
+      debugPrint('Error messaging contact: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to start chat: $e')));
+      }
+    }
+  }
+
   Future<void> _removeContact(
-      BuildContext context, WidgetRef ref, MyCircleContact contact) async {
+    BuildContext context,
+    WidgetRef ref,
+    MyCircleContact contact,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -361,24 +516,22 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
         content: Text('Remove ${contact.name} from your circle?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child:
-                const Text('Remove', style: TextStyle(color: Colors.red)),
+            child: Text('Remove', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
-      final ownerId =
-          ref.read(authRepositoryProvider).currentUser!.uid;
-      await ref.read(myCircleRepositoryProvider).removeContact(
-            ownerId,
-            contact.id,
-          );
+      final ownerId = ref.read(authRepositoryProvider).currentUser!.uid;
+      await ref
+          .read(myCircleRepositoryProvider)
+          .removeContact(ownerId, contact.id);
     }
   }
 }
@@ -400,25 +553,26 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(8.r),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15, color: color),
+            Icon(icon, size: 15.w, color: color),
             if (label.isNotEmpty) ...[
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text(
                 label,
                 style: TextStyle(
-                    fontSize: 12,
-                    color: color,
-                    fontWeight: FontWeight.w600),
+                  fontSize: 12.sp,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ],

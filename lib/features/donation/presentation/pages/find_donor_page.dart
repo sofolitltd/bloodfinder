@@ -6,6 +6,7 @@ import 'package:bloodfinder/features/community/models/community.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +21,7 @@ class FindDonorPage extends ConsumerStatefulWidget {
   final double longitude;
   final double radiusInKm;
 
-  const FindDonorPage({
+  FindDonorPage({
     super.key,
     required this.bloodGroup,
     required this.latitude,
@@ -140,7 +141,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           children: [
             Icon(Icons.search_off,
                 size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               'No ${widget.bloodGroup} donors found\nwithin ${widget.radiusInKm.round()} km',
               textAlign: TextAlign.center,
@@ -152,9 +153,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       itemCount: _donors.length + (_hasMore ? 1 : 0),
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, __) => SizedBox(height: 16.h),
       itemBuilder: (context, index) {
         if (index == _donors.length) {
           return const Center(child: CircularProgressIndicator());
@@ -202,7 +203,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
               children: [
                 Icon(Icons.search_off,
                     size: 64, color: Colors.grey.shade400),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   'No communities with ${widget.bloodGroup}\ndonors found within ${widget.radiusInKm.round()} km',
                   textAlign: TextAlign.center,
@@ -214,9 +215,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         }
 
         return ListView.separated(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           itemCount: docs.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          separatorBuilder: (_, __) => SizedBox(height: 16.h),
           itemBuilder: (context, index) {
             final community = Community.fromJson({
               ...docs[index].data(),
@@ -255,7 +256,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isDark ? Colors.transparent : Colors.grey.shade200,
             width: 0.5,
@@ -269,17 +270,17 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 48.w,
+                height: 48.h,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: community.images.isEmpty
@@ -288,7 +289,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                             ? community.name[0].toUpperCase()
                             : 'C',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.red.shade600,
                         ),
@@ -296,11 +297,11 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                     : CachedNetworkImage(
                         imageUrl: community.images.first,
                         fit: BoxFit.cover,
-                        width: 48,
-                        height: 48,
+                        width: 48.w,
+                        height: 48.h,
                       ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,13 +310,13 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       community.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: isDark
                             ? Colors.grey.shade200
                             : Colors.grey.shade800,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     if (community.locationAddress != null &&
                         community.locationAddress!.isNotEmpty)
                       Row(
@@ -327,12 +328,12 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                                 ? Colors.grey.shade500
                                 : Colors.grey.shade400,
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Expanded(
                             child: Text(
                               community.locationAddress!,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
@@ -343,40 +344,40 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           ),
                         ],
                       ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
                         if (distance != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 3.h),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               '${distance.toStringAsFixed(1)} km',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.red.shade700,
                               ),
                             ),
                           ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 3.h),
                           decoration: BoxDecoration(
                             color: count > 0
                                 ? Colors.red.shade50
                                 : Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
                             '$count ${widget.bloodGroup} donor${count == 1 ? '' : 's'}',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.w600,
                               color: count > 0
                                   ? Colors.red.shade700
@@ -389,8 +390,8 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 4),
+              Padding(
+                padding: EdgeInsets.only(left: 4.w),
                 child: Icon(
                   PhosphorIcons.caretRight,
                   size: 16,
@@ -428,7 +429,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
               children: [
                 Icon(Icons.local_hospital,
                     size: 64, color: Colors.grey.shade400),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   'No blood banks found\nwithin ${widget.radiusInKm.round()} km',
                   textAlign: TextAlign.center,
@@ -440,9 +441,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         }
 
         return ListView.separated(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           itemCount: docs.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          separatorBuilder: (_, __) => SizedBox(height: 16.h),
           itemBuilder: (context, index) {
             final bank = BloodBank.fromJson({
               ...docs[index].data(),
@@ -482,7 +483,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isDark ? Colors.transparent : Colors.grey.shade200,
             width: 0.5,
@@ -496,16 +497,16 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 48.w,
+                height: 48.h,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: bank.imageUrl != null && bank.imageUrl!.isNotEmpty
@@ -526,7 +527,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         size: 22,
                       ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,7 +536,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       bank.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: isDark
                             ? Colors.grey.shade200
                             : Colors.grey.shade800,
@@ -543,7 +544,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     if (bank.locationAddress != null &&
                         bank.locationAddress!.isNotEmpty)
                       Row(
@@ -555,12 +556,12 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                                 ? Colors.grey.shade500
                                 : Colors.grey.shade400,
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Expanded(
                             child: Text(
                               bank.locationAddress!,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
@@ -571,39 +572,39 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           ),
                         ],
                       ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
                         if (distance != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 3.h),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               '${distance.toStringAsFixed(1)} km',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.red.shade700,
                               ),
                             ),
                           ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         if (bank.mobile1.isNotEmpty)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 3.h),
                             decoration: BoxDecoration(
                               color: Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               bank.mobile1,
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.green.shade700,
                               ),
@@ -614,8 +615,8 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 4),
+              Padding(
+                padding: EdgeInsets.only(left: 4.w),
                 child: Icon(
                   PhosphorIcons.caretRight,
                   size: 16,
@@ -648,7 +649,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isDark ? Colors.transparent : Colors.grey.shade200,
           width: 0.5,
@@ -662,15 +663,15 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(12.w),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 44.w,
+              height: 44.h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 color: Colors.red.shade50,
               ),
               clipBehavior: Clip.antiAlias,
@@ -679,7 +680,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       child: Text(
                         donor.firstName[0].toUpperCase(),
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.red.shade600,
                         ),
@@ -696,7 +697,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       ),
                     ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -708,7 +709,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           '${donor.firstName} ${donor.lastName}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: isDark
                                 ? Colors.grey.shade200
                                 : Colors.grey.shade800,
@@ -717,7 +718,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         ),
                       ),
                       if (isVerified) ...[
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Icon(
                           Icons.verified,
                           size: 14,
@@ -726,7 +727,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       ],
                     ],
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   if (donor.locationAddress != null &&
                       donor.locationAddress!.isNotEmpty)
                     Row(
@@ -738,12 +739,12 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                               ? Colors.grey.shade500
                               : Colors.grey.shade400,
                         ),
-                        const SizedBox(width: 3),
+                        SizedBox(width: 3.w),
                         Expanded(
                           child: Text(
                             donor.locationAddress!,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               color: isDark
                                   ? Colors.grey.shade400
                                   : Colors.grey.shade600,
@@ -762,36 +763,36 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
               children: [
                 if (distance != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 6.w, vertical: 2.h),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
                       '${distance.toStringAsFixed(1)} km',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.red.shade700,
                       ),
                     ),
                   ),
-                if (distance != null) const SizedBox(height: 4),
+                if (distance != null) SizedBox(height: 4.h),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Colors.red.shade700, Colors.red.shade500],
                     ),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Text(
                     donor.bloodGroup,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: Colors.white,
                     ),
                   ),

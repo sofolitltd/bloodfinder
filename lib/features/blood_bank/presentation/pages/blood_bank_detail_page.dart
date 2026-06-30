@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -40,14 +41,14 @@ class BloodBankDetailPage extends StatelessWidget {
               child: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 4, 16, 28),
+                  padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               PhosphorIcons.arrowLeft,
                               color: Colors.white,
                             ),
@@ -56,18 +57,18 @@ class BloodBankDetailPage extends StatelessWidget {
                           const Spacer(),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: 56,
-                              height: 56,
+                              width: 56.w,
+                              height: 56.h,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                                 boxShadow: [
                                   BoxShadow(
                                     color:
@@ -82,8 +83,8 @@ class BloodBankDetailPage extends StatelessWidget {
                                       bloodBank.imageUrl!.isNotEmpty
                                   ? CachedNetworkImage(
                                       imageUrl: bloodBank.imageUrl!,
-                                      width: 56,
-                                      height: 56,
+                                      width: 56.w,
+                                      height: 56.h,
                                       fit: BoxFit.cover,
                                       placeholder: (_, __) =>
                                           const Center(
@@ -102,27 +103,27 @@ class BloodBankDetailPage extends StatelessWidget {
                                       size: 28,
                                     ),
                             ),
-                            const SizedBox(width: 14),
+                            SizedBox(width: 14.w),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     bloodBank.name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 20.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   if (bloodBank.address.isNotEmpty) ...[
-                                    const SizedBox(height: 4),
+                                    SizedBox(height: 4.h),
                                     Text(
                                       bloodBank.address,
                                       style: TextStyle(
                                         color: Colors.white
                                             .withValues(alpha: 0.8),
-                                        fontSize: 14,
+                                        fontSize: 14.sp,
                                       ),
                                     ),
                                   ],
@@ -130,13 +131,13 @@ class BloodBankDetailPage extends StatelessWidget {
                                       bloodBank.locationAddress!.isNotEmpty)
                                     Padding(
                                       padding:
-                                          const EdgeInsets.only(top: 2),
+                                          EdgeInsets.only(top: 2.h),
                                       child: Text(
                                         bloodBank.locationAddress!,
                                         style: TextStyle(
                                           color: Colors.white
                                               .withValues(alpha: 0.65),
-                                          fontSize: 12,
+                                          fontSize: 12.sp,
                                         ),
                                       ),
                                     ),
@@ -154,13 +155,13 @@ class BloodBankDetailPage extends StatelessWidget {
           ),
 
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+            padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // Contact card
                 _ContactCard(bloodBank: bloodBank),
 
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 // Share card
                 _ShareCard(bloodBank: bloodBank),
@@ -191,7 +192,7 @@ class _ContactCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -200,34 +201,34 @@ class _ContactCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 28.w,
+                height: 28.h,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(PhosphorIcons.phoneCall,
                     size: 15, color: Colors.red.shade600),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 'Contact',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           if (bloodBank.mobile1.isNotEmpty)
             _InfoTile(
               icon: PhosphorIcons.phoneCall,
@@ -238,7 +239,7 @@ class _ContactCard extends StatelessWidget {
           if (bloodBank.mobile1.isNotEmpty &&
               bloodBank.mobile2 != null &&
               bloodBank.mobile2!.isNotEmpty)
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
           if (bloodBank.mobile2 != null && bloodBank.mobile2!.isNotEmpty)
             _InfoTile(
               icon: PhosphorIcons.phoneCall,
@@ -247,10 +248,10 @@ class _ContactCard extends StatelessWidget {
               onTap: () => _launchUrl('tel:${bloodBank.mobile2}'),
             ),
           if (hasSocials) ...[
-            if (hasPhone) const SizedBox(height: 8),
+            if (hasPhone) SizedBox(height: 8.h),
             ...bloodBank.socialMediaLinks!.map(
               (link) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(bottom: 8.h),
                 child: _InfoTile(
                   icon: _iconForPlatform(link.platform),
                   label: link.platform,
@@ -284,7 +285,7 @@ class _ShareCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -293,15 +294,15 @@ class _ShareCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 36.w,
+            height: 36.h,
             decoration: BoxDecoration(
               color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(
               PhosphorIcons.shareNetwork,
@@ -309,12 +310,12 @@ class _ShareCard extends StatelessWidget {
               color: Colors.blue.shade600,
             ),
           ),
-          const SizedBox(width: 12),
-          const Expanded(
+          SizedBox(width: 12.w),
+          Expanded(
             child: Text(
               'Share this blood bank with others',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -333,18 +334,18 @@ class _ShareCard extends StatelessWidget {
                 ),
               );
             },
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 8),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 12.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
                 'Share',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.blue.shade600,
                 ),
@@ -374,25 +375,25 @@ class _InfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12.r),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 36.w,
+              height: 36.h,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(icon, size: 18, color: Colors.red.shade600),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,16 +401,16 @@ class _InfoTile extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: Colors.grey.shade500,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(
                     value,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade800,
                       fontWeight: FontWeight.w500,
                     ),

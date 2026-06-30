@@ -19,6 +19,7 @@ abstract class EventRepository {
   Stream<DocumentSnapshot<Map<String, dynamic>>> rsvpStream(
       String eventId, String uid);
   Stream<DocumentSnapshot<Map<String, dynamic>>> eventStream(String eventId);
+  Stream<QuerySnapshot<Map<String, dynamic>>> allEventsStream();
 }
 
 class FirebaseEventRepository implements EventRepository {
@@ -70,7 +71,8 @@ class FirebaseEventRepository implements EventRepository {
   @override
   Future<void> deleteEvent(String eventId) async {
     final rsvps = await _dataSource
-        .collection('events/$eventId/rsvps')
+        .collection('event_rsvps')
+        .where('eventId', isEqualTo: eventId)
         .get();
     final batch = _dataSource.batch();
     for (final doc in rsvps.docs) {
@@ -84,9 +86,14 @@ class FirebaseEventRepository implements EventRepository {
   Future<void> rsvpEvent(String eventId, String uid) async {
     final batch = _dataSource.batch();
     final eventRef = _dataSource.document('events/$eventId');
-    final rsvpRef = _dataSource.document('events/$eventId/rsvps/$uid');
+    final rsvpRef =
+        _dataSource.document('event_rsvps/${eventId}_$uid');
     batch.update(eventRef, {'rsvpCount': FieldValue.increment(1)});
-    batch.set(rsvpRef, {'uid': uid, 'createdAt': FieldValue.serverTimestamp()});
+    batch.set(rsvpRef, {
+      'eventId': eventId,
+      'uid': uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
     await batch.commit();
   }
 
@@ -94,7 +101,8 @@ class FirebaseEventRepository implements EventRepository {
   Future<void> cancelRsvp(String eventId, String uid) async {
     final batch = _dataSource.batch();
     final eventRef = _dataSource.document('events/$eventId');
-    final rsvpRef = _dataSource.document('events/$eventId/rsvps/$uid');
+    final rsvpRef =
+        _dataSource.document('event_rsvps/${eventId}_$uid');
     batch.update(eventRef, {'rsvpCount': FieldValue.increment(-1)});
     batch.delete(rsvpRef);
     await batch.commit();
@@ -103,18 +111,23 @@ class FirebaseEventRepository implements EventRepository {
   @override
   Stream<DocumentSnapshot<Map<String, dynamic>>> rsvpStream(
           String eventId, String uid) =>
-      _dataSource.document('events/$eventId/rsvps/$uid').snapshots();
+      _dataSource.document('event_rsvps/${eventId}_$uid').snapshots();
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> userEventsStream(String uid) =>
       _dataSource
           .collection('events')
           .where('organizerUid', isEqualTo: uid)
-          .orderBy('createdAt', descending: true)
           .snapshots();
 
   @override
   Stream<DocumentSnapshot<Map<String, dynamic>>> eventStream(
           String eventId) =>
       _dataSource.document('events/$eventId').snapshots();
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> allEventsStream() =>
+      _dataSource
+          .collection('events')
+          .snapshots();
 }

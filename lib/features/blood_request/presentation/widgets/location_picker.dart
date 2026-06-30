@@ -1,5 +1,6 @@
 import 'package:bloodfinder/core/constants/app_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../community/presentation/pages/search_page.dart';
@@ -38,7 +39,7 @@ class _LocationPickerState extends State<LocationPicker> {
     return Column(
       children: [
         _buildDistrictDropdown(),
-        const SizedBox(height: 16),
+        SizedBox(height: 1.h),
         _buildSubDistrictDropdown(),
       ],
     );
@@ -49,10 +50,10 @@ class _LocationPickerState extends State<LocationPicker> {
       readOnly: true,
       decoration: InputDecoration(
         hintText: _selectedDistrict ?? 'Select District',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: _selectedDistrict != null
             ? IconButton(
-                icon: const Icon(PhosphorIcons.x),
+                icon: Icon(PhosphorIcons.x),
                 onPressed: () {
                   setState(() {
                     _selectedDistrict = null;
@@ -62,7 +63,7 @@ class _LocationPickerState extends State<LocationPicker> {
                   widget.onSubdistrictChanged(null);
                 },
               )
-            : const Icon(PhosphorIcons.caretDown),
+            : Icon(PhosphorIcons.caretDown),
       ),
       onTap: () async {
         final selectedValue = await Navigator.push(
@@ -99,16 +100,16 @@ class _LocationPickerState extends State<LocationPicker> {
       enabled: _selectedDistrict != null,
       decoration: InputDecoration(
         hintText: _selectedSubdistrict ?? 'Select Subdistrict',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: _selectedSubdistrict != null
             ? IconButton(
-                icon: const Icon(PhosphorIcons.x),
+                icon: Icon(PhosphorIcons.x),
                 onPressed: () {
                   setState(() => _selectedSubdistrict = null);
                   widget.onSubdistrictChanged(null);
                 },
               )
-            : const Icon(PhosphorIcons.caretDown),
+            : Icon(PhosphorIcons.caretDown),
       ),
       onTap: () async {
         if (_selectedDistrict == null) return;

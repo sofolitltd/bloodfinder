@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -24,14 +25,14 @@ class ImagePickerSection extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            height: 140,
-            width: 140,
+            height: 140.h,
+            width: 140.w,
             color: Colors.red.shade50.withValues(alpha: 0.4),
             child: pickedImage != null
                 ? Image.file(File(pickedImage!.path))
                 : Icon(
                     Icons.image,
-                    size: 50,
+                    size: 50.w,
                     color: Colors.red.shade100,
                   ),
           ),
@@ -44,7 +45,7 @@ class ImagePickerSection extends StatelessWidget {
                 onTap: onClearImage,
                 child: CircleAvatar(
                   radius: 12,
-                  child: Icon(PhosphorIcons.x, size: 14),
+                  child: Icon(PhosphorIcons.x, size: 14.w),
                 ),
               ),
             ),

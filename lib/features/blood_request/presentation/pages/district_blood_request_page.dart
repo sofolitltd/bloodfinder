@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../data/providers/repository_providers.dart';
 import '../../models/blood_request.dart';
 import '../../../../shared/widgets/blood_request_card.dart';
@@ -83,7 +83,7 @@ class _DistrictRequestsPageState extends ConsumerState<DistrictRequestsPage> {
         children: [
           // Subdistrict filter dropdown
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonFormField<String>(
@@ -130,9 +130,9 @@ class _DistrictRequestsPageState extends ConsumerState<DistrictRequestsPage> {
                 // Simple pagination using ListView.separated
                 // return BloodRequestsPage();
                 return ListView.separated(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   itemCount: requests.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
+                  separatorBuilder: (_, __) => SizedBox(height: 1.h),
                   itemBuilder: (context, index) {
                     return BloodRequestCard(request: requests[index]);
                   },

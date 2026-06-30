@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_data.dart';
 import '../pages/search_page.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -22,7 +22,7 @@ class DistrictDropdownField extends StatelessWidget {
       readOnly: true,
       decoration: InputDecoration(
         hintText: selectedDistrict ?? 'Select District',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: selectedDistrict != null
             ? IconButton(
                 icon: Icon(PhosphorIcons.x),

@@ -73,7 +73,11 @@ final feedbackRepositoryProvider = Provider<FeedbackRepository>((ref) {
   return FirebaseFeedbackRepository(dataSource);
 });
 
-final currentUserProvider = Provider<User?>((ref) {
-  final auth = ref.watch(authRepositoryProvider);
-  return auth.currentUser;
+/// Reactive auth user provider.
+///
+/// Follows Firebase auth state changes so any provider watching this
+/// automatically re-evaluates on login / logout.
+final currentUserProvider = StreamProvider<User?>((ref) {
+  final dataSource = ref.watch(firebaseDataSourceProvider);
+  return dataSource.authStateChanges;
 });

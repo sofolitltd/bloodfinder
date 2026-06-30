@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/social_media_link.dart';
 
 class SocialMediaInput extends StatefulWidget {
@@ -71,19 +71,19 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
         ...List.generate(_entries.length, (i) {
           final entry = _entries[i];
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: 12.h),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 2,
                   child: InputDecorator(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Platform',
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 12,
+                        horizontal: 10.w,
+                        vertical: 12.h,
                       ),
                     ),
                     child: DropdownButtonHideUnderline(
@@ -105,30 +105,30 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Expanded(
                   flex: 3,
                   child: TextFormField(
                     controller: entry.controller,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Enter URL',
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 12,
+                        horizontal: 8.w,
+                        vertical: 12.h,
                       ),
                     ),
                     keyboardType: TextInputType.url,
                     onChanged: (_) => widget.onLinksChanged(_links),
                   ),
                 ),
-                const SizedBox(width: 2),
+                SizedBox(width: 2.w),
                 IconButton(
-                  icon: const Icon(Icons.remove_circle_outline,
-                      color: Colors.red, size: 20),
+                  icon: Icon(Icons.remove_circle_outline,
+                      color: Colors.red, size: 20.w),
                   onPressed: () => _removeEntry(i),
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
+                  constraints: BoxConstraints(
                     minWidth: 28,
                     minHeight: 28,
                   ),
@@ -139,7 +139,7 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
         }),
         TextButton.icon(
           onPressed: _addEntry,
-          icon: const Icon(Icons.add),
+          icon: Icon(Icons.add),
           label: const Text('Add Link'),
         ),
       ],

@@ -21,7 +21,7 @@
 //   final firebaseMessaging = FirebaseMessaging.instance;
 //   final localNotifications = FlutterLocalNotificationsPlugin();
 //
-//   final channel = const AndroidNotificationChannel(
+//   final channel = AndroidNotificationChannel(
 //     'high_importance_channel',
 //     'High Importance Notifications',
 //     description: 'This channel is used for important notifications',
@@ -227,7 +227,7 @@ class FcmApi {
   final firebaseMessaging = FirebaseMessaging.instance;
   final localNotifications = FlutterLocalNotificationsPlugin();
 
-  final channel = const AndroidNotificationChannel(
+  final channel = AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
     description: 'Used for chat & community notifications',

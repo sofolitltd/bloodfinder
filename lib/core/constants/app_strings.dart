@@ -37,8 +37,7 @@ class AppStrings {
 
   // Blood
   static const String bloodGroup = 'Blood Group';
-  static const String district = 'District';
-  static const String subdistrict = 'Subdistrict';
+
 
   // Community
   static const String community = 'Community';

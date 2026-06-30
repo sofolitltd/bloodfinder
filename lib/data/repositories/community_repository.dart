@@ -21,8 +21,7 @@ abstract class CommunityRepository {
   Future<void> deleteCommunity(String communityId);
   Future<void> updateMemberCount(String communityId, int increment);
 
-  CollectionReference<Map<String, dynamic>> membersCollection(
-      String communityId);
+  CollectionReference<Map<String, dynamic>> membersCollection();
   DocumentReference<Map<String, dynamic>> memberDoc(
       String communityId, String uid);
   Stream<DocumentSnapshot<Map<String, dynamic>>> memberStream(
@@ -149,14 +148,13 @@ class FirebaseCommunityRepository implements CommunityRepository {
       });
 
   @override
-  CollectionReference<Map<String, dynamic>> membersCollection(
-          String communityId) =>
-      _dataSource.collection('communities/$communityId/members');
+  CollectionReference<Map<String, dynamic>> membersCollection() =>
+      _dataSource.collection('community_members');
 
   @override
   DocumentReference<Map<String, dynamic>> memberDoc(
           String communityId, String uid) =>
-      _dataSource.document('communities/$communityId/members/$uid');
+      _dataSource.document('community_members/${communityId}_$uid');
 
   @override
   Stream<DocumentSnapshot<Map<String, dynamic>>> memberStream(
@@ -166,14 +164,16 @@ class FirebaseCommunityRepository implements CommunityRepository {
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> approvedMembersStream(
           String communityId) =>
-      membersCollection(communityId)
+      membersCollection()
+          .where('communityId', isEqualTo: communityId)
           .where('member', isEqualTo: true)
           .snapshots();
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> pendingMembersStream(
           String communityId) =>
-      membersCollection(communityId)
+      membersCollection()
+          .where('communityId', isEqualTo: communityId)
           .where('member', isEqualTo: false)
           .snapshots();
 
@@ -183,7 +183,8 @@ class FirebaseCommunityRepository implements CommunityRepository {
         int limit = 20,
         DocumentSnapshot<Map<String, dynamic>>? startAfter,
       }) {
-    var query = membersCollection(communityId)
+    var query = membersCollection()
+        .where('communityId', isEqualTo: communityId)
         .where('member', isEqualTo: true)
         .orderBy(FieldPath.documentId)
         .limit(limit);
@@ -195,8 +196,11 @@ class FirebaseCommunityRepository implements CommunityRepository {
 
   @override
   Future<void> addMember(
-          String communityId, String uid, Map<String, dynamic> data) =>
-      memberDoc(communityId, uid).set(data);
+      String communityId, String uid, Map<String, dynamic> data) {
+    data['communityId'] = communityId;
+    data['uid'] = uid;
+    return memberDoc(communityId, uid).set(data);
+  }
 
   @override
   Future<void> approveMember(String communityId, String uid) =>
@@ -210,7 +214,7 @@ class FirebaseCommunityRepository implements CommunityRepository {
   Stream<QuerySnapshot<Map<String, dynamic>>> userMembershipsStream(
           String uid) =>
       _dataSource
-          .collectionGroup('members')
+          .collection('community_members')
           .where('uid', isEqualTo: uid)
           .where('member', isEqualTo: true)
           .snapshots();
@@ -278,7 +282,8 @@ class FirebaseCommunityRepository implements CommunityRepository {
         DocumentSnapshot<Map<String, dynamic>>? startAfter,
       }) {
     var query = _dataSource
-        .collection('users/$uid/notifications')
+        .collection('notifications')
+        .where('uid', isEqualTo: uid)
         .orderBy('createdAt', descending: true)
         .limit(20);
     if (startAfter != null) {
@@ -289,17 +294,19 @@ class FirebaseCommunityRepository implements CommunityRepository {
 
   @override
   Future<DocumentReference<Map<String, dynamic>>> addNotification(
-          String uid, Map<String, dynamic> data) =>
-      _dataSource.collection('users/$uid/notifications').add(data);
+          String uid, Map<String, dynamic> data) {
+    data['uid'] = uid;
+    return _dataSource.collection('notifications').add(data);
+  }
 
   @override
   Future<void> markNotificationRead(String uid, String notifId) =>
-      _dataSource.document('users/$uid/notifications/$notifId').update({'read': true});
+      _dataSource.document('notifications/$notifId').update({'read': true});
 
   @override
   Future<DocumentSnapshot<Map<String, dynamic>>> getNotificationDoc(
           String uid, String notifId) =>
-      _dataSource.document('users/$uid/notifications/$notifId').get();
+      _dataSource.document('notifications/$notifId').get();
 
   @override
   Future<bool> isAdmin(String uid) =>

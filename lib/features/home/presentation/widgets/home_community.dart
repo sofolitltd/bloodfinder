@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -12,14 +13,14 @@ class HomeCommunitySection extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.pushNamed(AppRoute.community.name),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.red.shade800, Colors.red.shade500],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         child: Row(
           children: [
@@ -32,33 +33,33 @@ class HomeCommunitySection extends StatelessWidget {
                     'Join your community',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 17,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 2.h),
                   Text(
-                    'Connect with donors and organizations near you',
+                    'Connect with donors and orgizations near you.',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.85),
-                      fontSize: 13,
-                      height: 1.4,
+                      fontSize: 10.sp,
+                      height: 1.2,
                     ),
                   ),
                 ],
               ),
             ),
             Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 56.h,
               decoration: BoxDecoration(
                 color: Colors.white24,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
-              child: const Icon(
+              child: Icon(
                 PhosphorIcons.handshake,
                 color: Colors.white,
-                size: 26,
+                size: 26.w,
               ),
             ),
           ],

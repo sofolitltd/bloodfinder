@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../models/blood_bank.dart';
@@ -26,11 +25,11 @@ class BloodBankCard extends StatelessWidget {
           builder: (_) => BloodBankDetailPage(bloodBank: bloodBank),
         ),
       ),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(16.r),
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -40,15 +39,15 @@ class BloodBankCard extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 48.w,
+                height: 48.h,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                   color: Colors.red.shade50,
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -61,16 +60,16 @@ class BloodBankCard extends StatelessWidget {
                         errorWidget: (_, _, _) => Icon(
                           Icons.local_hospital,
                           color: Colors.red.shade200,
-                          size: 22,
+                          size: 22.w,
                         ),
                       )
                     : Icon(
                         Icons.local_hospital,
                         color: Colors.red.shade200,
-                        size: 22,
+                        size: 22.w,
                       ),
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 1.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,24 +77,24 @@ class BloodBankCard extends StatelessWidget {
                     Text(
                       bloodBank.name,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
                         Icon(PhosphorIcons.hospital,
-                            size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                        const SizedBox(width: 6),
+                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        SizedBox(width: 6.w),
                         Expanded(
                           child: Text(
                             bloodBank.address,
                             style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -103,17 +102,17 @@ class BloodBankCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Row(
                       children: [
                         Icon(PhosphorIcons.mapPin,
-                            size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                        const SizedBox(width: 6),
+                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        SizedBox(width: 6.w),
                         Expanded(
                           child: Text(
                             bloodBank.locationAddress ?? 'Location not set',
                             style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -121,16 +120,16 @@ class BloodBankCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Row(
                       children: [
                         Icon(PhosphorIcons.phoneCall,
-                            size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                        const SizedBox(width: 6),
+                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        SizedBox(width: 6.w),
                         Text(
                           bloodBank.mobile1,
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
                         ),
                       ],
@@ -138,11 +137,11 @@ class BloodBankCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 8),
+              Padding(
+                padding: EdgeInsets.only(left: 8.w),
                 child: Icon(
                   PhosphorIcons.caretRight,
-                  size: 16,
+                  size: 16.w,
                   color: Colors.grey,
                 ),
               ),

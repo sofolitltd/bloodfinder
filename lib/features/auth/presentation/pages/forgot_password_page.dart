@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../data/providers/repository_providers.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -65,7 +65,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
             backgroundColor: Colors.green.shade700,
             behavior: SnackBarBehavior.floating,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
           ),
         );
       }
@@ -87,7 +87,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
             backgroundColor: Colors.red.shade700,
             behavior: SnackBarBehavior.floating,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
           ),
         );
       }
@@ -119,7 +119,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                     Colors.red.shade400,
                   ],
                 ),
-                borderRadius: const BorderRadius.vertical(
+                borderRadius: BorderRadius.vertical(
                   bottom: Radius.elliptical(300, 45),
                 ),
               ),
@@ -132,7 +132,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                       left: 8,
                       child: IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back_rounded),
+                        icon: Icon(Icons.arrow_back_rounded),
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.white24,
                           foregroundColor: Colors.white,
@@ -145,35 +145,35 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(height: 12),
+                            SizedBox(height: 1.h),
                             Container(
-                              width: 64,
-                              height: 64,
-                              decoration: const BoxDecoration(
+                              width: 64.w,
+                              height: 64.h,
+                              decoration: BoxDecoration(
                                 color: Colors.white24,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 PhosphorIcons.lock,
                                 color: Colors.white,
-                                size: 34,
+                                size: 34.w,
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: 1.h),
                             Text(
                               'Reset Password',
                               style: TextStyle(
-                                fontSize: 26,
+                                fontSize: 26.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                                 letterSpacing: 0.5,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               "We'll send you a reset link",
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: Colors.white.withValues(alpha: 0.8),
                               ),
                             ),
@@ -192,7 +192,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                  padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 24.h),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -202,7 +202,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                             border: Border.all(
                               color: Colors.grey.shade200,
                               width: 0.5,
@@ -215,7 +215,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20.w),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -224,33 +224,33 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                                 children: [
                                   Icon(
                                     PhosphorIcons.info,
-                                    size: 20,
+                                    size: 20.w,
                                     color: Colors.red.shade600,
                                   ),
                                   Text(
                                     'Forgot your password?',
                                     style: TextStyle(
-                                      fontSize: 17,
+                                      fontSize: 17.sp,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey.shade800,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8.h),
                               Text(
                                 'Enter the email address associated with your account. We\'ll send you a link to reset your password.',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   color: colorScheme.onSurfaceVariant,
                                   height: 1.4,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4.h),
                               Text(
                                 'Don\'t forget to check your spam folder.',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   color: Colors.red.shade400,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -258,14 +258,14 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 1.h),
 
                         // Email card
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                             border: Border.all(
                               color: Colors.grey.shade200,
                               width: 0.5,
@@ -278,15 +278,15 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20.w),
                           child: Column(
                             children: [
                               TextFormField(
                                 controller: _emailController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: 'Email address',
                                   prefixIcon:
-                                      Icon(PhosphorIcons.envelope, size: 20),
+                                      Icon(PhosphorIcons.envelope, size: 20.w),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
@@ -301,30 +301,30 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 2.h),
 
                               // Send Reset Link button
                               SizedBox(
                                 width: double.infinity,
-                                height: 50,
+                                height: 50.h,
                                 child: ElevatedButton(
                                   onPressed:
                                       _isLoading ? null : _resetPassword,
                                   style:
                                       ElevatedButton.styleFrom(elevation: 0),
                                   child: _isLoading
-                                      ? const SizedBox(
-                                          height: 22,
-                                          width: 22,
+                                      ? SizedBox(
+                                          height: 22.h,
+                                          width: 22.w,
                                           child: CircularProgressIndicator(
                                             color: Colors.white,
                                             strokeWidth: 2.5,
                                           ),
                                         )
-                                      : const Text(
+                                      : Text(
                                           'Send Reset Link',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -333,13 +333,13 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 2.h),
 
                         // Back to login
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                             visualDensity: VisualDensity.compact,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -349,16 +349,16 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                             children: [
                               Icon(
                                 Icons.arrow_back_rounded,
-                                size: 18,
+                                size: 18.w,
                                 color: Colors.red.shade600,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Text(
                                 'Back to Login',
                                 style: TextStyle(
                                   color: Colors.red.shade600,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],

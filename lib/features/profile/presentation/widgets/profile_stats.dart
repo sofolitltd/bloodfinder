@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ProfileStats extends StatelessWidget {
@@ -27,13 +28,13 @@ class ProfileStats extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Transform.translate(
-      offset: const Offset(0, -24),
+      offset: const Offset(0, -64),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+        margin: EdgeInsets.symmetric(horizontal: 16.w),
         width: double.infinity,
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -42,7 +43,7 @@ class ProfileStats extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 0.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -105,13 +106,13 @@ class _StatItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: color, size: 26),
-        const SizedBox(height: 6),
+        Icon(icon, color: color, size: 26.w),
+        SizedBox(height: 6.h),
         Text(
           value,
           style: TextStyle(
             color: color,
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -119,7 +120,7 @@ class _StatItem extends StatelessWidget {
           label,
           style: TextStyle(
             color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-            fontSize: 11,
+            fontSize: 11.sp,
           ),
         ),
       ],
@@ -135,8 +136,8 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1,
-      height: 48,
+      width: 1.w,
+      height: 48.h,
       color: isDark ? Colors.grey.shade700.withValues(alpha: 0.4) : Colors.grey.shade200,
     );
   }
