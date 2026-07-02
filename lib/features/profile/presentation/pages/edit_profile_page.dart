@@ -14,6 +14,7 @@ import '../../../../data/models/user_model.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../widgets/address_management_section.dart';
 import '../widgets/avatar_picker.dart';
+import '../widgets/section_card.dart';
 
 class EditProfilePage extends ConsumerStatefulWidget {
   const EditProfilePage({super.key});
@@ -277,7 +278,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 title: 'Profile Information',
               ),
               SizedBox(height: 12.h),
-              _SectionCard(
+              SectionCard(
                 children: [
                   AvatarPicker(
                     selectedImage: _selectedImage,
@@ -331,7 +332,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 title: 'Medical Info',
               ),
               SizedBox(height: 12.h),
-              _SectionCard(
+              SectionCard(
                 children: [
                   Row(
                     children: [
@@ -460,7 +461,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 title: 'Location',
               ),
               SizedBox(height: 12.h),
-              _SectionCard(
+              SectionCard(
                 children: [
                   AddressManagementSection(
                     savedAddresses: _savedAddresses,
@@ -548,31 +549,3 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _SectionCard extends StatelessWidget {
-  final List<Widget> children;
-
-  const _SectionCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
-    );
-  }
-}

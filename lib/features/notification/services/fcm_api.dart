@@ -230,7 +230,7 @@ class FcmApi {
   final channel = AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
-    description: 'Used for chat & community notifications',
+    description: 'Used for chat, community & event notifications',
     importance: Importance.high,
   );
 
@@ -258,8 +258,17 @@ class FcmApi {
       }
     });
 
+    await _subscribeToTopics();
     await _updateToken();
     await initLocalPushNotifications();
+  }
+
+  Future<void> _subscribeToTopics() async {
+    try {
+      await firebaseMessaging.subscribeToTopic('all_users');
+    } catch (_) {
+      // Silently ignore — non-critical
+    }
   }
 
   Future<void> _updateToken() async {
@@ -315,6 +324,9 @@ class FcmApi {
           routerConfig.push('/community');
           routerConfig.push('/community/$communityId');
         }
+        break;
+      case 'event':
+        routerConfig.push('/events');
         break;
       default:
         routerConfig.go('/notification');

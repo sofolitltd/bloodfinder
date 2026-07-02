@@ -1,120 +1,13 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-//
-// import '../data/models/notification.dart';
-// import '../features/chat/chat_detail_page.dart';
-// import '../features/community/community_details.dart';
-//
-// class NotificationPage extends StatelessWidget {
-//   const NotificationPage({super.key});
-//
-//   String get _uid => FirebaseAuth.instance.currentUser!.uid;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Notifications'), centerTitle: true),
-//       body: StreamBuilder<QuerySnapshot>(
-//         stream: FirebaseFirestore.instance
-//             .collection('users')
-//             .doc(_uid)
-//             .collection('notifications')
-//             .orderBy('createdAt', descending: true)
-//             .snapshots(),
-//         builder: (context, snapshot) {
-//           if (!snapshot.hasData) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-//
-//           final docs = snapshot.data!.docs;
-//           if (docs.isEmpty) {
-//             return const Center(
-//               child: Text(
-//                 'No notifications yet.',
-//                 style: TextStyle(color: Colors.grey),
-//               ),
-//             );
-//           }
-//
-//           final notifications = docs
-//               .map(
-//                 (doc) => NotificationModel.fromJson(
-//                   doc.data() as Map<String, dynamic>,
-//                 ),
-//               )
-//               .toList();
-//
-//           return ListView.separated(
-//             itemCount: notifications.length,
-//             separatorBuilder: (_, __) => Divider(height: 8.h),
-//             itemBuilder: (context, index) {
-//               final notif = notifications[index];
-//               return Card(
-//                 color: notif.read ? null : Colors.red.shade50,
-//                 child: ListTile(
-//                   title: Text(notif.title),
-//                   subtitle: Text(notif.body),
-//                   onTap: () async {
-//                     // Mark as read
-//                     await FirebaseFirestore.instance
-//                         .collection('users')
-//                         .doc(_uid)
-//                         .collection('notifications')
-//                         .doc(notif.id)
-//                         .update({'read': true});
-//
-//                     // Navigate based on type
-//                     switch (notif.type) {
-//                       case 'chats':
-//                         if (notif.data?['chatId'] != null) {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (_) =>
-//                                   ChatDetailPage(chatId: notif.data!['chatId']),
-//                             ),
-//                           );
-//                         }
-//                         break;
-//                       case 'community':
-//                         if (notif.data?['communityId'] != null) {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (_) => CommunityDetailsPage(
-//                                 communityId: notif.data!['communityId'],
-//                               ),
-//                             ),
-//                           );
-//                         }
-//                         break;
-//                       default:
-//                         ScaffoldMessenger.of(context).showSnackBar(
-//                           const SnackBar(
-//                             content: Text('Unknown notification type'),
-//                           ),
-//                         );
-//                     }
-//                   },
-//                 ),
-//               );
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/notification.dart';
+import '../../models/announcement_model.dart';
 
 import '../../../../data/providers/notification_provider.dart';
+import '../../../../data/providers/repository_providers.dart';
 
 import '../../../../routes/router_config.dart';
 
@@ -127,45 +20,57 @@ class NotificationPage extends ConsumerStatefulWidget {
   ConsumerState<NotificationPage> createState() => _NotificationPageState();
 }
 
-class _NotificationPageState extends ConsumerState<NotificationPage> {
-  final ScrollController _controller = ScrollController();
-  DocumentSnapshot<Map<String, dynamic>>? lastDoc;
-  bool isLoadingMore = false;
-  List<NotificationModel> notifications = [];
+class _NotificationPageState extends ConsumerState<NotificationPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  // Notification pagination
+  final ScrollController _scrollCtrl = ScrollController();
+  DocumentSnapshot<Map<String, dynamic>>? _lastDoc;
+  bool _isLoadingMore = false;
+  List<NotificationModel> _notifications = [];
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onScroll);
+    _tabController = TabController(length: 2, vsync: this);
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollCtrl.dispose();
+    super.dispose();
   }
 
   void _onScroll() {
-    if (_controller.position.pixels >=
-        _controller.position.maxScrollExtent - 200) {
+    if (_scrollCtrl.position.pixels >=
+        _scrollCtrl.position.maxScrollExtent - 200) {
       _loadMore();
     }
   }
 
   Future<void> _loadMore() async {
-    if (isLoadingMore) return;
-    isLoadingMore = true;
+    if (_isLoadingMore) return;
+    _isLoadingMore = true;
 
     final repo = ref.read(notificationRepositoryProvider);
     final stream = repo.getNotifications(
       userId: widget.userId,
-      startAfter: lastDoc,
+      startAfter: _lastDoc,
     );
     final snapshot = await stream.first;
     if (snapshot.isNotEmpty) {
-      lastDoc = await FirebaseFirestore.instance
+      _lastDoc = await FirebaseFirestore.instance
           .collection('notifications')
           .doc(snapshot.last.id)
           .get();
-      notifications.addAll(snapshot);
+      _notifications.addAll(snapshot);
       setState(() {});
     }
 
-    isLoadingMore = false;
+    _isLoadingMore = false;
   }
 
   @override
@@ -175,75 +80,363 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications'), centerTitle: true),
-      body: asyncNotifications.when(
-        data: (list) {
-          notifications = list;
-          return ListView.separated(
-            separatorBuilder: (_, __) => Divider(height: 8.h),
-            controller: _controller,
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final n = notifications[index];
+      appBar: AppBar(
+        title: const Text('Notifications'),
+        centerTitle: true,
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.red.shade700,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: Colors.red.shade700,
+          tabs: const [
+            Tab(text: 'Notifications'),
+            Tab(text: 'Announcements'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // Tab 1: Personal notifications
+          asyncNotifications.when(
+            data: (list) {
+              _notifications = list;
 
-              // if no notifications then show msg
-              if (notifications.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No notifications yet.',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                );
+              if (_notifications.isEmpty) {
+                return _emptyState('No notifications yet.');
               }
 
-              //
-              return Card(
-                color: n.read ? null : Colors.red.shade50,
-                child: ListTile(
-                  title: Row(
-                    children: [
-                      Expanded(child: Text(n.title)),
-                      Text(
-                        timeAgo(n.createdAt),
-                        style: TextStyle(fontSize: 12.sp),
-                      ),
-                    ],
-                  ),
-                  subtitle: Text(n.body),
+              return ListView.separated(
+                separatorBuilder: (_, _) => Divider(height: 10.h),
+                controller: _scrollCtrl,
+                itemCount: _notifications.length,
+                padding: .symmetric(vertical: 8.h),
+                itemBuilder: (context, index) {
+                  final n = _notifications[index];
 
-                  onTap: () async {
-                    // mark as read
-                    await FirebaseFirestore.instance
-                        .collection('notifications')
-                        .doc(n.id)
-                        .update({'read': true});
-                    // handle navigation based on type
-                    switch (n.type) {
-                      case 'chats':
-                        final chatId = n.data['chatId'];
-                        if (chatId != null) {
-                          // routerConfig.push('/chats');
-                          routerConfig.push('/chats/$chatId');
-                        }
-                        break;
-                      case 'community':
-                        final communityId = n.data['communityId'];
-                        if (communityId != null) {
-                          // routerConfig.push('/community');
-                          routerConfig.push('/community/$communityId');
-                        }
-                        break;
-                      default:
-                        routerConfig.go('/notification');
-                    }
-                  },
-                ),
+                  return Card(
+                    color: n.read ? null : Colors.red.shade50,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Expanded(child: Text(n.title)),
+                          Text(
+                            timeAgo(n.createdAt),
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
+                        ],
+                      ),
+                      subtitle: Text(n.body),
+                      onTap: () {
+                        routerConfig.push(
+                          '/notification-detail',
+                          extra: n,
+                        );
+                      },
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('Error: $e')),
+          ),
+
+          // Tab 2: Admin announcements
+          _announcementsTab(),
+        ],
+      ),
+    );
+  }
+
+  Widget _announcementsTab() {
+    final dataSource = ref.watch(firebaseDataSourceProvider);
+
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: dataSource
+          .collection('announcements')
+          .orderBy('createdAt', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final docs = snapshot.data?.docs ?? [];
+        if (docs.isEmpty) {
+          return _emptyState('No announcements yet.');
+        }
+
+        // Extract unique country values for the filter dropdown
+        final countries = <String>{};
+        for (final doc in docs) {
+          final b = AnnouncementModel.fromDoc(doc);
+          if (b.country != null && b.country!.isNotEmpty) {
+            countries.add(b.country!);
+          }
+        }
+        final sortedCountries = countries.toList()..sort();
+
+        return _AnnouncementsList(
+          docs: docs,
+          countries: sortedCountries,
+        );
+      },
+    );
+  }
+
+  Widget _emptyState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.notifications_none,
+            size: 48.w,
+            color: Colors.grey.shade300,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Separate StatefulWidget to hold the country filter state for announcements.
+class _AnnouncementsList extends StatefulWidget {
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs;
+  final List<String> countries;
+
+  const _AnnouncementsList({
+    required this.docs,
+    required this.countries,
+  });
+
+  @override
+  State<_AnnouncementsList> createState() => _AnnouncementsListState();
+}
+
+class _AnnouncementsListState extends State<_AnnouncementsList> {
+  String? _selectedCountry;
+
+  Widget _buildEmpty(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.notifications_none,
+            size: 48.w,
+            color: Colors.grey.shade300,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Filter broadcasts
+    final filtered = _selectedCountry == null || _selectedCountry!.isEmpty
+        ? widget.docs
+        : widget.docs.where((doc) {
+            final data = doc.data();
+            return data['country'] == _selectedCountry;
+          }).toList();
+
+    return Column(
+      children: [
+        // Country filter bar
+        if (widget.countries.isNotEmpty)
+          Container(
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+            child: Row(
+              children: [
+                Icon(Icons.filter_list, size: 16.w, color: Colors.grey.shade600),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _filterChip(
+                          label: 'All',
+                          selected: _selectedCountry == null,
+                          onTap: () => setState(() => _selectedCountry = null),
+                        ),
+                        SizedBox(width: 6.w),
+                        ...widget.countries.map((c) => Padding(
+                          padding: EdgeInsets.only(right: 6.w),
+                          child: _filterChip(
+                            label: c,
+                            selected: _selectedCountry == c,
+                            onTap: () => setState(() => _selectedCountry = c),
+                          ),
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // Announcement list
+        Expanded(
+          child: filtered.isEmpty
+              ? _buildEmpty('No announcements for this country.')
+              : ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 8.w),
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                  itemBuilder: (context, index) {
+                    final broadcast = AnnouncementModel.fromDoc(filtered[index]);
+                    return Card(
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12.r),
+                        onTap: () {
+                          routerConfig.push(
+                            '/announcement-detail',
+                            extra: broadcast,
+                          );
+                        },
+                        child: Padding(
+                        padding: EdgeInsets.all(12.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                    vertical: 4.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade50,
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.campaign,
+                                        size: 14.w,
+                                        color: Colors.amber.shade700,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        'Announcement',
+                                        style: TextStyle(
+                                          fontSize: 11.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.amber.shade700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (broadcast.country != null)
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 6.w,
+                                      vertical: 2.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: BorderRadius.circular(6.r),
+                                    ),
+                                    child: Text(
+                                      broadcast.country!,
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.blue.shade700,
+                                      ),
+                                    ),
+                                  ),
+                                SizedBox(width: 6.w),
+                                Text(
+                                  timeAgo(broadcast.createdAt),
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Text(
+                              broadcast.title,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              broadcast.body,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey.shade700,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _filterChip({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: selected ? Colors.red.shade50 : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: selected ? Colors.red.shade400 : Colors.grey.shade300,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+            color: selected ? Colors.red.shade700 : Colors.grey.shade600,
+          ),
+        ),
       ),
     );
   }

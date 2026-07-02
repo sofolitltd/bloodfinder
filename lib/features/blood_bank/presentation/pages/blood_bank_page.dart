@@ -11,7 +11,7 @@ import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/user_providers.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
 import '../widgets/add_blood_bank_sheet.dart';
-import '../widgets/location_picker_header.dart';
+import '../../../../shared/widgets/location_picker_header.dart';
 import '../widgets/paginated_bank_list.dart';
 
 const _pageSize = 15;
@@ -50,6 +50,11 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
     _nearbyScrollCtrl = ScrollController()..addListener(_onNearbyScroll);
     _allScrollCtrl = ScrollController()..addListener(_onAllScroll);
     _loadAllBanks();

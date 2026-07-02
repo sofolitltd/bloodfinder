@@ -15,6 +15,7 @@ class BloodEvent {
   final DateTime? endDate;
   final String? imageUrl;
   final int rsvpCount;
+  final String country;
   final DateTime createdAt;
 
   BloodEvent({
@@ -31,6 +32,7 @@ class BloodEvent {
     this.endDate,
     this.imageUrl,
     this.rsvpCount = 0,
+    this.country = '',
     required this.createdAt,
   });
 
@@ -62,6 +64,7 @@ class BloodEvent {
       endDate: (json['endDate'] as Timestamp?)?.toDate(),
       imageUrl: json['imageUrl'] as String?,
       rsvpCount: (json['rsvpCount'] as num?)?.toInt() ?? 0,
+      country: json['country'] as String? ?? '',
       createdAt:
           (json['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
@@ -80,6 +83,7 @@ class BloodEvent {
         if (endDate != null) 'endDate': Timestamp.fromDate(endDate!),
         'imageUrl': imageUrl,
         'rsvpCount': rsvpCount,
+        'country': country,
         'createdAt': Timestamp.fromDate(createdAt),
       };
 }

@@ -25,6 +25,12 @@ import '../features/home/presentation/pages/home_page.dart';
 import '../features/location_onboarding/presentation/pages/location_onboarding_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/events/presentation/pages/events_page.dart';
+import '../features/feedback/presentation/pages/my_feedback_page.dart';
+import '../features/profile/presentation/pages/change_password_page.dart';
+import '../features/notification/models/announcement_model.dart';
+import '../features/notification/models/notification.dart';
+import '../features/notification/presentation/pages/announcement_detail_page.dart';
+import '../features/notification/presentation/pages/notification_detail_page.dart';
 import '../features/community/models/community.dart';
 import '../features/auth/presentation/pages/forgot_password_page.dart';
 
@@ -250,6 +256,48 @@ final routerConfig = GoRouter(
       pageBuilder: (context, state) => const NoTransitionPage(
         child: LocationOnboardingPage(),
       ),
+    ),
+
+    // my feedback
+    GoRoute(
+      name: AppRoute.myFeedback.name,
+      path: AppRoute.myFeedback.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: MyFeedbackPage(),
+      ),
+    ),
+
+    // change password
+    GoRoute(
+      name: AppRoute.changePassword.name,
+      path: AppRoute.changePassword.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ChangePasswordPage(),
+      ),
+    ),
+
+    // notification detail
+    GoRoute(
+      name: AppRoute.notificationDetail.name,
+      path: AppRoute.notificationDetail.path,
+      pageBuilder: (context, state) {
+        final notification = state.extra as NotificationModel;
+        return MaterialPage(
+          child: NotificationDetailPage(notification: notification),
+        );
+      },
+    ),
+
+    // announcement detail
+    GoRoute(
+      name: AppRoute.announcementDetail.name,
+      path: AppRoute.announcementDetail.path,
+      pageBuilder: (context, state) {
+        final announcement = state.extra as AnnouncementModel;
+        return MaterialPage(
+          child: AnnouncementDetailPage(broadcast: announcement),
+        );
+      },
     ),
   ],
 );

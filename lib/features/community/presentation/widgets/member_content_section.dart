@@ -68,7 +68,7 @@ class MemberContentSection extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
+              // SizedBox(height: 8.h),
               if (!hasAnyMember)
                 Center(
                   child: Padding(
@@ -83,9 +83,13 @@ class MemberContentSection extends ConsumerWidget {
                   ),
                 )
               else
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 0.85,
                   children: allBloodGroups.map((bg) {
                     final count = counts[bg] ?? 0;
                     final isAvailable = count > 0;
@@ -104,11 +108,6 @@ class MemberContentSection extends ConsumerWidget {
                             }
                           : null,
                       child: Container(
-                        width: (MediaQuery.of(context).size.width -
-                                32 -
-                                32 -
-                                3 * 8) /
-                            4,
                         decoration: BoxDecoration(
                           color: isAvailable
                               ? Colors.red.shade50
@@ -122,7 +121,7 @@ class MemberContentSection extends ConsumerWidget {
                           ),
                         ),
                         padding: EdgeInsets.symmetric(
-                            vertical: 10.h, horizontal: 4.w),
+                            vertical: 8.h, horizontal: 2.w),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -133,15 +132,15 @@ class MemberContentSection extends ConsumerWidget {
                                     ? Colors.red.shade700
                                     : Colors.grey.shade400,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
+                                fontSize: 15.sp,
                               ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                  vertical: 6.h),
+                                  vertical: 4.h),
                               child: Container(
                                 height: 1.h,
-                                width: 24.w,
+                                width: 20.w,
                                 color: isAvailable
                                     ? Colors.red.shade200
                                     : Colors.grey.shade300,
@@ -150,21 +149,25 @@ class MemberContentSection extends ConsumerWidget {
                             Text(
                               '$count',
                               style: TextStyle(
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                                 color: isAvailable
                                     ? Colors.red.shade600
                                     : Colors.grey.shade400,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             Text(
                               'member${count == 1 ? '' : 's'}',
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 10.sp,
                                 color: isAvailable
                                     ? Colors.grey.shade600
                                     : Colors.grey.shade400,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -215,7 +218,7 @@ class MemberContentSection extends ConsumerWidget {
                       fontSize: 15.sp,
                     ),
                   ),
-                  error: (_, __) => Text(
+                  error: (_, _) => Text(
                     '(${community.memberCount})',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

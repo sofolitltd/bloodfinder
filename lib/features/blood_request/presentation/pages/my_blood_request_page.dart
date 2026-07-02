@@ -74,7 +74,7 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red.shade600,
-                      minimumSize: Size.zero,
+                      minimumSize: Size(200, 40),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     icon: Icon(PhosphorIcons.plus, color: Colors.white),

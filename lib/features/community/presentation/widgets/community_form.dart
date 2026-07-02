@@ -325,7 +325,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             ],
           ),
 
-          SizedBox(height: 3.h),
+          SizedBox(height: 20.h),
 
           SizedBox(
             width: double.infinity,

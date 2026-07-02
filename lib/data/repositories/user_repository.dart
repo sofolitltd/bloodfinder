@@ -28,6 +28,9 @@ abstract class UserRepository {
 
   Future<QuerySnapshot<Map<String, dynamic>>> getUsersByIds(List<String> uids);
   Stream<QuerySnapshot<Map<String, dynamic>>> emergencyDonorsStream();
+  Future<QuerySnapshot<Map<String, dynamic>>> getUsersByCountry(
+    String country,
+  );
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEmergencyDonors(
     int limit, {
     DocumentSnapshot<Map<String, dynamic>>? startAfter,
@@ -202,6 +205,15 @@ class FirebaseUserRepository implements UserRepository {
     }
     return query.get();
   }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getUsersByCountry(
+    String country,
+  ) =>
+      _dataSource
+          .collection(_col)
+          .where('country', isEqualTo: country)
+          .get();
 
   @override
   Future<void> updateToken(String uid, String token) =>

@@ -61,14 +61,14 @@ class AdminManagementSection extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          // SizedBox(height: 12.h),
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             crossAxisSpacing: 12.w,
             mainAxisSpacing: 12.h,
-            childAspectRatio: 1.3,
+            childAspectRatio: 1.2,
             children: [
               // All Members
               InkWell(
@@ -87,39 +87,48 @@ class AdminManagementSection extends ConsumerWidget {
                     color: Colors.red.shade50,
                     borderRadius: BorderRadius.circular(14.r),
                   ),
-                  padding: EdgeInsets.all(16.r),
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         PhosphorIcons.usersThree,
-                        size: 28.w,
+                        size: 24.w,
                         color: Colors.red.shade600,
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 6.h),
                       ref.watch(membersStreamProvider(community.id)).when(
-                        data: (members) => Text(
-                          '${members.length}',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red.shade600,
+                        data: (members) => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '${members.length}',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade600,
+                            ),
                           ),
                         ),
-                        loading: () => Text(
-                          '${community.memberCount}',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red.shade600,
+                        loading: () => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '${community.memberCount}',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade600,
+                            ),
                           ),
                         ),
-                        error: (_, __) => Text(
-                          '${community.memberCount}',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red.shade600,
+                        error: (_, _) => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '${community.memberCount}',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade600,
+                            ),
                           ),
                         ),
                       ),
@@ -154,39 +163,48 @@ class AdminManagementSection extends ConsumerWidget {
                     color: Colors.orange.shade50,
                     borderRadius: BorderRadius.circular(14.r),
                   ),
-                  padding: EdgeInsets.all(16.r),
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         PhosphorIcons.userCirclePlus,
-                        size: 28.w,
+                        size: 24.w,
                         color: Colors.orange.shade600,
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 6.h),
                       ref.watch(joinRequestsStreamProvider(community.id)).when(
-                        data: (requests) => Text(
-                          '${requests.length}',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange.shade600,
+                        data: (requests) => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '${requests.length}',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange.shade600,
+                            ),
                           ),
                         ),
-                        loading: () => Text(
-                          '0',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
+                        loading: () => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '0',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange,
+                            ),
                           ),
                         ),
-                        error: (_, __) => Text(
-                          '0',
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
+                        error: (_, _) => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '0',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange,
+                            ),
                           ),
                         ),
                       ),

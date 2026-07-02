@@ -9,6 +9,11 @@ abstract class AuthRepository {
   Future<UserCredential> signUp({required String email, required String password});
   Future<void> signOut();
   Future<void> sendPasswordReset(String email);
+  Future<void> changePassword({
+    required String email,
+    required String currentPassword,
+    required String newPassword,
+  });
 }
 
 class FirebaseAuthRepository implements AuthRepository {
@@ -36,4 +41,16 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<void> sendPasswordReset(String email) =>
       _dataSource.sendPasswordReset(email);
+
+  @override
+  Future<void> changePassword({
+    required String email,
+    required String currentPassword,
+    required String newPassword,
+  }) =>
+      _dataSource.changePassword(
+        email: email,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
 }

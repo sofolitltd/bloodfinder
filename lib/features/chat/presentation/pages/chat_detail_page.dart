@@ -1,4 +1,5 @@
 import 'package:bloodfinder/features/notification/services/fcm_sender.dart';
+import 'package:bloodfinder/features/notification/services/notification_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -197,6 +198,15 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
           title: userName.isEmpty ? 'New Message' : userName,
           body: text,
           data: {'type': 'chats', 'chatId': widget.chatId},
+        );
+
+        // In-app notification for the offline recipient
+        NotificationService.addNotification(
+          title: userName.isEmpty ? 'New Message' : userName,
+          body: text,
+          type: 'chats',
+          data: {'chatId': widget.chatId},
+          userId: otherUserId,
         );
       }
     }

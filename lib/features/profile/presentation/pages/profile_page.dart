@@ -85,7 +85,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
           }
 
           final fullName = StringUtils.formatFullName(user.firstName, user.lastName);
-          final address = user.locationAddress ?? '';
           final bloodGroup = user.bloodGroup;
           final isDonorStatus = user.isDonor;
           final isEmergencyDonorStatus = user.isEmergencyDonor;
@@ -108,7 +107,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ProfileHeader(
                   user: user,
                   fullName: fullName,
-                  address: address,
                   isVerified: isVerified,
                   badges: badges,
                   onEditTap: () {
@@ -152,13 +150,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                               snoozedUntil: snoozedUntil?.toDate(),
                               dateOfBirth: user.dateOfBirth,
                               themeMode: themeMode,
+                              locationAddress: user.locationAddress,
                             ),
                           ),
                         ),
                       ),
+
                     ],
                   ),
                 ),
+
               ],
             ),
           );

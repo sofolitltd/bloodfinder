@@ -1,14 +1,14 @@
-import 'package:bloodfinder/shared/widgets/start_chat_btn.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../../data/providers/repository_providers.dart';
+
+import '../../../../../shared/widgets/start_chat_btn.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -23,7 +23,8 @@ class BloodGroupMembersScreen extends ConsumerWidget {
   });
 
   Stream<List<Map<String, dynamic>>> _communityBloodGroupMembers(
-      WidgetRef ref) {
+    WidgetRef ref,
+  ) {
     final communityRepo = ref.read(communityRepositoryProvider);
     final userRepo = ref.read(userRepositoryProvider);
 
@@ -32,35 +33,36 @@ class BloodGroupMembersScreen extends ConsumerWidget {
         .where('communityId', isEqualTo: communityId)
         .snapshots()
         .asyncMap((snapshot) async {
-      final userIds =
-          snapshot.docs.map((doc) => doc['uid'] as String).toList();
+          final userIds = snapshot.docs
+              .map((doc) => doc['uid'] as String)
+              .toList();
 
-      if (userIds.isEmpty) return [];
+          if (userIds.isEmpty) return [];
 
-      final List<Map<String, dynamic>> allMembers = [];
+          final List<Map<String, dynamic>> allMembers = [];
 
-      for (var i = 0; i < userIds.length; i += 10) {
-        final chunk = userIds.sublist(
-          i,
-          i + 10 > userIds.length ? userIds.length : i + 10,
-        );
+          for (var i = 0; i < userIds.length; i += 10) {
+            final chunk = userIds.sublist(
+              i,
+              i + 10 > userIds.length ? userIds.length : i + 10,
+            );
 
-        final usersSnap = await userRepo.getUsersByIds(chunk);
+            final usersSnap = await userRepo.getUsersByIds(chunk);
 
-        final members = usersSnap.docs
-            .map((doc) {
-              final data = doc.data();
-              data['uid'] = doc.id;
-              return data;
-            })
-            .where((data) => data['bloodGroup'] == bloodGroup)
-            .toList();
+            final members = usersSnap.docs
+                .map((doc) {
+                  final data = doc.data();
+                  data['uid'] = doc.id;
+                  return data;
+                })
+                .where((data) => data['bloodGroup'] == bloodGroup)
+                .toList();
 
-        allMembers.addAll(members);
-      }
+            allMembers.addAll(members);
+          }
 
-      return allMembers;
-    });
+          return allMembers;
+        });
   }
 
   @override
@@ -90,86 +92,147 @@ class BloodGroupMembersScreen extends ConsumerWidget {
           return ListView.separated(
             padding: EdgeInsets.all(16.w),
             itemCount: members.length,
-            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+            separatorBuilder: (_, _) => SizedBox(height: 8.h),
             itemBuilder: (context, index) {
               final member = members[index];
-              String otherUserId = member['uid'];
+              final otherUserId = member['uid'] as String;
 
               final name =
                   '${member['firstName'] ?? ''} ${member['lastName'] ?? ''}'
                       .trim();
-              final address =
-                  '${member['locationAddress'] ?? ''}, ${member['district'] ?? ''} ${member['subdistrict'] ?? ''}';
+              final image = member['image'] as String? ?? '';
+              final firstName = member['firstName'] as String? ?? '';
+              final address = member['locationAddress'] as String? ?? '';
 
-              return Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8.r),
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 21,
-                        backgroundColor: Colors.redAccent.shade200,
-                        child: member['image'].isEmpty
-                            ? Text(
-                                member['firstName'].isNotEmpty
-                                    ? member['firstName'][0].toUpperCase()
-                                    : '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
-                                ),
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(50.r),
-                                child: CachedNetworkImage(
-                                  imageUrl: member['image'],
-                                  width: 40.w,
-                                  height: 40.h,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      CircularProgressIndicator(strokeWidth: 2),
-                                  errorWidget: (context, url, error) => Icon(
-                                    PhosphorIcons.warningCircle,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                      ),
-                      title: Text(name.isNotEmpty ? name : 'Unknown'),
-                      isThreeLine: true,
-                      subtitle: Column(
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(14.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top row: Avatar + Name/Address + Blood group badge
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Address: $address'),
-                          SizedBox(height: 8.h),
+                          // Avatar
+                          Container(
+                            width: 44.w,
+                            height: 44.h,
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: image.isEmpty
+                                ? Center(
+                                    child: Text(
+                                      firstName.isNotEmpty
+                                          ? firstName[0].toUpperCase()
+                                          : '',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red.shade600,
+                                      ),
+                                    ),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: image,
+                                    width: 44.w,
+                                    height: 44.h,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        const CupertinoActivityIndicator(),
+                                    errorWidget: (context, url, error) => Icon(
+                                      PhosphorIcons.warningCircle,
+                                      color: Colors.red.shade300,
+                                      size: 22.w,
+                                    ),
+                                  ),
+                          ),
+                          SizedBox(width: 12.w),
+                          // Name + address
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name.isNotEmpty ? name : 'Unknown',
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (address.isNotEmpty) ...[
+                                  SizedBox(height: 4.h),
+                                  Column(
+                                    crossAxisAlignment: .start,
+                                    children: [
+                                      Text(
+                                        address,
+                                        style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
 
-                          StartChatButton(otherUserId: otherUserId),
-                          SizedBox(height: 4.h),
+                                      //
+                                      SizedBox(height: 10.h),
+                                      // Chat button
+                                      SizedBox(
+                                        height: 36,
+                                        width: 150,
+                                        child: StartChatButton(
+                                          otherUserId: otherUserId,
+                                          buttonText: 'Chat',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          // Blood group badge
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4.h,
+                              horizontal: 10.w,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              bloodGroup,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red.shade700,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      child: Text(
-                        bloodGroup,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               );
             },
           );

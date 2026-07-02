@@ -77,4 +77,24 @@ class AppRoute {
     name: 'location-setup',
     path: '/location-setup',
   );
+
+  static const myFeedback = AppRoute(
+    name: 'my-feedback',
+    path: '/my-feedback',
+  );
+
+  static const changePassword = AppRoute(
+    name: 'change-password',
+    path: '/change-password',
+  );
+
+  static const notificationDetail = AppRoute(
+    name: 'notification-detail',
+    path: '/notification-detail',
+  );
+
+  static const announcementDetail = AppRoute(
+    name: 'announcement-detail',
+    path: '/announcement-detail',
+  );
 }

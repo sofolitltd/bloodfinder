@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/utils/geohash.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/user_providers.dart';
+import '../../../../features/notification/services/fcm_sender.dart';
+import '../../../../features/notification/services/notification_service.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
 import '../../models/blood_event.dart';
 
@@ -176,6 +178,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
         'locationAddress': _locationAddress ?? '',
         'eventDate': eventDt,
         'imageUrl': imageUrl,
+        'country': user?.country ?? '',
         if (!_isEditing) 'createdAt': DateTime.now(),
         if (_endDate != null) 'endDate': DateTime(
           _endDate!.year,
@@ -190,7 +193,30 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
         await repo.updateEvent(widget.event!.id, data);
       } else {
         data['rsvpCount'] = 0;
-        await repo.createEvent(data);
+        final docRef = await repo.createEvent(data);
+        final eventId = docRef.id;
+        final eventTitle = data['title'] as String? ?? '';
+
+        // In-app notification for the event creator
+        NotificationService.addNotification(
+          title: 'Event Created',
+          body: 'Your event "$eventTitle" has been created.',
+          type: 'event',
+          data: {'eventId': eventId, 'title': eventTitle},
+          userId: uid,
+        );
+
+        // FCM push to 'events' topic for nearby users
+        FCMSender.sendToTopic(
+          topic: 'events',
+          title: 'New Blood Camp Nearby',
+          body: '$eventTitle by $userName',
+          data: {
+            'type': 'event',
+            'eventId': eventId,
+            'title': eventTitle,
+          },
+        );
       }
 
       if (mounted) {

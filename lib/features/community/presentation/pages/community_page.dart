@@ -104,7 +104,8 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
               }
 
               final myCommunityIds = myMembershipsSnap.data!.docs
-                  .map((doc) => doc.reference.parent.parent!.id)
+                  .map((doc) => doc['communityId'] as String? ?? '')
+                  .where((id) => id.isNotEmpty)
                   .toSet();
 
               return TabBarView(

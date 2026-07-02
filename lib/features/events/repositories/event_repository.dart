@@ -20,6 +20,20 @@ abstract class EventRepository {
       String eventId, String uid);
   Stream<DocumentSnapshot<Map<String, dynamic>>> eventStream(String eventId);
   Stream<QuerySnapshot<Map<String, dynamic>>> allEventsStream();
+
+  // Paginated queries
+  Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedNearbyEvents(
+    double latitude,
+    double longitude,
+    double radiusInKm,
+    int limit, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+  });
+  Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEventsByCountry(
+    String country,
+    int limit, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+  });
 }
 
 class FirebaseEventRepository implements EventRepository {
@@ -130,4 +144,60 @@ class FirebaseEventRepository implements EventRepository {
       _dataSource
           .collection('events')
           .snapshots();
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedNearbyEvents(
+    double latitude,
+    double longitude,
+    double radiusInKm,
+    int limit, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+  }) {
+    int precision;
+    if (radiusInKm <= 1.0) {
+      precision = 7;
+    } else if (radiusInKm <= 5.0) {
+      precision = 6;
+    } else if (radiusInKm <= 20.0) {
+      precision = 5;
+    } else if (radiusInKm <= 80.0) {
+      precision = 4;
+    } else {
+      precision = 3;
+    }
+
+    final centerHash = Geohash.encode(latitude, longitude);
+    final prefix = centerHash.substring(0, precision);
+
+    var query = _dataSource
+        .collection('events')
+        .where('geohash', isGreaterThanOrEqualTo: prefix)
+        .where('geohash', isLessThanOrEqualTo: '$prefix')
+        .orderBy('geohash')
+        .orderBy('eventDate', descending: true)
+        .limit(limit);
+
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+    return query.get();
+  }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEventsByCountry(
+    String country,
+    int limit, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+  }) {
+    var query = _dataSource
+        .collection('events')
+        .where('country', isEqualTo: country)
+        .orderBy('eventDate', descending: true)
+        .limit(limit);
+
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+    return query.get();
+  }
 }

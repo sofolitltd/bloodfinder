@@ -8,7 +8,6 @@ import '../../../../data/models/user_model.dart';
 class ProfileHeader extends StatelessWidget {
   final UserModel user;
   final String fullName;
-  final String address;
   final bool isVerified;
   final List<String> badges;
   final VoidCallback? onEditTap;
@@ -17,7 +16,6 @@ class ProfileHeader extends StatelessWidget {
     super.key,
     required this.user,
     required this.fullName,
-    required this.address,
     this.isVerified = false,
     this.badges = const [],
     this.onEditTap,
@@ -127,17 +125,6 @@ class ProfileHeader extends StatelessWidget {
                       fontSize: 13.sp,
                     ),
                   ),
-                  if (address.isNotEmpty) ...[
-                    SizedBox(height: 4.h),
-                    Text(
-                      address,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.65),
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ],
                   if (badges.isNotEmpty) ...[
                     SizedBox(height: 8.h),
                     Wrap(
