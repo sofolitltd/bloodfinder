@@ -13,6 +13,7 @@ class BloodBank {
   final double? longitude;
   final String? geohash;
   final String? locationAddress;
+  final String? country;
 
   BloodBank({
     required this.name,
@@ -27,6 +28,7 @@ class BloodBank {
     this.longitude,
     this.geohash,
     this.locationAddress,
+    this.country,
   });
 
   factory BloodBank.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class BloodBank {
       longitude: (json['longitude'] as num?)?.toDouble(),
       geohash: json['geohash'] as String?,
       locationAddress: json['locationAddress'] as String?,
+      country: json['country'] as String?,
     );
   }
 
@@ -62,6 +65,7 @@ class BloodBank {
       if (longitude != null) 'longitude': longitude,
       if (geohash != null) 'geohash': geohash,
       if (locationAddress != null) 'locationAddress': locationAddress,
+      if (country != null) 'country': country,
     };
   }
 

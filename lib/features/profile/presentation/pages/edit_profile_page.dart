@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -122,6 +123,18 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
               orElse: () => _savedAddresses.first)
           : null;
 
+      // Reverse geocode active address for country
+      String? country;
+      if (activeAddress != null) {
+        try {
+          final placemarks = await placemarkFromCoordinates(
+            activeAddress.latitude,
+            activeAddress.longitude,
+          );
+          country = placemarks.firstOrNull?.country;
+        } catch (_) {}
+      }
+
       await ref.read(userRepositoryProvider).updateUser(uid, {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
@@ -135,6 +148,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         'longitude': activeAddress?.longitude,
         'geohash': activeAddress?.geohash,
         'locationAddress': activeAddress?.addressText,
+        'country': country,
         'savedAddresses': _savedAddresses.map((a) => a.toJson()).toList(),
       });
 

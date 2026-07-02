@@ -45,12 +45,14 @@ dependencies:
   app_links: ^7.1.1
   phosphoricons_flutter: ^1.0.0
   flutter_map: ^8.3.0
-  latlong2: ^0.9.1
+  latlong2: ^0.10.1
   geolocator: ^14.0.2
   country_state_city_selector: ^1.0.5
   gal: ^2.3.2
   flutter_screenutil: ^5.9.3
-  flutter_contacts: ^1.1.9+2
+  flutter_contacts: ^2.2.2
+  geocoding: ^4.0.0
+  uuid: ^4.5.1
   
 dev_dependencies:
   flutter_test:

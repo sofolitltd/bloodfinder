@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 
+import '../../../../core/utils/string_utils.dart';
 import '../../../../data/providers/notification_provider.dart';
 import '../../../../data/providers/user_providers.dart';
 
@@ -19,16 +21,33 @@ import '../widgets/home_requests.dart';
 import '../widgets/home_community_contribution.dart';
 import '../widgets/home_events.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  bool _onboardingChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
     final userAsync = ref.watch(userProvider);
     final user = userAsync.value;
 
+    // One-time check: navigate to location setup if savedAddresses is empty
+    if (!_onboardingChecked && user != null && user.savedAddresses.isEmpty) {
+      _onboardingChecked = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          GoRouter.of(context).push('/location-setup');
+        }
+      });
+    }
+
     final greeting = _greeting();
-    final displayName = user != null ? user.firstName : 'there';
+    final displayName = user != null ? StringUtils.formatFullName(user.firstName, user.lastName) : 'Dear';
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -80,7 +99,7 @@ class HomePage extends ConsumerWidget {
                             Text(
                               displayName,
                               style: TextStyle(
-                                fontSize: 26.sp,
+                                fontSize: 22.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),

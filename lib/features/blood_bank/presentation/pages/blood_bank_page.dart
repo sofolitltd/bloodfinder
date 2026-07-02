@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloodfinder/features/blood_bank/models/blood_bank.dart';
-import 'package:bloodfinder/features/blood_bank/presentation/widgets/blood_bank_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +11,8 @@ import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/user_providers.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
 import '../widgets/add_blood_bank_sheet.dart';
+import '../widgets/location_picker_header.dart';
+import '../widgets/paginated_bank_list.dart';
 
 const _pageSize = 15;
 
@@ -39,6 +40,7 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
   late ScrollController _allScrollCtrl;
 
   double _radiusInKm = 25.0;
+  bool _showFilter = false;
 
   double? _latitude;
   double? _longitude;
@@ -115,7 +117,7 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     }
   }
 
-  Future<void> _loadAllBanks() async {
+  Future<void> _loadAllBanks({String? country}) async {
     if (_allLoading || !_allHasMore) return;
     setState(() => _allLoading = true);
 
@@ -124,6 +126,7 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
       final snap = await repo.getPaginatedAllBanks(
         _pageSize,
         startAfter: _allLastDoc,
+        country: country,
       );
       if (!mounted) return;
       setState(() {
@@ -156,6 +159,9 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     }
   }
 
+  String? _userCountry;
+  bool _countryInitialized = false;
+
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProvider);
@@ -167,6 +173,20 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
         _longitude = user.longitude;
         _locationAddress = user.locationAddress;
         WidgetsBinding.instance.addPostFrameCallback((_) => _resetNearby());
+      }
+    }
+
+    if (user != null && !_countryInitialized) {
+      _countryInitialized = true;
+      final country = user.country;
+      if (country != _userCountry) {
+        _userCountry = country;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _allBanks.clear();
+          _allLastDoc = null;
+          _allHasMore = true;
+          _loadAllBanks(country: country);
+        });
       }
     }
 
@@ -194,6 +214,19 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
             ),
           ],
         ),
+        actions: [
+          if (_latitude != null && _tabController.index == 0)
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.funnel,
+                size: 20.w,
+                color: _showFilter ? Colors.red.shade600 : null,
+              ),
+              tooltip: _showFilter ? 'Hide filters' : 'Show filters',
+              onPressed: () =>
+                  setState(() => _showFilter = !_showFilter),
+            ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.red.shade700,
@@ -227,17 +260,21 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildNearbyTab(),
-          _buildAllTab(),
+          _nearbyTab(),
+
+          //
+          PaginatedBankList(
+            banks: _allBanks,
+            isLoading: _allLoading,
+            hasMore: _allHasMore,
+            scrollController: _allScrollCtrl,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildNearbyTab() {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
+  Widget _nearbyTab() {
     if (_latitude == null || _longitude == null) {
       return Center(
         child: Padding(
@@ -246,13 +283,13 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(PhosphorIcons.mapPinLine, size: 48.w, color: Colors.grey.shade300),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               Text(
                 'Set your location to see nearby banks',
                 style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               ElevatedButton.icon(
                 onPressed: _openLocationPicker,
                 icon: Icon(Icons.location_on, size: 20.w),
@@ -266,179 +303,30 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
 
     return Column(
       children: [
-        Container(
-          margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-              color: isDark ? Colors.transparent : Colors.grey.shade200,
-              width: 0.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: _openLocationPicker,
-                  borderRadius: BorderRadius.circular(12.r),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: isDark ? Colors.grey.shade700.withValues(alpha: 0.3) : Colors.grey.shade300,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(PhosphorIcons.mapPin, color: Colors.red.shade400, size: 20.w),
-                        SizedBox(width: 1.w),
-                        Expanded(
-                          child: Text(
-                            _locationAddress ?? 'Set search location',
-                            style: TextStyle(
-                              color: isDark ? Colors.grey.shade300 : Colors.black87,
-                              fontSize: 14.sp,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Icon(Icons.edit, color: Colors.grey.shade400, size: 16.w),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 1.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Search Radius',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        '${_radiusInKm.round()} km',
-                        style: TextStyle(
-                          color: Colors.red.shade600,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Slider(
-                  value: _radiusInKm,
-                  min: 5.0,
-                  max: 200.0,
-                  divisions: 39,
-                  label: '${_radiusInKm.round()} km',
-                  activeColor: Colors.red.shade500,
-                  inactiveColor: Colors.red.shade100,
-                  onChanged: (val) {
-                    setState(() => _radiusInKm = val);
-                  },
-                  onChangeEnd: (_) => _resetNearby(),
-                ),
-              ],
-            ),
-          ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          child: _showFilter
+              ? LocationPickerHeader(
+                  locationAddress: _locationAddress,
+                  radiusInKm: _radiusInKm,
+                  onOpenLocationPicker: _openLocationPicker,
+                  onRadiusChanged: (val) => setState(() => _radiusInKm = val),
+                  onRadiusChangeEnd: _resetNearby,
+                )
+              : const SizedBox.shrink(),
         ),
         Expanded(
-          child: _nearbyBanks.isEmpty && _nearbyLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _nearbyBanks.isEmpty && !_nearbyLoading
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(PhosphorIcons.hospital, size: 48.w, color: Colors.grey.shade300),
-                          SizedBox(height: 1.h),
-                          Text(
-                            'No nearby blood banks found',
-                            style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      controller: _nearbyScrollCtrl,
-                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
-                      itemCount: _nearbyBanks.length + (_nearbyHasMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index >= _nearbyBanks.length) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.h),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return Padding(
-                          padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
-                          child: BloodBankCard(bloodBank: _nearbyBanks[index]),
-                        );
-                      },
-                    ),
+          child: PaginatedBankList(
+            banks: _nearbyBanks,
+            isLoading: _nearbyLoading,
+            hasMore: _nearbyHasMore,
+            scrollController: _nearbyScrollCtrl,
+            emptyMessage: 'No nearby blood banks found',
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildAllTab() {
-    if (_allBanks.isEmpty && _allLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_allBanks.isEmpty && !_allLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(PhosphorIcons.hospital, size: 48.w, color: Colors.grey.shade300),
-            SizedBox(height: 1.h),
-            Text(
-              'No blood banks found',
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
-            ),
-          ],
-        ),
-      );
-    }
-    return ListView.builder(
-      controller: _allScrollCtrl,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
-      itemCount: _allBanks.length + (_allHasMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index >= _allBanks.length) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return Padding(
-          padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
-          child: BloodBankCard(bloodBank: _allBanks[index]),
-        );
-      },
     );
   }
 }

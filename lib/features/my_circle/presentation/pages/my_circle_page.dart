@@ -166,7 +166,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
             Text(
               'No contacts yet',
               style: TextStyle(

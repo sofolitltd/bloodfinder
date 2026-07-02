@@ -28,7 +28,7 @@ class DonationInfoCard extends StatelessWidget {
                     value: request.bloodGroup,
                     isDark: isDark,
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   InfoTile(
                     icon: PhosphorIcons.calendar,
                     iconColor: Colors.orange.shade400,
@@ -39,7 +39,7 @@ class DonationInfoCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 1.w),
+            SizedBox(width: 8.w),
             Expanded(
               child: Column(
                 children: [
@@ -50,7 +50,7 @@ class DonationInfoCard extends StatelessWidget {
                     value: request.bag,
                     isDark: isDark,
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   InfoTile(
                     icon: PhosphorIcons.clock,
                     iconColor: Colors.orange.shade400,
@@ -63,7 +63,7 @@ class DonationInfoCard extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 1.h),
+        SizedBox(height: 8.h),
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(12.w),

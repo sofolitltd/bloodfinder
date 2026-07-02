@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/models/user_model.dart';
+import '../../../../core/utils/string_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/theme_provider.dart';
 import '../../../../data/providers/user_providers.dart';
@@ -83,7 +84,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             });
           }
 
-          final fullName = '${user.firstName} ${user.lastName}'.trim();
+          final fullName = StringUtils.formatFullName(user.firstName, user.lastName);
           final address = user.locationAddress ?? '';
           final bloodGroup = user.bloodGroup;
           final isDonorStatus = user.isDonor;

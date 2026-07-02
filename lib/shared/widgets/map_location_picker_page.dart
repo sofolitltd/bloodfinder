@@ -360,7 +360,7 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _searchResults.length,
                       separatorBuilder: (_, __) =>
-                          Divider(height: 1.h, indent: 48),
+                          Divider(height: 8.h, indent: 48),
                       itemBuilder: (_, i) {
                         final r = _searchResults[i];
                         return Material(

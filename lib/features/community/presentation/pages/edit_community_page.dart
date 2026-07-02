@@ -88,7 +88,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 size: 18.w,
               ),
             ),
-            SizedBox(width: 1.w),
+            SizedBox(width: 8.w),
             const Text(
               'Edit Community',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -107,7 +107,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 icon: PhosphorIcons.usersFour,
                 title: 'Community Information',
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               _SectionCard(
                 children: [
                   TextFormField(
@@ -121,7 +121,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Enter a name' : null,
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   TextFormField(
                     controller: _mobileController,
                     decoration: InputDecoration(
@@ -142,7 +142,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 icon: PhosphorIcons.mapPin,
                 title: 'Location',
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               _SectionCard(
                 children: [
                   TextFormField(
@@ -155,7 +155,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Enter address' : null,
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   GestureDetector(
                     onTap: () async {
                       final result = await MapLocationPickerPage.show(context);
@@ -184,7 +184,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                                 ? Colors.red.shade600
                                 : Colors.red.shade300,
                           ),
-                          SizedBox(width: 1.w),
+                          SizedBox(width: 8.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +241,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 icon: PhosphorIcons.shareNetwork,
                 title: 'Social Media Links',
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               _SectionCard(
                 children: [
                   SocialMediaInput(
@@ -259,7 +259,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                 icon: PhosphorIcons.image,
                 title: 'Community Image',
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               _SectionCard(
                 children: [
                   GestureDetector(

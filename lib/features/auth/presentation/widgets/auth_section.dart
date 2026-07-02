@@ -36,7 +36,7 @@ class AuthSection extends StatelessWidget {
             return null;
           },
         ),
-        SizedBox(height: 1.h),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: passwordController,
           obscureText: obscurePassword,

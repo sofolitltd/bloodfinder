@@ -72,4 +72,9 @@ class AppRoute {
     name: 'events',
     path: '/events',
   );
+
+  static const locationSetup = AppRoute(
+    name: 'location-setup',
+    path: '/location-setup',
+  );
 }

@@ -31,6 +31,8 @@ abstract class UserModel with _$UserModel {
     String? geohash,
     // Human-readable address from reverse geocoding (display only, never queried)
     String? locationAddress,
+    // Country derived from coordinates
+    String? country,
     // Saved addresses for the user
     @Default([]) List<AddressModel> savedAddresses,
   }) = _UserModel;

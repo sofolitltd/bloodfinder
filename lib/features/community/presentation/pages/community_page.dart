@@ -214,7 +214,7 @@ class _CommunityTabState extends State<_CommunityTab> {
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
             Text(
               widget.showNearby
                   ? 'No nearby communities'
@@ -307,7 +307,7 @@ class _CommunityTabState extends State<_CommunityTab> {
                               ),
                             ),
                     ),
-                    SizedBox(width: 1.w),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

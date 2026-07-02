@@ -28,6 +28,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   longitude: (json['longitude'] as num?)?.toDouble(),
   geohash: json['geohash'] as String?,
   locationAddress: json['locationAddress'] as String?,
+  country: json['country'] as String?,
   savedAddresses:
       (json['savedAddresses'] as List<dynamic>?)
           ?.map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
@@ -56,5 +57,6 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'longitude': instance.longitude,
       'geohash': instance.geohash,
       'locationAddress': instance.locationAddress,
+      'country': instance.country,
       'savedAddresses': instance.savedAddresses.map((e) => e.toJson()).toList(),
     };

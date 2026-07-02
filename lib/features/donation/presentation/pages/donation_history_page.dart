@@ -443,7 +443,7 @@ class _SummarySection extends StatelessWidget {
             ),
           ),
           SizedBox(height: 12.h),
-          Divider(height: 1.h),
+          Divider(height: 8.h),
           SizedBox(height: 12.h),
           // Next eligible donation
           Row(
@@ -690,7 +690,7 @@ class _DonationCard extends StatelessWidget {
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 6.w,
-                                vertical: 1.h,
+                                vertical: 8.h,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.red.shade50,

@@ -55,7 +55,7 @@ class FirebaseUserRepository implements UserRepository {
 
   final FirebaseDataSource _dataSource;
 
-  // Use AppConfig so we can switch between 'users_test' and 'users' in one place.
+  // Collection name from AppConfig.
   String get _col => AppConfig.usersCollection;
 
   @override

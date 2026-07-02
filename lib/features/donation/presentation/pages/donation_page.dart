@@ -401,7 +401,7 @@ class DonationPage extends ConsumerWidget {
                                             : Colors.grey.shade400,
                                       ),
                                     ),
-                                    SizedBox(height: 1.h),
+                                    SizedBox(height: 8.h),
                                     Text(
                                       request.mobile,
                                       style: TextStyle(

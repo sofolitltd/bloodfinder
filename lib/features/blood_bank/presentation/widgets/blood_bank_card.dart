@@ -39,24 +39,25 @@ class BloodBankCard extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(12.h),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48.w,
+                width: 40.w,
                 height: 48.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14.r),
                   color: Colors.red.shade50,
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: bloodBank.imageUrl != null &&
-                        bloodBank.imageUrl!.isNotEmpty
+                child:
+                    bloodBank.imageUrl != null && bloodBank.imageUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: bloodBank.imageUrl!,
                         fit: BoxFit.cover,
-                        placeholder: (_, _) => const CupertinoActivityIndicator(),
+                        placeholder: (_, _) =>
+                            const CupertinoActivityIndicator(),
                         errorWidget: (_, _, _) => Icon(
                           Icons.local_hospital,
                           color: Colors.red.shade200,
@@ -69,7 +70,7 @@ class BloodBankCard extends StatelessWidget {
                         size: 22.w,
                       ),
               ),
-              SizedBox(width: 1.w),
+              SizedBox(width: 8.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +80,9 @@ class BloodBankCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
+                        color: isDark
+                            ? Colors.grey.shade200
+                            : Colors.grey.shade800,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -87,15 +90,23 @@ class BloodBankCard extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Row(
                       children: [
-                        Icon(PhosphorIcons.hospital,
-                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        Icon(
+                          PhosphorIcons.hospital,
+                          size: 14.w,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade400,
+                        ),
                         SizedBox(width: 6.w),
                         Expanded(
                           child: Text(
                             bloodBank.address,
                             style: TextStyle(
-                                fontSize: 13.sp,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
+                              fontSize: 13.sp,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade700,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -105,15 +116,23 @@ class BloodBankCard extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(PhosphorIcons.mapPin,
-                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        Icon(
+                          PhosphorIcons.mapPin,
+                          size: 14.w,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade400,
+                        ),
                         SizedBox(width: 6.w),
                         Expanded(
                           child: Text(
                             bloodBank.locationAddress ?? 'Location not set',
                             style: TextStyle(
-                                fontSize: 13.sp,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
+                              fontSize: 13.sp,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade700,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -123,14 +142,22 @@ class BloodBankCard extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(PhosphorIcons.phoneCall,
-                            size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                        Icon(
+                          PhosphorIcons.phoneCall,
+                          size: 14.w,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade400,
+                        ),
                         SizedBox(width: 6.w),
                         Text(
                           bloodBank.mobile1,
                           style: TextStyle(
-                              fontSize: 13.sp,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
+                            fontSize: 13.sp,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                          ),
                         ),
                       ],
                     ),

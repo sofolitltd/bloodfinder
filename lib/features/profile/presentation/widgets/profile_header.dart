@@ -54,7 +54,7 @@ class ProfileHeader extends StatelessWidget {
                     radius: 52,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
-                      radius: 50,
+                      radius: 52,
                       backgroundColor: Colors.white,
                       child: user.image.isEmpty
                           ? Text(
@@ -93,7 +93,7 @@ class ProfileHeader extends StatelessWidget {
                         fullName,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

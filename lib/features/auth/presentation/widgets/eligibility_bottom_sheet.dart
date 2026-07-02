@@ -116,7 +116,7 @@ class _EligibilityBottomSheet extends StatelessWidget {
               Text('• Not pregnant or breastfeeding'),
               SizedBox(height: 8.h),
               Text('• No high-risk activities or recent travel to malaria-endemic areas'),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               Text(
                 'These are general guidelines. Final eligibility may vary based on local regulations and health screening at the donation center.',
                 style: TextStyle(fontSize: 12.sp, color: Colors.grey),

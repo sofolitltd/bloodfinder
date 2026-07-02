@@ -33,7 +33,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 size: 18.w,
               ),
             ),
-            SizedBox(width: 1.w),
+            SizedBox(width: 8.w),
             const Text(
               'Create Community',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -46,7 +46,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         child: Column(
           children: [
             const ExpandableInfoCard(),
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
             CommunityForm(
               onCommunityCreated: () => Navigator.pop(context),
             ),

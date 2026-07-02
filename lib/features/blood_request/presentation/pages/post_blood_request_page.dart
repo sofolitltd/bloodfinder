@@ -289,7 +289,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 1.h),
+                        SizedBox(height: 8.h),
                         DropdownButtonFormField<String>(
                           initialValue: _status,
                           decoration: InputDecoration(
@@ -353,7 +353,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 1.h),
+                SizedBox(height: 8.h),
               ],
               RequestForm(
                 nameController: _nameController,

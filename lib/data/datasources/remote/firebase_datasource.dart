@@ -31,7 +31,7 @@ class FirebaseDataSource {
   Future<void> sendPasswordReset(String email) =>
       _auth.sendPasswordResetEmail(email: email);
 
-  static bool isDevMode = true;
+  static bool isDevMode = false;
 
   String _redirectPath(String path) {
     if (!isDevMode) return path;

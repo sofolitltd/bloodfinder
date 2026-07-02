@@ -145,7 +145,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 1.h),
+                            SizedBox(height: 8.h),
                             Container(
                               width: 64.w,
                               height: 64.h,
@@ -159,7 +159,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                                 size: 34.w,
                               ),
                             ),
-                            SizedBox(height: 1.h),
+                            SizedBox(height: 8.h),
                             Text(
                               'Reset Password',
                               style: TextStyle(
@@ -258,7 +258,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                             ],
                           ),
                         ),
-                        SizedBox(height: 1.h),
+                        SizedBox(height: 8.h),
 
                         // Email card
                         Container(

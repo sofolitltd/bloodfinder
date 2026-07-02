@@ -49,7 +49,7 @@ class DonationPosterCard extends ConsumerWidget {
                     )
                   : null,
             ),
-            SizedBox(width: 1.w),
+            SizedBox(width: 8.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

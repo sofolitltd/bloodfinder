@@ -131,21 +131,24 @@ class ProfileSettings extends ConsumerWidget {
               ),
             ],
           ),
-          child: ListTile(
-            contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
-            leading: Icon(PhosphorIcons.checkCircle, size: 20.w),
-            title: Text(
-              'Available to Donate',
-              style: TextStyle(fontSize: 14.sp),
+          child: Material(
+            color: Colors.transparent,
+            child: ListTile(
+              contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
+              leading: Icon(PhosphorIcons.checkCircle, size: 20.w),
+              title: Text(
+                'Available to Donate',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              trailing: Switch(
+                value: isDonorStatus,
+                onChanged: (value) =>
+                    _handleDonorToggle(context, value, userRepo),
+                activeThumbColor: Colors.red.shade700,
+              ),
+              onTap: () =>
+                  _handleDonorToggle(context, !isDonorStatus, userRepo),
             ),
-            trailing: Switch(
-              value: isDonorStatus,
-              onChanged: (value) =>
-                  _handleDonorToggle(context, value, userRepo),
-              activeColor: Colors.red.shade700,
-            ),
-            onTap: () =>
-                _handleDonorToggle(context, !isDonorStatus, userRepo),
           ),
         ),
 
@@ -172,36 +175,39 @@ class ProfileSettings extends ConsumerWidget {
               ),
             ],
           ),
-          child: ListTile(
-            contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
-            leading: Icon(PhosphorIcons.checkCircle, size: 20.w),
-            title: Text(
-              'Emergency Donor',
-              style: TextStyle(fontSize: 14.sp),
-            ),
-            trailing: Switch(
-              value: isEmergencyDonorStatus,
-              onChanged: (value) async {
-                await userRepo.updateUser(uid, {'isEmergencyDonor': value});
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        value
-                            ? 'You are now an emergency donor.'
-                            : 'You are no longer an emergency donor.',
+          child: Material(
+            color: Colors.transparent,
+            child: ListTile(
+              contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
+              leading: Icon(PhosphorIcons.checkCircle, size: 20.w),
+              title: Text(
+                'Emergency Donor',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              trailing: Switch(
+                value: isEmergencyDonorStatus,
+                onChanged: (value) async {
+                  await userRepo.updateUser(uid, {'isEmergencyDonor': value});
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          value
+                              ? 'You are now an emergency donor.'
+                              : 'You are no longer an emergency donor.',
+                        ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
+                },
+                activeThumbColor: Colors.red.shade700,
+              ),
+              onTap: () async {
+                await userRepo.updateUser(uid, {
+                  'isEmergencyDonor': !isEmergencyDonorStatus,
+                });
               },
-              activeColor: Colors.red.shade700,
             ),
-            onTap: () async {
-              await userRepo.updateUser(uid, {
-                'isEmergencyDonor': !isEmergencyDonorStatus,
-              });
-            },
           ),
         ),
 
@@ -224,9 +230,11 @@ class ProfileSettings extends ConsumerWidget {
               ),
             ],
           ),
-          child: ListTile(
-            contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
-            leading: Icon(
+          child: Material(
+            color: Colors.transparent,
+            child: ListTile(
+              contentPadding: EdgeInsets.only(left: 16.w, right: 12.w),
+              leading: Icon(
               themeMode == ThemeMode.light
                   ? Icons.light_mode
                   : Icons.dark_mode,
@@ -246,6 +254,7 @@ class ProfileSettings extends ConsumerWidget {
               onChanged: (_) => themeNotifier.toggleTheme(),
             ),
           ),
+        ),
         ),
 
         // Activity section header

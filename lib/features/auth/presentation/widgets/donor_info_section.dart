@@ -77,7 +77,7 @@ class DonorInfoSection extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
 
             // DOB
             GestureDetector(
@@ -98,7 +98,7 @@ class DonorInfoSection extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
 
             // Donor toggle
             Container(

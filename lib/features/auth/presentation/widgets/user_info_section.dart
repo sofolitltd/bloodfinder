@@ -87,7 +87,7 @@ class UserInfoSection extends StatelessWidget {
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
 
           // Last name
           TextFormField(
@@ -98,7 +98,7 @@ class UserInfoSection extends StatelessWidget {
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
 
           // Mobile
           TextFormField(

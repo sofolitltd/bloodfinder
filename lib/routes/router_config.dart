@@ -22,6 +22,7 @@ import '../features/emergency_donor/presentation/pages/emergency_donor_page.dart
 import '../features/my_circle/presentation/pages/my_circle_page.dart';
 import '../features/feed/presentation/pages/feed_page.dart';
 import '../features/home/presentation/pages/home_page.dart';
+import '../features/location_onboarding/presentation/pages/location_onboarding_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/events/presentation/pages/events_page.dart';
 import '../features/community/models/community.dart';
@@ -240,6 +241,15 @@ final routerConfig = GoRouter(
       path: AppRoute.events.path,
       pageBuilder: (context, state) =>
           NoTransitionPage(child: EventsPage()),
+    ),
+
+    // location onboarding (one-time setup after login for old users)
+    GoRoute(
+      name: AppRoute.locationSetup.name,
+      path: AppRoute.locationSetup.path,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: LocationOnboardingPage(),
+      ),
     ),
   ],
 );

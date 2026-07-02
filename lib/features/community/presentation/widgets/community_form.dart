@@ -110,7 +110,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             icon: PhosphorIcons.usersFour,
             title: 'Community Information',
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
           _SectionCard(
             children: [
               TextFormField(
@@ -128,7 +128,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               TextFormField(
                 controller: _mobileController,
                 decoration: InputDecoration(
@@ -154,7 +154,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             icon: PhosphorIcons.mapPin,
             title: 'Location',
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
           _SectionCard(
             children: [
               TextFormField(
@@ -171,7 +171,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               FormField<double>(
                 validator: (_) =>
                     _selectedLatitude == null ? 'Please pick a location' : null,
@@ -216,7 +216,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                                     ? Colors.red.shade600
                                     : Colors.red.shade300,
                               ),
-                              SizedBox(width: 1.w),
+                              SizedBox(width: 8.w),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment:
@@ -291,7 +291,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             icon: PhosphorIcons.shareNetwork,
             title: 'Social Media Links',
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
           _SectionCard(
             children: [
               SocialMediaInput(
@@ -310,7 +310,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             icon: PhosphorIcons.image,
             title: 'Community Image',
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 8.h),
           _SectionCard(
             children: [
               ImagePickerSection(

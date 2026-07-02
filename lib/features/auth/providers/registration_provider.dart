@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -172,6 +173,17 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
           ? Geohash.encode(state.latitude!, state.longitude!)
           : null;
 
+      String? country;
+      if (state.latitude != null && state.longitude != null) {
+        try {
+          final placemarks = await placemarkFromCoordinates(
+            state.latitude!,
+            state.longitude!,
+          );
+          country = placemarks.firstOrNull?.country;
+        } catch (_) {}
+      }
+
       final savedAddresses = <AddressModel>[];
       if (state.latitude != null && state.longitude != null && geohash != null) {
         savedAddresses.add(
@@ -206,6 +218,7 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
         longitude: state.longitude,
         geohash: geohash,
         locationAddress: state.locationAddress,
+        country: country,
         savedAddresses: savedAddresses,
       );
 

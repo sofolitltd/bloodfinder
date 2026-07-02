@@ -132,7 +132,7 @@ class _DistrictRequestsPageState extends ConsumerState<DistrictRequestsPage> {
                 return ListView.separated(
                   padding: EdgeInsets.all(16.w),
                   itemCount: requests.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 1.h),
+                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
                   itemBuilder: (context, index) {
                     return BloodRequestCard(request: requests[index]);
                   },

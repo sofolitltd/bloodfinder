@@ -38,7 +38,7 @@ class BloodRequestCard extends ConsumerWidget {
           if (snapshot.hasError) {
             debugPrint('Error fetching user ${request.uid}: ${snapshot.error}');
           } else if (!snapshot.hasData || !snapshot.data!.exists) {
-            debugPrint('User ${request.uid} not found in users_test collection.');
+            debugPrint('User ${request.uid} not found in users collection.');
           }
           user = UserModel(
             uid: request.uid,
@@ -453,7 +453,7 @@ class BloodRequestCard extends ConsumerWidget {
           ),
           SizedBox(height: 8.h),
           Divider(
-            height: 1.h,
+            height: 8.h,
             thickness: 1,
             color: isDark
                 ? Colors.grey.shade600.withValues(alpha: 0.5)
@@ -618,7 +618,7 @@ class _InfoTile extends StatelessWidget {
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               Text(
                 value,
                 style: TextStyle(

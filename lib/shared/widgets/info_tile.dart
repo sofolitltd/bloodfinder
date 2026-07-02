@@ -44,7 +44,7 @@ class InfoTile extends StatelessWidget {
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 8.h),
               Text(
                 value,
                 style: TextStyle(

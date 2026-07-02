@@ -85,7 +85,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 1.h),
+                      SizedBox(height: 8.h),
 
                       // Header
                       Row(
@@ -133,7 +133,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 1.h),
+                      SizedBox(height: 8.h),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -328,7 +328,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(PhosphorIcons.drop, size: 64.w, color: Colors.grey[400]),
-                SizedBox(height: 1.h),
+                SizedBox(height: 8.h),
                 Text(
                   'No blood requests found',
                   style: TextStyle(
@@ -351,7 +351,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
         final notifier = ref.read(feedPaginationProvider.notifier);
         return ListView.separated(
           padding: EdgeInsets.all(16.w),
-          separatorBuilder: (_, __) => SizedBox(height: 1.h),
+          separatorBuilder: (_, __) => SizedBox(height: 8.h),
           controller: _scrollController,
           itemCount: docs.length + (notifier.hasMore ? 1 : 0),
           itemBuilder: (context, index) {
@@ -382,7 +382,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
               size: 64.w,
               color: Colors.red[300],
             ),
-            SizedBox(height: 1.h),
+            SizedBox(height: 8.h),
             Text(
               'Something went wrong',
               style: TextStyle(fontSize: 18.sp, color: Colors.grey[600]),

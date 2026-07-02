@@ -259,24 +259,33 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
 
   Future<void> _pickFromContacts() async {
     try {
-      final permissionGranted = await FlutterContacts.requestPermission();
-      if (!permissionGranted) return;
+      final permissionStatus =
+          await FlutterContacts.permissions.request(PermissionType.read);
+      if (permissionStatus != PermissionStatus.granted &&
+          permissionStatus != PermissionStatus.limited) {
+        return;
+      }
 
-      final picked = await FlutterContacts.openExternalPick();
+      final picked = await FlutterContacts.native.showPicker(
+        properties: ContactProperties.all,
+      );
       if (picked == null) return;
 
-      final name = picked.displayName.isNotEmpty
-          ? picked.displayName
-          : '${picked.name.first} ${picked.name.last}'.trim();
+      final displayName = picked.displayName;
+      final nameObj = picked.name;
+      final name = (displayName != null && displayName.isNotEmpty)
+          ? displayName
+          : '${nameObj?.first ?? ''} ${nameObj?.last ?? ''}'.trim();
       if (name.isNotEmpty) {
         _nameController.text = name;
       }
 
       if (picked.phones.isNotEmpty) {
-        final phone = picked.phones.first.normalizedNumber.isNotEmpty
-            ? picked.phones.first.normalizedNumber
-            : picked.phones.first.number;
-        _phoneController.text = phone;
+        final phone = picked.phones.first;
+        final normalized = phone.normalizedNumber;
+        _phoneController.text = (normalized != null && normalized.isNotEmpty)
+            ? normalized
+            : phone.number;
       }
     } catch (e) {
       debugPrint('Error picking contact: $e');

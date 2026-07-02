@@ -182,7 +182,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 1.h),
+                      SizedBox(height: 8.h),
                       // Logo
                       Container(
                         width: 80.w,
@@ -197,7 +197,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           size: 44.w,
                         ),
                       ),
-                      SizedBox(height: 1.h),
+                      SizedBox(height: 8.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: 4,
@@ -353,7 +353,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           return null;
                         },
                       ),
-                      SizedBox(height: 1.h),
+                      SizedBox(height: 8.h),
 
                       // Forgot password
                       Align(

@@ -48,7 +48,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 //
 //           return ListView.separated(
 //             itemCount: notifications.length,
-//             separatorBuilder: (_, __) => Divider(height: 1.h),
+//             separatorBuilder: (_, __) => Divider(height: 8.h),
 //             itemBuilder: (context, index) {
 //               final notif = notifications[index];
 //               return Card(
@@ -180,7 +180,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         data: (list) {
           notifications = list;
           return ListView.separated(
-            separatorBuilder: (_, __) => Divider(height: 1.h),
+            separatorBuilder: (_, __) => Divider(height: 8.h),
             controller: _controller,
             itemCount: notifications.length,
             itemBuilder: (context, index) {

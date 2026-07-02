@@ -13,6 +13,7 @@ abstract class BloodBankRepository {
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedAllBanks(
     int limit, {
     DocumentSnapshot<Map<String, dynamic>>? startAfter,
+    String? country,
   });
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedNearbyBanks(
     double latitude,
@@ -56,8 +57,17 @@ class FirebaseBloodBankRepository implements BloodBankRepository {
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedAllBanks(
     int limit, {
     DocumentSnapshot<Map<String, dynamic>>? startAfter,
+    String? country,
   }) {
-    var query = _col.orderBy('name').limit(limit);
+    Query<Map<String, dynamic>> query;
+    if (country != null) {
+      query = _col
+          .where('country', isEqualTo: country)
+          .orderBy('name')
+          .limit(limit);
+    } else {
+      query = _col.orderBy('name').limit(limit);
+    }
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
     }

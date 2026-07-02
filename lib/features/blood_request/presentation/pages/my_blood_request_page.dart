@@ -56,7 +56,7 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(PhosphorIcons.drop, size: 64.w, color: Colors.grey.shade300),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   Text(
                     'No blood requests yet',
                     style: TextStyle(
@@ -95,7 +95,7 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
           return ListView.separated(
             padding: EdgeInsets.all(16.w),
             itemCount: requests.length,
-            separatorBuilder: (_, __) => SizedBox(height: 1.h),
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
             itemBuilder: (context, index) {
               final req = requests[index];
 
