@@ -440,7 +440,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
 
   Widget _buildDonationTypeDropdown() {
     return DropdownButtonFormField<String>(
-      value: _donationType,
+      initialValue: _donationType,
       decoration: InputDecoration(
         labelText: 'Donation Type',
         prefixIcon: Icon(PhosphorIcons.drop, size: 20.w),

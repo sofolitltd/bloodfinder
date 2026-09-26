@@ -12,6 +12,7 @@ class Community {
   final String? locationAddress;
   final String? geohash;
   final List<String> admin;
+  final List<String> moderators;
   final List<SocialMediaLink>? socialMediaLinks;
   final int memberCount;
   final Timestamp createdAt;
@@ -29,6 +30,7 @@ class Community {
     this.locationAddress,
     this.geohash,
     this.admin = const [],
+    this.moderators = const [],
     this.socialMediaLinks,
     required this.memberCount,
     required this.createdAt,
@@ -48,6 +50,7 @@ class Community {
       locationAddress: json['locationAddress'] as String?,
       geohash: json['geohash'] as String?,
       admin: List<String>.from(json['admin'] ?? []),
+      moderators: List<String>.from(json['moderators'] ?? []),
       socialMediaLinks: _parseSocialMediaLinks(json),
       memberCount: json['memberCount'] as int,
       createdAt: json['createdAt'] as Timestamp,
@@ -69,6 +72,7 @@ class Community {
       if (locationAddress != null) 'locationAddress': locationAddress,
       if (geohash != null) 'geohash': geohash,
       'admin': admin,
+      'moderators': moderators,
       if (socialMediaLinks != null)
         'socialMediaLinks':
             socialMediaLinks!.map((l) => l.toJson()).toList(),
@@ -78,6 +82,17 @@ class Community {
       if (bloodGroupCounts != null) 'bloodGroupCounts': bloodGroupCounts,
     };
   }
+
+  bool isAdmin(String uid) => admin.contains(uid);
+
+  bool isModerator(String uid) => moderators.contains(uid);
+
+  /// Can approve/reject join requests, remove regular members, and invite users.
+  bool canManageMembers(String uid) => isAdmin(uid) || isModerator(uid);
+
+  /// Can edit community info, delete the community, and promote/demote
+  /// admins & moderators. Admins only.
+  bool canManageCommunity(String uid) => isAdmin(uid);
 
   static List<SocialMediaLink>? _parseSocialMediaLinks(
       Map<String, dynamic> json) {

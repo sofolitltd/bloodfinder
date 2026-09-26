@@ -20,6 +20,10 @@ abstract class CommunityRepository {
   Future<void> updateCommunity(String communityId, Map<String, dynamic> data);
   Future<void> deleteCommunity(String communityId);
   Future<void> updateMemberCount(String communityId, int increment);
+  Future<void> addAdmin(String communityId, String uid);
+  Future<void> removeAdmin(String communityId, String uid);
+  Future<void> addModerator(String communityId, String uid);
+  Future<void> removeModerator(String communityId, String uid);
 
   CollectionReference<Map<String, dynamic>> membersCollection();
   DocumentReference<Map<String, dynamic>> memberDoc(
@@ -38,7 +42,11 @@ abstract class CommunityRepository {
   Future<void> addMember(String communityId, String uid,
       Map<String, dynamic> data);
   Future<void> approveMember(String communityId, String uid);
+  Future<void> approveMemberAndUpdateCounts(
+      String communityId, String uid, String bloodGroup);
   Future<void> removeMember(String communityId, String uid);
+  Future<void> inviteMember(
+      String communityId, String uid, String invitedByUid, String bloodGroup);
 
   Stream<QuerySnapshot<Map<String, dynamic>>> userMembershipsStream(String uid);
   Future<DocumentReference<Map<String, dynamic>>> addChat(
@@ -70,6 +78,26 @@ abstract class CommunityRepository {
 
   Future<bool> isAdmin(String uid);
   Stream<DocumentSnapshot<Map<String, dynamic>>> adminStream(String uid);
+
+  // Announcements
+  CollectionReference<Map<String, dynamic>> announcementsCollection();
+  Stream<QuerySnapshot<Map<String, dynamic>>> announcementsStream(
+      String communityId);
+  Future<DocumentReference<Map<String, dynamic>>> addAnnouncement(
+      Map<String, dynamic> data);
+  Future<void> deleteAnnouncement(String announcementId);
+  Future<void> setAnnouncementPinned(String announcementId, bool pinned);
+
+  // Audit log
+  CollectionReference<Map<String, dynamic>> auditLogCollection();
+  Stream<QuerySnapshot<Map<String, dynamic>>> auditLogStream(
+      String communityId);
+  Future<void> logCommunityAction({
+    required String communityId,
+    required String actorUid,
+    required String action,
+    String? targetUid,
+  });
 }
 
 class FirebaseCommunityRepository implements CommunityRepository {
@@ -138,14 +166,64 @@ class FirebaseCommunityRepository implements CommunityRepository {
       communityDoc(communityId).update(data);
 
   @override
-  Future<void> deleteCommunity(String communityId) =>
-      communityDoc(communityId).delete();
+  Future<void> deleteCommunity(String communityId) async {
+    // Cascade-delete everything that references this community so nothing
+    // is left orphaned: memberships, tagged notifications, and the cover
+    // image in Storage.
+    final membersSnap = await membersCollection()
+        .where('communityId', isEqualTo: communityId)
+        .get();
+    final notificationsSnap = await _dataSource
+        .collection('notifications')
+        .where('data.communityId', isEqualTo: communityId)
+        .get();
+
+    final docsToDelete = [
+      ...membersSnap.docs,
+      ...notificationsSnap.docs,
+    ];
+
+    // Firestore batches are capped at 500 writes, so chunk defensively.
+    const batchChunkSize = 400;
+    for (var i = 0; i < docsToDelete.length; i += batchChunkSize) {
+      final batch = _dataSource.batch();
+      for (final doc in docsToDelete.skip(i).take(batchChunkSize)) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+    }
+
+    await communityDoc(communityId).delete();
+
+    try {
+      await _dataSource.storageRef('communities/$communityId.jpg').delete();
+    } catch (_) {
+      // No cover image was uploaded — safe to ignore.
+    }
+  }
 
   @override
   Future<void> updateMemberCount(String communityId, int increment) =>
       communityDoc(communityId).update({
         'memberCount': FieldValue.increment(increment),
       });
+
+  @override
+  Future<void> addAdmin(String communityId, String uid) => updateCommunity(
+      communityId, {'admin': FieldValue.arrayUnion([uid])});
+
+  @override
+  Future<void> removeAdmin(String communityId, String uid) => updateCommunity(
+      communityId, {'admin': FieldValue.arrayRemove([uid])});
+
+  @override
+  Future<void> addModerator(String communityId, String uid) => updateCommunity(
+      communityId, {'moderators': FieldValue.arrayUnion([uid])});
+
+  @override
+  Future<void> removeModerator(String communityId, String uid) =>
+      updateCommunity(
+          communityId, {'moderators': FieldValue.arrayRemove([uid])});
 
   @override
   CollectionReference<Map<String, dynamic>> membersCollection() =>
@@ -207,8 +285,34 @@ class FirebaseCommunityRepository implements CommunityRepository {
       memberDoc(communityId, uid).update({'member': true});
 
   @override
+  Future<void> approveMemberAndUpdateCounts(
+      String communityId, String uid, String bloodGroup) {
+    final batch = _dataSource.batch();
+    batch.update(memberDoc(communityId, uid), {
+      'member': true,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    batch.update(communityDoc(communityId), {
+      'memberCount': FieldValue.increment(1),
+      'bloodGroupCounts.$bloodGroup': FieldValue.increment(1),
+    });
+    return batch.commit();
+  }
+
+  @override
   Future<void> removeMember(String communityId, String uid) =>
       memberDoc(communityId, uid).delete();
+
+  @override
+  Future<void> inviteMember(String communityId, String uid,
+          String invitedByUid, String bloodGroup) =>
+      addMember(communityId, uid, {
+        'member': false,
+        'source': 'invited',
+        'invitedBy': invitedByUid,
+        'bloodGroup': bloodGroup,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> userMembershipsStream(
@@ -315,4 +419,56 @@ class FirebaseCommunityRepository implements CommunityRepository {
   @override
   Stream<DocumentSnapshot<Map<String, dynamic>>> adminStream(String uid) =>
       _dataSource.document('admin/$uid').snapshots();
+
+  @override
+  CollectionReference<Map<String, dynamic>> announcementsCollection() =>
+      _dataSource.collection('community_announcements');
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> announcementsStream(
+          String communityId) =>
+      announcementsCollection()
+          .where('communityId', isEqualTo: communityId)
+          .snapshots();
+
+  @override
+  Future<DocumentReference<Map<String, dynamic>>> addAnnouncement(
+          Map<String, dynamic> data) =>
+      announcementsCollection().add(data);
+
+  @override
+  Future<void> deleteAnnouncement(String announcementId) =>
+      announcementsCollection().doc(announcementId).delete();
+
+  @override
+  Future<void> setAnnouncementPinned(String announcementId, bool pinned) =>
+      announcementsCollection().doc(announcementId).update({'pinned': pinned});
+
+  @override
+  CollectionReference<Map<String, dynamic>> auditLogCollection() =>
+      _dataSource.collection('community_audit_logs');
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> auditLogStream(
+          String communityId) =>
+      auditLogCollection()
+          .where('communityId', isEqualTo: communityId)
+          .orderBy('createdAt', descending: true)
+          .limit(100)
+          .snapshots();
+
+  @override
+  Future<void> logCommunityAction({
+    required String communityId,
+    required String actorUid,
+    required String action,
+    String? targetUid,
+  }) =>
+      auditLogCollection().add({
+        'communityId': communityId,
+        'actorUid': actorUid,
+        'action': action,
+        'targetUid': targetUid,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 }

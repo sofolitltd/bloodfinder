@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
+import '../widgets/blood_group_count_chips.dart';
 import 'create_community_page.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -25,6 +26,8 @@ class CommunityPage extends ConsumerStatefulWidget {
 class _CommunityPageState extends ConsumerState<CommunityPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -38,8 +41,13 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
+
+  List<Community> _filtered(List<Community> communities) => communities
+      .where((c) => c.name.toLowerCase().contains(_searchQuery))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -84,93 +92,13 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
         },
       )
           : null,
-      body: StreamBuilder<QuerySnapshot>(
-        stream: communityRepo.allCommunitiesStream(),
-        builder: (context, allCommunitiesSnap) {
-          if (!allCommunitiesSnap.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final allDocs = allCommunitiesSnap.data!.docs;
-          final allCommunities = allDocs
-              .map((e) => Community.fromJson(e.data() as Map<String, dynamic>))
-              .toList();
-
-          return StreamBuilder<QuerySnapshot>(
-            stream: communityRepo.userMembershipsStream(uid),
-            builder: (context, myMembershipsSnap) {
-              if (!myMembershipsSnap.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final myCommunityIds = myMembershipsSnap.data!.docs
-                  .map((doc) => doc['communityId'] as String? ?? '')
-                  .where((id) => id.isNotEmpty)
-                  .toSet();
-
-              return TabBarView(
-                controller: _tabController,
-                children: [
-                  _CommunityTab(
-                    communities: allCommunities
-                        .where((c) => myCommunityIds.contains(c.id))
-                        .toList(),
-                  ),
-                  _CommunityTab(
-                    communities: allCommunities,
-                    showNearby: true,
-                  ),
-                  _CommunityTab(
-                    communities: allCommunities
-                        .where((c) => !myCommunityIds.contains(c.id))
-                        .toList(),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _CommunityTab extends StatefulWidget {
-  final List<Community> communities;
-  final bool showNearby;
-
-  const _CommunityTab({
-    required this.communities,
-    this.showNearby = false,
-  });
-
-  @override
-  State<_CommunityTab> createState() => _CommunityTabState();
-}
-
-class _CommunityTabState extends State<_CommunityTab> {
-  String searchQuery = '';
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  List<Community> get _filtered => widget.communities
-      .where((c) => c.name.toLowerCase().contains(searchQuery))
-      .toList();
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
-          child: TextField(
+      body: Column(
+        spacing:8,
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+            child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search by name...',
@@ -181,22 +109,88 @@ class _CommunityTabState extends State<_CommunityTab> {
                         icon: Icon(PhosphorIcons.x, size: 18.w),
                         onPressed: () {
                           _searchController.clear();
-                          setState(() => searchQuery = '');
+                          setState(() => _searchQuery = '');
                         },
                       ),
               ),
               onChanged: (value) =>
-                  setState(() => searchQuery = value.trim().toLowerCase()),
+                  setState(() => _searchQuery = value.trim().toLowerCase()),
             ),
           ),
-        Expanded(
-          child: _buildVerticalCommunityList(_filtered, isDark),
-        ),
-      ],
+
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: communityRepo.allCommunitiesStream(),
+              builder: (context, allCommunitiesSnap) {
+                if (!allCommunitiesSnap.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final allDocs = allCommunitiesSnap.data!.docs;
+                final allCommunities = allDocs
+                    .map((e) =>
+                        Community.fromJson(e.data() as Map<String, dynamic>))
+                    .toList();
+
+                return StreamBuilder<QuerySnapshot>(
+                  stream: communityRepo.userMembershipsStream(uid),
+                  builder: (context, myMembershipsSnap) {
+                    if (!myMembershipsSnap.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    final myCommunityIds = myMembershipsSnap.data!.docs
+                        .map((doc) => doc['communityId'] as String? ?? '')
+                        .where((id) => id.isNotEmpty)
+                        .toSet();
+
+                    return TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _CommunityTab(
+                          communities: _filtered(allCommunities
+                              .where((c) => myCommunityIds.contains(c.id))
+                              .toList()),
+                        ),
+                        _CommunityTab(
+                          communities: _filtered(allCommunities),
+                          showNearby: true,
+                        ),
+                        _CommunityTab(
+                          communities: _filtered(allCommunities
+                              .where((c) => !myCommunityIds.contains(c.id))
+                              .toList()),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildVerticalCommunityList(List<Community> communities, bool isDark) {
+class _CommunityTab extends StatelessWidget {
+  final List<Community> communities;
+  final bool showNearby;
+
+  const _CommunityTab({
+    required this.communities,
+    this.showNearby = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return _buildVerticalCommunityList(context, communities, isDark);
+  }
+
+  Widget _buildVerticalCommunityList(
+      BuildContext context, List<Community> communities, bool isDark) {
     if (communities.isEmpty) {
       return Center(
         child: Column(
@@ -217,7 +211,7 @@ class _CommunityTabState extends State<_CommunityTab> {
             ),
             SizedBox(height: 8.h),
             Text(
-              widget.showNearby
+              showNearby
                   ? 'No nearby communities'
                   : 'No communities found',
               style: TextStyle(
@@ -228,7 +222,7 @@ class _CommunityTabState extends State<_CommunityTab> {
             ),
             SizedBox(height: 6.h),
             Text(
-              widget.showNearby
+              showNearby
                   ? 'Check back later or explore other tabs'
                   : 'Create a new community or join one',
               textAlign: TextAlign.center,
@@ -379,6 +373,15 @@ class _CommunityTabState extends State<_CommunityTab> {
                               ),
                             ],
                           ),
+                          if (community.bloodGroupCounts != null &&
+                              community.bloodGroupCounts!.values
+                                  .any((c) => c > 0)) ...[
+                            SizedBox(height: 8.h),
+                            BloodGroupCountChips(
+                              bloodGroupCounts: community.bloodGroupCounts,
+                              dense: true,
+                            ),
+                          ],
                         ],
                       ),
                     ),

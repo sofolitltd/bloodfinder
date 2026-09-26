@@ -6,8 +6,10 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../models/community.dart';
 import '../../providers/community_provider.dart';
+import '../pages/community_audit_log_page.dart';
 import '../pages/community_member_page.dart';
 import '../pages/community_member_request_page.dart';
+import '../pages/invite_member_page.dart';
 
 class AdminManagementSection extends ConsumerWidget {
   final Community community;
@@ -211,6 +213,86 @@ class AdminManagementSection extends ConsumerWidget {
                       SizedBox(height: 2.h),
                       Text(
                         'Requests',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Invite
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          InviteMemberPage(community: community),
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(14.r),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        PhosphorIcons.userPlus,
+                        size: 24.w,
+                        color: Colors.blue.shade600,
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'Invite',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Activity Log
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CommunityAuditLogPage(community: community),
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(14.r),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.purple.shade50,
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        PhosphorIcons.clockCounterClockwise,
+                        size: 24.w,
+                        color: Colors.purple.shade600,
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'Activity Log',
                         style: TextStyle(
                           fontSize: 13.sp,
                           color: Colors.grey.shade600,

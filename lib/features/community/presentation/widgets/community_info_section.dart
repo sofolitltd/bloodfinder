@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,6 +19,61 @@ class CommunityInfoSection extends StatelessWidget {
     required this.community,
     required this.uid,
   });
+
+  String get _shareLink =>
+      'https://bloodfinder.web.app/open-app.html?community=${community.id}';
+
+  void _showQrDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                community.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16.h),
+              QrImageView(
+                data: _shareLink,
+                size: 220.w,
+                backgroundColor: Colors.white,
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                'Code: ${community.code}',
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+              ),
+              SizedBox(height: 16.h),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    SharePlus.instance.share(
+                      ShareParams(
+                        title: "Share Community",
+                        text:
+                            "Blood Finder\n\nCommunity: ${community.name}\n\nCheck out our community:\n $_shareLink",
+                      ),
+                    );
+                  },
+                  icon: Icon(PhosphorIcons.shareNetwork, size: 16.w),
+                  label: const Text('Share Link'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +120,7 @@ class CommunityInfoSection extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  if (community.admin.contains(uid))
+                  if (community.canManageCommunity(uid))
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -180,12 +236,27 @@ class CommunityInfoSection extends StatelessWidget {
                 ),
               ),
               InkWell(
+                onTap: () => _showQrDialog(context),
+                borderRadius: BorderRadius.circular(8.r),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 10.w, vertical: 8.h),
+                  margin: EdgeInsets.only(right: 8.w),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Icon(PhosphorIcons.qrCode,
+                      size: 16.w, color: Colors.blue.shade600),
+                ),
+              ),
+              InkWell(
                 onTap: () {
                   SharePlus.instance.share(
                     ShareParams(
                       title: "Share Community",
                       text:
-                          "Blood Finder\n\nCommunity: ${community.name}\n\nCheck out our community:\n https://bloodfinder.web.app/open-app.html?community=${community.id}",
+                          "Blood Finder\n\nCommunity: ${community.name}\n\nCheck out our community:\n $_shareLink",
                     ),
                   );
                 },

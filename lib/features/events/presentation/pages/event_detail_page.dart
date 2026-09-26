@@ -105,7 +105,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                       child: Image.network(
                         widget.event.imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
                       ),
                     ),
                   Container(
@@ -162,8 +162,9 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                           ),
                                           onSelected: (value) {
                                             if (value == 'edit') _editEvent();
-                                            if (value == 'delete')
+                                            if (value == 'delete') {
                                               _deleteEvent();
+                                            }
                                           },
                                           itemBuilder: (_) => [
                                             PopupMenuItem(

@@ -1,11 +1,11 @@
 {
     "name": "Blood Finder",
-    "short_name": "bloodfinder",
+    "short_name": "Blood Finder",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Donate blood, Save life",
+    "background_color": "#f51f07",
+    "theme_color": "#f51f07",
+    "description": "Donate blood, Save lifes",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

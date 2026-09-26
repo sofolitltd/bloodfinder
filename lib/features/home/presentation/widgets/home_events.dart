@@ -133,7 +133,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: events.length,
-                  separatorBuilder: (_, __) => SizedBox(width: 12.w),
+                  separatorBuilder: (_, _) => SizedBox(width: 12.w),
                   itemBuilder: (context, index) {
                     final event = events[index];
                     final dateStr = event.dateDisplay;
@@ -178,7 +178,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                                     ? Image.network(
                                         event.imageUrl!,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) =>
+                                        errorBuilder: (_, _, _) =>
                                             _defaultEventImage(theme),
                                       )
                                     : _defaultEventImage(theme),

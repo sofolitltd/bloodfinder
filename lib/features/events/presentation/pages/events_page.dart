@@ -99,7 +99,9 @@ class _EventsPageState extends ConsumerState<EventsPage>
 
   Future<void> _loadNearbyEvents() async {
     if (_nearbyLoading || !_nearbyHasMore ||
-        _latitude == null || _longitude == null) return;
+        _latitude == null || _longitude == null) {
+      return;
+    }
     setState(() => _nearbyLoading = true);
 
     final repo = ref.read(eventRepositoryProvider);
@@ -651,7 +653,7 @@ class _EventCard extends StatelessWidget {
                 height: 140.h,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
               )
             else
               Container(

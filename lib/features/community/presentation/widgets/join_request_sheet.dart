@@ -34,7 +34,7 @@ class JoinRequestSheet extends ConsumerWidget {
       builder: (context, snapshot) {
         bool isRequested = false;
 
-        if (snapshot.hasData && snapshot.data!.exists) {
+        if (!snapshot.hasError && snapshot.hasData && snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
           if (data['member'] == false) {
             isRequested = true;
@@ -165,69 +165,94 @@ class JoinRequestSheet extends ConsumerWidget {
                   height: 50.h,
                   child: ElevatedButton(
                     onPressed: () async {
-                      if (!isRequested) {
-                        await communityRepo.addMember(
-                          community.id,
-                          currentUserId,
-                          {
-                            'uid': currentUserId,
-                            'member': false,
-                            'createdAt': FieldValue.serverTimestamp(),
-                          },
-                        );
+                      try {
+                        if (!isRequested) {
+                          await communityRepo.addMember(
+                            community.id,
+                            currentUserId,
+                            {
+                              'uid': currentUserId,
+                              'member': false,
+                              'source': 'requested',
+                              'createdAt': FieldValue.serverTimestamp(),
+                            },
+                          );
 
-                        await FCMSender.sendToTopic(
-                          topic: community.id,
-                          title: 'New Join Request',
-                          body:
-                              'Someone requested to join ${community.name}',
-                          data: {
-                            'type': 'community',
-                            'communityId': community.id,
-                          },
-                        );
-
-                        await Future.wait(
-                          community.admin.map((adminUid) {
-                            return NotificationService.addNotification(
+                          try {
+                            await FCMSender.sendToTopic(
+                              topic: community.id,
                               title: 'New Join Request',
                               body:
-                                  'Someone requested to join your ${community.name}.',
-                              type: 'community',
-                              data: {'communityId': community.id},
-                              userId: adminUid,
+                                  'Someone requested to join ${community.name}',
+                              data: {
+                                'type': 'community',
+                                'communityId': community.id,
+                              },
                             );
-                          }),
-                        );
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                const Text('Join request sent'),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12.r),
+                            await Future.wait(
+                              {
+                                ...community.admin,
+                                ...community.moderators,
+                              }.map((adminUid) {
+                                return NotificationService.addNotification(
+                                  title: 'New Join Request',
+                                  body:
+                                      'Someone requested to join your ${community.name}.',
+                                  type: 'community',
+                                  data: {'communityId': community.id},
+                                  userId: adminUid,
+                                );
+                              }),
+                            );
+                          } catch (_) {
+                            // Join request was already recorded; a failed
+                            // notification shouldn't block or fail the flow.
+                          }
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Join request sent'),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                              ),
+                            );
+                          }
+                        } else {
+                          await communityRepo.removeMember(
+                              community.id, currentUserId);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Join request canceled'),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      } catch (_) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                  'Something went wrong. Please try again.'),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        await communityRepo.removeMember(
-                            community.id, currentUserId);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                const Text('Join request canceled'),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12.r),
-                            ),
-                          ),
-                        );
-                      }
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

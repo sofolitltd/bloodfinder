@@ -26,7 +26,7 @@ class _CreateEventSheet extends StatefulWidget {
   final WidgetRef ref;
   final BloodEvent? event;
 
-  _CreateEventSheet({required this.ref, this.event});
+  const _CreateEventSheet({required this.ref, this.event});
 
   @override
   State<_CreateEventSheet> createState() => _CreateEventSheetState();

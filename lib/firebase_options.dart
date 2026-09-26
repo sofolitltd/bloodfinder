@@ -23,10 +23,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -65,5 +62,14 @@ class DefaultFirebaseOptions {
     messagingSenderId: '119562024934',
     projectId: 'bloodfinder-bd',
     storageBucket: 'bloodfinder-bd.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAAekVDInyML6pOksId0jnFh8-T7K1-5MU',
+    appId: '1:119562024934:ios:56cf8aa3ea3c13e776c827',
+    messagingSenderId: '119562024934',
+    projectId: 'bloodfinder-bd',
+    storageBucket: 'bloodfinder-bd.firebasestorage.app',
+    iosBundleId: 'com.sofolit.bloodfinder',
   );
 }

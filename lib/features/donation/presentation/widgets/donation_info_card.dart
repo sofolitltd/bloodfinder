@@ -9,7 +9,7 @@ class DonationInfoCard extends StatelessWidget {
   final BloodRequest request;
   final bool isDark;
 
-  DonationInfoCard({super.key, required this.request, required this.isDark});
+  const DonationInfoCard({super.key, required this.request, required this.isDark});
 
   @override
   Widget build(BuildContext context) {

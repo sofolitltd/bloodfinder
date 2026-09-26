@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/utils/geohash.dart';
+import '../../core/utils/phone_utils.dart';
 import '../../data/datasources/remote/firebase_datasource.dart';
+import '../models/user_model.dart';
 
 abstract class UserRepository {
   DocumentReference<Map<String, dynamic>> userDoc(String uid);
@@ -27,6 +29,12 @@ abstract class UserRepository {
   });
 
   Future<QuerySnapshot<Map<String, dynamic>>> getUsersByIds(List<String> uids);
+  Future<UserModel?> findUserByPhone(String phone);
+  Future<UserModel?> findUserByEmail(String email);
+  Future<List<UserModel>> searchUsersByName(String query);
+
+  /// Dispatches to phone/email/name lookup based on the shape of [query].
+  Future<List<UserModel>> searchRegisteredUsers(String query);
   Stream<QuerySnapshot<Map<String, dynamic>>> emergencyDonorsStream();
   Future<QuerySnapshot<Map<String, dynamic>>> getUsersByCountry(
     String country,
@@ -145,6 +153,98 @@ class FirebaseUserRepository implements UserRepository {
           .collection(_col)
           .where(FieldPath.documentId, whereIn: uids)
           .get();
+
+  @override
+  Future<UserModel?> findUserByPhone(String phone) async {
+    final normalized = PhoneUtils.normalize(phone);
+    final usersRef = _dataSource.collection(_col);
+
+    var snap = await usersRef
+        .where('mobileNumber', isEqualTo: normalized)
+        .limit(1)
+        .get();
+
+    if (snap.docs.isEmpty) {
+      // Retry with the +880 prefix variant, since stored numbers may use
+      // either the bare-digits or canonical E.164 format.
+      final withPrefix =
+          normalized.startsWith('880') ? '+$normalized' : normalized;
+      snap = await usersRef
+          .where('mobileNumber', isEqualTo: withPrefix)
+          .limit(1)
+          .get();
+    }
+
+    if (snap.docs.isEmpty) return null;
+    return UserModel.fromFirestore(snap.docs.first);
+  }
+
+  @override
+  Future<UserModel?> findUserByEmail(String email) async {
+    final usersRef = _dataSource.collection(_col);
+    final trimmed = email.trim();
+
+    var snap = await usersRef
+        .where('email', isEqualTo: trimmed.toLowerCase())
+        .limit(1)
+        .get();
+
+    if (snap.docs.isEmpty && trimmed != trimmed.toLowerCase()) {
+      // Stored casing isn't guaranteed, so retry with the as-typed value.
+      snap = await usersRef.where('email', isEqualTo: trimmed).limit(1).get();
+    }
+
+    if (snap.docs.isEmpty) return null;
+    return UserModel.fromFirestore(snap.docs.first);
+  }
+
+  @override
+  Future<List<UserModel>> searchUsersByName(String query) async {
+    final usersRef = _dataSource.collection(_col);
+    if (query.isEmpty) return [];
+
+    final variants = <String>{
+      query,
+      '${query[0].toUpperCase()}${query.substring(1)}',
+      '${query[0].toLowerCase()}${query.substring(1)}',
+    };
+
+    final results = <String, UserModel>{};
+    for (final variant in variants) {
+      for (final field in ['firstName', 'lastName']) {
+        final snap = await usersRef
+            .where(field, isGreaterThanOrEqualTo: variant)
+            .where(field, isLessThanOrEqualTo: '$variant')
+            .limit(10)
+            .get();
+        for (final doc in snap.docs) {
+          results[doc.id] = UserModel.fromFirestore(doc);
+        }
+      }
+    }
+    return results.values.toList();
+  }
+
+  @override
+  Future<List<UserModel>> searchRegisteredUsers(String query) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return [];
+
+    if (trimmed.contains('@')) {
+      final user = await findUserByEmail(trimmed);
+      return user != null ? [user] : [];
+    }
+
+    final digitCount = trimmed.replaceAll(RegExp(r'[^0-9]'), '').length;
+    final looksLikePhone = digitCount >= 6 &&
+        RegExp(r'^[0-9+\-\s()]+$').hasMatch(trimmed);
+    if (looksLikePhone) {
+      final user = await findUserByPhone(trimmed);
+      return user != null ? [user] : [];
+    }
+
+    return searchUsersByName(trimmed);
+  }
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> emergencyDonorsStream() =>

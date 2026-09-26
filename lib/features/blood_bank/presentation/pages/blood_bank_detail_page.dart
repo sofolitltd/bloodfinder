@@ -86,12 +86,12 @@ class BloodBankDetailPage extends StatelessWidget {
                                       width: 56.w,
                                       height: 56.h,
                                       fit: BoxFit.cover,
-                                      placeholder: (_, __) =>
+                                      placeholder: (_, _) =>
                                           const Center(
                                               child:
                                                   CircularProgressIndicator(
                                                       strokeWidth: 2)),
-                                      errorWidget: (_, __, ___) => Icon(
+                                      errorWidget: (_, _, _) => Icon(
                                         PhosphorIcons.hospital,
                                         color: Colors.red.shade200,
                                         size: 28,

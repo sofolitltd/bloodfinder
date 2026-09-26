@@ -81,7 +81,7 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
           return ListView.separated(
             itemCount: chatDocs.length,
             padding: EdgeInsets.symmetric(vertical: 8.h),
-            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+            separatorBuilder: (_, _) => SizedBox(height: 12.h),
             itemBuilder: (context, index) {
               final chatDoc = chatDocs[index];
               final chatData = chatDoc.data();

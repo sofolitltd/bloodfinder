@@ -307,7 +307,7 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
               : ListView.separated(
                   padding: EdgeInsets.symmetric(vertical: 8.w),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 10.h),
                   itemBuilder: (context, index) {
                     final broadcast = AnnouncementModel.fromDoc(filtered[index]);
                     return Card(

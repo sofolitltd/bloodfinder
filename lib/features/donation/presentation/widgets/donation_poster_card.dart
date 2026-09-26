@@ -10,7 +10,7 @@ import 'package:bloodfinder/features/blood_request/models/blood_request.dart';
 class DonationPosterCard extends ConsumerWidget {
   final BloodRequest request;
 
-  DonationPosterCard({super.key, required this.request});
+  const DonationPosterCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

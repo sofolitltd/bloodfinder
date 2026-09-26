@@ -12,9 +12,12 @@ import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
 
 import '../widgets/admin_management_section.dart';
+import '../widgets/announcements_section.dart';
+import '../widgets/blood_group_count_chips.dart';
 import '../widgets/community_info_section.dart';
 import '../widgets/join_request_sheet.dart';
 import '../widgets/member_content_section.dart';
+import '../widgets/request_blood_from_community_sheet.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -79,7 +82,7 @@ class CommunityDetailsPage extends ConsumerWidget {
                                 onPressed: () => Navigator.pop(context),
                               ),
                               const Spacer(),
-                              if (community.admin.contains(uid))
+                              if (community.canManageCommunity(uid))
                                 IconButton(
                                   icon: Icon(
                                     PhosphorIcons.trash,
@@ -231,6 +234,10 @@ class CommunityDetailsPage extends ConsumerWidget {
 
                     SizedBox(height: 16.h),
 
+                    AnnouncementsSection(community: community, uid: uid),
+
+                    SizedBox(height: 16.h),
+
                     StreamBuilder<DocumentSnapshot>(
                       stream: communityRepo.memberStream(
                           community.id, uid),
@@ -267,33 +274,86 @@ class CommunityDetailsPage extends ConsumerWidget {
                               ],
                             ),
                             padding: EdgeInsets.all(16.w),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (community.bloodGroupCounts != null &&
+                                    community.bloodGroupCounts!.values
+                                        .any((c) => c > 0)) ...[
+                                  Text(
+                                    'Members by Blood Group',
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade700,
                                     ),
-                                    builder: (context) =>
-                                        JoinRequestSheet(
-                                            community: community),
-                                  );
-                                },
-                                icon: Icon(PhosphorIcons.usersThree),
-                                label: const Text(
-                                    'View Join Instructions'),
-                              ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  BloodGroupCountChips(
+                                    bloodGroupCounts:
+                                        community.bloodGroupCounts,
+                                  ),
+                                  SizedBox(height: 16.h),
+                                ],
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20)),
+                                        ),
+                                        builder: (context) =>
+                                            JoinRequestSheet(
+                                                community: community),
+                                      );
+                                    },
+                                    icon: Icon(PhosphorIcons.usersThree),
+                                    label: const Text(
+                                        'View Join Instructions'),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20)),
+                                        ),
+                                        builder: (context) =>
+                                            RequestBloodFromCommunitySheet(
+                                                community: community),
+                                      );
+                                    },
+                                    icon: Icon(PhosphorIcons.drop,
+                                        color: Colors.red.shade600),
+                                    label: Text(
+                                      'Request Blood from this Community',
+                                      style:
+                                          TextStyle(color: Colors.red.shade600),
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                          color: Colors.red.shade200),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           );
                         }
                       },
                     ),
 
-                    if (community.admin.contains(uid))
+                    if (community.canManageMembers(uid))
                       Padding(
                         padding: EdgeInsets.only(top: 16.h),
                         child: AdminManagementSection(

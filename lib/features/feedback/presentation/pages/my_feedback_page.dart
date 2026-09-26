@@ -182,7 +182,7 @@ class _MyFeedbackPageState extends ConsumerState<MyFeedbackPage> {
                   child: ListView.separated(
                     padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 80.h),
                     itemCount: _feedbacks.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       final fb = _feedbacks[index];
                       return _FeedbackCard(

@@ -12,7 +12,7 @@ import '../../data/models/user_model.dart';
 import '../../features/donation/presentation/pages/donation_page.dart';
 
 class BloodRequestCard extends ConsumerWidget {
-  BloodRequestCard({super.key, required this.request, this.embedded = false, this.distanceInKm, this.onDelete, this.onEdit});
+  const BloodRequestCard({super.key, required this.request, this.embedded = false, this.distanceInKm, this.onDelete, this.onEdit});
 
   final BloodRequest request;
   final bool embedded;

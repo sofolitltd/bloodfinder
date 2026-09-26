@@ -30,7 +30,7 @@ class RequestForm extends StatefulWidget {
   final String? locationAddress;
   final void Function(double lat, double lng, String address) onLocationPicked;
 
-  RequestForm({
+  const RequestForm({
     super.key,
     required this.nameController,
     required this.mobileController,

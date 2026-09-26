@@ -194,7 +194,7 @@ class _DonationHistoryPageState extends ConsumerState<DonationHistoryPage> {
                 child: ListView.separated(
                   padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.w),
                   itemCount: donations.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 8.h),
                   itemBuilder: (context, index) {
                     final data =
                         donations[index].data() as Map<String, dynamic>;

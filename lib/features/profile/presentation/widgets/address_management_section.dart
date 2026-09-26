@@ -209,7 +209,7 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.savedAddresses.length,
-              separatorBuilder: (_, __) => Divider(height: 8.h),
+              separatorBuilder: (_, _) => Divider(height: 8.h),
               itemBuilder: (context, index) {
                 final address = widget.savedAddresses[index];
                 // In case of multiple exact same geohashes (rare but possible),

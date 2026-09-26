@@ -189,7 +189,7 @@ class ProfileHeader extends StatelessWidget {
 class BadgeChip extends StatelessWidget {
   final String badge;
 
-  const BadgeChip({required this.badge});
+  const BadgeChip({super.key, required this.badge});
 
   @override
   Widget build(BuildContext context) {

@@ -351,7 +351,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
         final notifier = ref.read(feedPaginationProvider.notifier);
         return ListView.separated(
           padding: EdgeInsets.all(16.w),
-          separatorBuilder: (_, __) => SizedBox(height: 8.h),
+          separatorBuilder: (_, _) => SizedBox(height: 8.h),
           controller: _scrollController,
           itemCount: docs.length + (notifier.hasMore ? 1 : 0),
           itemBuilder: (context, index) {

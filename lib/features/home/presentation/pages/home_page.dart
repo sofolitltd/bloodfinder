@@ -6,11 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 
-import '../../../../core/utils/string_utils.dart';
-import '../../../../data/providers/notification_provider.dart';
-import '../../../../data/providers/user_providers.dart';
+import '/core/utils/string_utils.dart';
+import '/data/providers/notification_provider.dart';
+import '/data/providers/user_providers.dart';
 
-import '../../../notification/presentation/pages/notification_page.dart';
+import '/features/notification/presentation/pages/notification_page.dart';
 
 import '../widgets/home_actions.dart';
 
@@ -157,7 +157,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   HomeCommunityContributionSection(),
                   SizedBox(height: 24.h),
                   HomeUpcomingEventsSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 16.h),
                   HomeBloodRequestsSection(),
                   SizedBox(height: 24.h),
                 ],

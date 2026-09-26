@@ -21,7 +21,7 @@ class FindDonorPage extends ConsumerStatefulWidget {
   final double longitude;
   final double radiusInKm;
 
-  FindDonorPage({
+  const FindDonorPage({
     super.key,
     required this.bloodGroup,
     required this.latitude,
@@ -155,7 +155,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       controller: _scrollController,
       padding: EdgeInsets.all(16.w),
       itemCount: _donors.length + (_hasMore ? 1 : 0),
-      separatorBuilder: (_, __) => SizedBox(height: 16.h),
+      separatorBuilder: (_, _) => SizedBox(height: 16.h),
       itemBuilder: (context, index) {
         if (index == _donors.length) {
           return const Center(child: CircularProgressIndicator());
@@ -217,7 +217,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         return ListView.separated(
           padding: EdgeInsets.all(16.w),
           itemCount: docs.length,
-          separatorBuilder: (_, __) => SizedBox(height: 16.h),
+          separatorBuilder: (_, _) => SizedBox(height: 16.h),
           itemBuilder: (context, index) {
             final community = Community.fromJson({
               ...docs[index].data(),
@@ -443,7 +443,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         return ListView.separated(
           padding: EdgeInsets.all(16.w),
           itemCount: docs.length,
-          separatorBuilder: (_, __) => SizedBox(height: 16.h),
+          separatorBuilder: (_, _) => SizedBox(height: 16.h),
           itemBuilder: (context, index) {
             final bank = BloodBank.fromJson({
               ...docs[index].data(),
@@ -689,9 +689,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                   : CachedNetworkImage(
                       imageUrl: donor.image,
                       fit: BoxFit.cover,
-                      placeholder: (_, __) =>
+                      placeholder: (_, _) =>
                           const CupertinoActivityIndicator(),
-                      errorWidget: (_, __, ___) => Icon(
+                      errorWidget: (_, _, _) => Icon(
                         PhosphorIcons.warningCircle,
                         color: Colors.red.shade200,
                       ),

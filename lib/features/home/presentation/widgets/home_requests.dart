@@ -36,22 +36,22 @@ class HomeBloodRequestsSection extends ConsumerWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isDark ? Colors.transparent : Colors.grey.shade200,
-          width: 0.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(20.w),
+      // decoration: BoxDecoration(
+      //   color: theme.colorScheme.surface,
+      //   borderRadius: BorderRadius.circular(16.r),
+      //   border: Border.all(
+      //     color: isDark ? Colors.transparent : Colors.grey.shade200,
+      //     width: 0.5,
+      //   ),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.black.withValues(alpha: 0.04),
+      //       blurRadius: 8,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
+      // padding: EdgeInsets.all(20.w),
       child: Column(
         children: [
           Row(
@@ -157,7 +157,7 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemCount: requests.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                separatorBuilder: (_, _) => SizedBox(height: 12.h),
                 itemBuilder: (context, index) {
                   final req = requests[index];
                   double? distance;

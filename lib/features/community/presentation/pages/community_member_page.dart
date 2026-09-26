@@ -37,6 +37,14 @@ class CommunityMembersPage extends ConsumerWidget {
     return StreamBuilder<Community>(
       stream: communityStream,
       builder: (context, communitySnapshot) {
+        if (communitySnapshot.hasError) {
+          return const Scaffold(
+            body: Center(
+              child: Text('Something went wrong. Please try again.'),
+            ),
+          );
+        }
+
         if (!communitySnapshot.hasData) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -53,6 +61,14 @@ class CommunityMembersPage extends ConsumerWidget {
         return StreamBuilder<QuerySnapshot>(
           stream: membersStream,
           builder: (context, membersSnapshot) {
+            if (membersSnapshot.hasError) {
+              return const Scaffold(
+                body: Center(
+                  child: Text('Something went wrong. Please try again.'),
+                ),
+              );
+            }
+
             if (!membersSnapshot.hasData) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
@@ -78,20 +94,37 @@ class CommunityMembersPage extends ConsumerWidget {
                   return StreamBuilder<DocumentSnapshot>(
                     stream: userRepo.userStream(memberId),
                     builder: (context, userSnapshot) {
+                      if (userSnapshot.hasError) {
+                        return const ListTile(
+                          title: Text('Could not load this member'),
+                        );
+                      }
+
                       if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
                         return const ListTile(title: Text(''));
                       }
 
                       final userData =
                           userSnapshot.data!.data() as Map<String, dynamic>;
-                      final user = UserModel.fromJson(userData);
+                      final UserModel user;
+                      try {
+                        user = UserModel.fromJson(userData);
+                      } catch (_) {
+                        return const ListTile(
+                          title: Text('Could not load this member'),
+                        );
+                      }
                       final name = '${user.firstName} ${user.lastName}';
                       final address = user.locationAddress ?? '';
                       final bloodGroup = user.bloodGroup;
 
-                      final isAdmin = updatedCommunity.admin.contains(user.uid);
-                      final currentUserIsAdmin = updatedCommunity.admin
-                          .contains(currentUserId);
+                      final isAdmin = updatedCommunity.isAdmin(user.uid);
+                      final isModerator =
+                          updatedCommunity.isModerator(user.uid);
+                      final currentUserIsAdmin =
+                          updatedCommunity.isAdmin(currentUserId);
+                      final currentUserCanManage =
+                          updatedCommunity.canManageMembers(currentUserId);
 
                       return Container(
                         decoration: BoxDecoration(
@@ -197,6 +230,31 @@ class CommunityMembersPage extends ConsumerWidget {
                                                 ),
                                               ),
                                             ],
+                                            if (isModerator) ...[
+                                              SizedBox(width: 6.w),
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.symmetric(
+                                                  horizontal: 6.w,
+                                                  vertical: 2.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue.shade50,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.r),
+                                                ),
+                                                child: Text(
+                                                  'Moderator',
+                                                  style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                    color:
+                                                        Colors.blue.shade600,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ],
                                         ),
                                         SizedBox(height: 4.h),
@@ -279,15 +337,28 @@ class CommunityMembersPage extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
-                                  if (currentUserIsAdmin)...[
+                                  if (currentUserCanManage)...[
                                     SizedBox(width: 8.w),
                                     Spacer(),
                                   ],
-                                    
-                                  if (currentUserIsAdmin)
+
+                                  if (currentUserCanManage)
                                     PopupMenuButton<String>(
                                       onSelected: (value) async {
                                         if (value == 'remove_member') {
+                                          if (isAdmin &&
+                                              updatedCommunity.admin.length <=
+                                                  1) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'A community must have at least one admin.'),
+                                              ),
+                                            );
+                                            return;
+                                          }
+
                                           final confirm =
                                               await showDialog<bool>(
                                             context: context,
@@ -321,35 +392,128 @@ class CommunityMembersPage extends ConsumerWidget {
                                           );
 
                                           if (confirm == true) {
-                                            await communityRepo.removeMember(
-                                                updatedCommunity.id, user.uid);
-                                            await communityRepo
-                                                .updateMemberCount(
-                                                    updatedCommunity.id, -1);
-                                            await communityRepo
-                                                .updateBloodGroupCount(
-                                                    updatedCommunity.id,
-                                                    user.bloodGroup,
-                                                    -1);
+                                            try {
+                                              await communityRepo.removeMember(
+                                                  updatedCommunity.id,
+                                                  user.uid);
+                                              await communityRepo
+                                                  .updateMemberCount(
+                                                      updatedCommunity.id, -1);
+                                              await communityRepo
+                                                  .updateBloodGroupCount(
+                                                      updatedCommunity.id,
+                                                      user.bloodGroup,
+                                                      -1);
+                                              try {
+                                                await communityRepo
+                                                    .logCommunityAction(
+                                                  communityId:
+                                                      updatedCommunity.id,
+                                                  actorUid: currentUserId,
+                                                  action: 'remove_member',
+                                                  targetUid: user.uid,
+                                                );
+                                              } catch (_) {
+                                                // Logging is best-effort.
+                                              }
+                                            } catch (_) {
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        'Could not remove this member. Please try again.'),
+                                                  ),
+                                                );
+                                              }
+                                            }
                                           }
                                         } else if (value == 'toggle_admin') {
-                                          final isAlreadyAdmin =
-                                              updatedCommunity.admin
-                                                  .contains(user.uid);
-                                          if (isAlreadyAdmin) {
-                                            await communityRepo
-                                                .updateCommunity(
-                                                    updatedCommunity.id, {
-                                              'admin': FieldValue.arrayRemove(
-                                                  [user.uid]),
-                                            });
-                                          } else {
-                                            await communityRepo
-                                                .updateCommunity(
-                                                    updatedCommunity.id, {
-                                              'admin': FieldValue.arrayUnion(
-                                                  [user.uid]),
-                                            });
+                                          if (isAdmin &&
+                                              updatedCommunity.admin.length <=
+                                                  1) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'A community must have at least one admin.'),
+                                              ),
+                                            );
+                                            return;
+                                          }
+                                          try {
+                                            if (isAdmin) {
+                                              await communityRepo.removeAdmin(
+                                                  updatedCommunity.id,
+                                                  user.uid);
+                                            } else {
+                                              await communityRepo.addAdmin(
+                                                  updatedCommunity.id,
+                                                  user.uid);
+                                            }
+                                            try {
+                                              await communityRepo
+                                                  .logCommunityAction(
+                                                communityId:
+                                                    updatedCommunity.id,
+                                                actorUid: currentUserId,
+                                                action: isAdmin
+                                                    ? 'remove_admin'
+                                                    : 'make_admin',
+                                                targetUid: user.uid,
+                                              );
+                                            } catch (_) {
+                                              // Logging is best-effort.
+                                            }
+                                          } catch (_) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Could not update admin status. Please try again.'),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        } else if (value ==
+                                            'toggle_moderator') {
+                                          try {
+                                            if (isModerator) {
+                                              await communityRepo
+                                                  .removeModerator(
+                                                      updatedCommunity.id,
+                                                      user.uid);
+                                            } else {
+                                              await communityRepo
+                                                  .addModerator(
+                                                      updatedCommunity.id,
+                                                      user.uid);
+                                            }
+                                            try {
+                                              await communityRepo
+                                                  .logCommunityAction(
+                                                communityId:
+                                                    updatedCommunity.id,
+                                                actorUid: currentUserId,
+                                                action: isModerator
+                                                    ? 'remove_moderator'
+                                                    : 'make_moderator',
+                                                targetUid: user.uid,
+                                              );
+                                            } catch (_) {
+                                              // Logging is best-effort.
+                                            }
+                                          } catch (_) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Could not update moderator status. Please try again.'),
+                                                ),
+                                              );
+                                            }
                                           }
                                         }
                                       },
@@ -358,14 +522,24 @@ class CommunityMembersPage extends ConsumerWidget {
                                           value: 'remove_member',
                                           child: Text('Remove Member'),
                                         ),
-                                        PopupMenuItem(
-                                          value: 'toggle_admin',
-                                          child: Text(
-                                            isAdmin
-                                                ? 'Remove from Admin'
-                                                : 'Make Admin',
+                                        if (currentUserIsAdmin) ...[
+                                          PopupMenuItem(
+                                            value: 'toggle_admin',
+                                            child: Text(
+                                              isAdmin
+                                                  ? 'Remove from Admin'
+                                                  : 'Make Admin',
+                                            ),
                                           ),
-                                        ),
+                                          PopupMenuItem(
+                                            value: 'toggle_moderator',
+                                            child: Text(
+                                              isModerator
+                                                  ? 'Remove from Moderator'
+                                                  : 'Make Moderator',
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                       child: Container(
                                         padding: EdgeInsets.all(8.w),

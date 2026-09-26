@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:country_state_city_selector/country_state_city_selector.dart';
 
 class GlobalLocationPicker extends StatefulWidget {
   const GlobalLocationPicker({
@@ -312,20 +311,7 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
             ],
           ),
           const SizedBox(height: 16.0),
-          CountryStateCitySelector(
-            countryHintText: 'Select Country',
-            stateHintText: 'Select State/Division',
-            cityHintText: 'Select City/District',
-            onSelectionChanged: (country, state, city) {
-              setState(() {
-                _country = country;
-                _state = state;
-                _city = city;
-              });
-              _fetchCoordinatesForManualSelection(country, state, city);
-            },
-          ),
-          if (_statusMessage != null) ...[
+         if (_statusMessage != null) ...[
             const SizedBox(height: 12.0),
             Text(
               _statusMessage!,

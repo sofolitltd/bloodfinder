@@ -248,7 +248,7 @@ class _CertificatePageState extends State<CertificatePage> {
           height: 200.h,
           width: double.infinity,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _buildGradientHeader(context),
+          errorBuilder: (_, _, _) => _buildGradientHeader(context),
         ),
         Positioned.fill(
           child: Container(

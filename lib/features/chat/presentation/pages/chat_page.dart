@@ -112,7 +112,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     ? const Center(child: Text("No active chats"))
                     : ListView.separated(
                         itemCount: filteredChats.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                        separatorBuilder: (_, _) => SizedBox(height: 8.h),
                         itemBuilder: (context, index) {
                           final chatDoc = filteredChats[index];
                           final chatData = chatDoc.data();

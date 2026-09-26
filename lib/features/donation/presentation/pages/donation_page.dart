@@ -15,7 +15,7 @@ import '../widgets/donation_poster_card.dart';
 class DonationPage extends ConsumerWidget {
   final String requestId;
 
-  DonationPage({super.key, required this.requestId});
+  const DonationPage({super.key, required this.requestId});
 
   Future<void> _callDonor(String mobile) async {
     if (mobile.isEmpty) return;
