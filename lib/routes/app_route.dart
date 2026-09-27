@@ -23,10 +23,6 @@ class AppRoute {
 
   //
   static const community = AppRoute(name: 'community', path: '/community');
-  static const communityDetails = AppRoute(
-    name: 'community-details',
-    path: '/community-details',
-  );
 
   //login
   static const login = AppRoute(name: 'login', path: '/login');

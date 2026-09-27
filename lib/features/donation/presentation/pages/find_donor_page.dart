@@ -14,6 +14,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../data/providers/repository_providers.dart';
 import '../../../blood_bank/presentation/pages/blood_bank_detail_page.dart';
+import 'donor_detail_page.dart';
 
 class FindDonorPage extends ConsumerStatefulWidget {
   final String bloodGroup;
@@ -63,7 +64,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
     setState(() => _isLoading = true);
 
     try {
-      final stream = ref.read(userRepositoryProvider).usersByDonors(
+      final stream = ref
+          .read(userRepositoryProvider)
+          .usersByDonors(
             bloodGroup: widget.bloodGroup,
             latitude: widget.latitude,
             longitude: widget.longitude,
@@ -78,8 +81,10 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         _lastDoc = snapshot.docs.last;
         _donors.addAll(
           snapshot.docs
-              .where((doc) =>
-                  (doc.data()['availability'] as String?) != 'unavailable')
+              .where(
+                (doc) =>
+                    (doc.data()['availability'] as String?) != 'unavailable',
+              )
               .map((e) => e.data())
               .toList(),
         );
@@ -109,10 +114,12 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-                    labelColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                     tabs: const [
+          labelColor: Theme.of(context).colorScheme.primary,
+          unselectedLabelColor: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.6),
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          tabs: const [
             Tab(text: 'Donors'),
             Tab(text: 'Communities'),
             Tab(text: 'Blood Banks'),
@@ -139,14 +146,13 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off,
-                size: 64, color: Colors.grey.shade400),
+            Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
             SizedBox(height: 12.h),
             Text(
               'No ${widget.bloodGroup} donors found\nwithin ${widget.radiusInKm.round()} km',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey.shade600),
-          ),
+            ),
           ],
         ),
       );
@@ -160,18 +166,26 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         if (index == _donors.length) {
           return const Center(child: CircularProgressIndicator());
         }
-        return _buildDonorListItem(
-            donor: UserModel.fromJson(_donors[index]));
+        return _buildDonorListItem(donor: UserModel.fromJson(_donors[index]));
       },
     );
   }
 
-  double _haversineDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _haversineDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const R = 6371.0;
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return R * c;
   }
@@ -201,8 +215,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.search_off,
-                    size: 64, color: Colors.grey.shade400),
+                Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
                 SizedBox(height: 12.h),
                 Text(
                   'No communities with ${widget.bloodGroup}\ndonors found within ${widget.radiusInKm.round()} km',
@@ -350,7 +363,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         if (distance != null)
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 3.h),
+                              horizontal: 8.w,
+                              vertical: 3.h,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
                               borderRadius: BorderRadius.circular(6.r),
@@ -367,7 +382,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         SizedBox(width: 8.w),
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 3.h),
+                            horizontal: 8.w,
+                            vertical: 3.h,
+                          ),
                           decoration: BoxDecoration(
                             color: count > 0
                                 ? Colors.red.shade50
@@ -427,8 +444,11 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.local_hospital,
-                    size: 64, color: Colors.grey.shade400),
+                Icon(
+                  Icons.local_hospital,
+                  size: 64,
+                  color: Colors.grey.shade400,
+                ),
                 SizedBox(height: 12.h),
                 Text(
                   'No blood banks found\nwithin ${widget.radiusInKm.round()} km',
@@ -578,7 +598,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         if (distance != null)
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 3.h),
+                              horizontal: 8.w,
+                              vertical: 3.h,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
                               borderRadius: BorderRadius.circular(6.r),
@@ -596,7 +618,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         if (bank.mobile1.isNotEmpty)
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 3.h),
+                              horizontal: 8.w,
+                              vertical: 3.h,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.green.shade50,
                               borderRadius: BorderRadius.circular(6.r),
@@ -641,165 +665,184 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
             donor.longitude!,
           )
         : null;
-    final isVerified = _donors
-            .firstWhere((d) => d['uid'] == donor.uid)['isVerifiedDonor']
-                as bool? ??
-        false;
+    final donorData = _donors.firstWhere((d) => d['uid'] == donor.uid);
+    final isVerified = donorData['isVerifiedDonor'] as bool? ?? false;
+    final availability = donorData['availability'] as String? ?? 'available';
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: isDark ? Colors.transparent : Colors.grey.shade200,
-          width: 0.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(12.w),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44.w,
-              height: 44.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                color: Colors.red.shade50,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: donor.image.isEmpty
-                  ? Center(
-                      child: Text(
-                        donor.firstName[0].toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade600,
-                        ),
-                      ),
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: donor.image,
-                      fit: BoxFit.cover,
-                      placeholder: (_, _) =>
-                          const CupertinoActivityIndicator(),
-                      errorWidget: (_, _, _) => Icon(
-                        PhosphorIcons.warningCircle,
-                        color: Colors.red.shade200,
-                      ),
-                    ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DonorDetailPage(
+              donor: donor,
+              finderLatitude: widget.latitude,
+              finderLongitude: widget.longitude,
+              isVerified: isVerified,
+              availability: availability,
             ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: isDark ? Colors.transparent : Colors.grey.shade200,
+            width: 0.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(12.w),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44.w,
+                height: 44.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  color: Colors.red.shade50,
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: donor.image.isEmpty
+                    ? Center(
                         child: Text(
-                          '${donor.firstName} ${donor.lastName}',
+                          donor.firstName[0].toUpperCase(),
                           style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14.sp,
-                            color: isDark
-                                ? Colors.grey.shade200
-                                : Colors.grey.shade800,
+                            color: Colors.red.shade600,
                           ),
-                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: donor.image,
+                        fit: BoxFit.cover,
+                        placeholder: (_, _) =>
+                            const CupertinoActivityIndicator(),
+                        errorWidget: (_, _, _) => Icon(
+                          PhosphorIcons.warningCircle,
+                          color: Colors.red.shade200,
                         ),
                       ),
-                      if (isVerified) ...[
-                        SizedBox(width: 4.w),
-                        Icon(
-                          Icons.verified,
-                          size: 14,
-                          color: Colors.blue.shade400,
-                        ),
-                      ],
-                    ],
-                  ),
-                  SizedBox(height: 2.h),
-                  if (donor.locationAddress != null &&
-                      donor.locationAddress!.isNotEmpty)
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Row(
                       children: [
-                        Icon(
-                          PhosphorIcons.mapPin,
-                          size: 11,
-                          color: isDark
-                              ? Colors.grey.shade500
-                              : Colors.grey.shade400,
-                        ),
-                        SizedBox(width: 3.w),
-                        Expanded(
+                        Flexible(
                           child: Text(
-                            donor.locationAddress!,
+                            '${donor.firstName} ${donor.lastName}',
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.sp,
                               color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
+                                  ? Colors.grey.shade200
+                                  : Colors.grey.shade800,
                             ),
-                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        if (isVerified) ...[
+                          SizedBox(width: 4.w),
+                          Icon(
+                            Icons.verified,
+                            size: 14,
+                            color: Colors.blue.shade400,
+                          ),
+                        ],
                       ],
                     ),
-                ],
+                    SizedBox(height: 2.h),
+                    if (donor.locationAddress != null &&
+                        donor.locationAddress!.isNotEmpty)
+                      Row(
+                        children: [
+                          Icon(
+                            PhosphorIcons.mapPin,
+                            size: 11,
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade400,
+                          ),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: Text(
+                              donor.locationAddress!,
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                if (distance != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (distance != null)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                      child: Text(
+                        '${distance.toStringAsFixed(1)} km',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red.shade700,
+                        ),
+                      ),
+                    ),
+                  if (distance != null) SizedBox(height: 4.h),
                   Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 6.w, vertical: 2.h),
+                      horizontal: 8.w,
+                      vertical: 2.h,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(4.r),
+                      gradient: LinearGradient(
+                        colors: [Colors.red.shade700, Colors.red.shade500],
+                      ),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
-                      '${distance.toStringAsFixed(1)} km',
+                      donor.bloodGroup,
                       style: TextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.red.shade700,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11.sp,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                if (distance != null) SizedBox(height: 4.h),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.red.shade700, Colors.red.shade500],
-                    ),
-                    borderRadius: BorderRadius.circular(6.r),
-                  ),
-                  child: Text(
-                    donor.bloodGroup,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11.sp,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

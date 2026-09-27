@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../widgets/blood_group_count_chips.dart';
+import '../widgets/pending_invites_section.dart';
 import 'create_community_page.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -147,10 +148,18 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
                     return TabBarView(
                       controller: _tabController,
                       children: [
-                        _CommunityTab(
-                          communities: _filtered(allCommunities
-                              .where((c) => myCommunityIds.contains(c.id))
-                              .toList()),
+                        Column(
+                          children: [
+                            const PendingInvitesSection(),
+                            Expanded(
+                              child: _CommunityTab(
+                                communities: _filtered(allCommunities
+                                    .where(
+                                        (c) => myCommunityIds.contains(c.id))
+                                    .toList()),
+                              ),
+                            ),
+                          ],
                         ),
                         _CommunityTab(
                           communities: _filtered(allCommunities),
@@ -338,23 +347,6 @@ class _CommunityTab extends StatelessWidget {
                           SizedBox(height: 6.h),
                           Row(
                             children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w, vertical: 3.h),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade50,
-                                  borderRadius: BorderRadius.circular(6.r),
-                                ),
-                                child: Text(
-                                  'Code: ${community.code}',
-                                  style: TextStyle(
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.blue.shade700,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
                               Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 8.w, vertical: 3.h),

@@ -136,6 +136,7 @@ class FeedPaginationNotifier extends AsyncNotifier<List<BloodRequest>> {
 
       final items = snapshot.docs
           .map((doc) => BloodRequest.fromFirestore(doc))
+          .where((r) => r.isVisibleToFinders)
           .toList();
 
       return items;

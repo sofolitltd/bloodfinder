@@ -37,6 +37,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  DateTime? _expiresAt;
 
   bool _isLoading = false;
 
@@ -51,6 +52,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
   String? _origLocationAddress;
   DateTime? _origDate;
   TimeOfDay? _origTime;
+  DateTime? _origExpiresAt;
   String _origName = '';
   String _origAddress = '';
   String _origNote = '';
@@ -69,6 +71,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
         _latitude != _origLatitude ||
         _longitude != _origLongitude ||
         _locationAddress != _origLocationAddress ||
+        _expiresAt != _origExpiresAt ||
         _status != _origStatus;
   }
 
@@ -91,6 +94,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
       _longitude = e.longitude;
       _locationAddress = e.locationAddress;
       _status = e.status;
+      _expiresAt = e.expiresAt;
       try {
         _selectedDate = DateFormat('d/M/yyy').parse(e.date);
       } catch (_) {
@@ -116,10 +120,13 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
       _origLocationAddress = e.locationAddress;
       _origDate = _selectedDate;
       _origTime = _selectedTime;
+      _origExpiresAt = e.expiresAt;
       _origName = e.name;
       _origAddress = e.address;
       _origNote = e.note ?? '';
       _origMobile = e.mobile;
+    } else {
+      _expiresAt = DateTime.now().add(const Duration(days: 3));
     }
     // Listen for text changes to recompute _hasChanges
     _nameController.addListener(_onFieldChanged);
@@ -162,8 +169,20 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
       return;
     }
 
+    if (_expiresAt == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please choose how long this request stays active')),
+      );
+      return;
+    }
+
     final uid = ref.read(authRepositoryProvider).currentUser!.uid;
     final bloodRequestRepo = ref.read(bloodRequestRepositoryProvider);
+
+    final statusToSave = (_status == 'expired' && _expiresAt!.isAfter(DateTime.now()))
+        ? 'active'
+        : _status;
 
     final data = {
       'uid': uid,
@@ -183,7 +202,8 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
           : _noteController.text.trim(),
       'date': DateFormat('d/M/yyy').format(_selectedDate!),
       'time': _selectedTime!.format(context),
-      'status': _status,
+      'status': statusToSave,
+      'expiresAt': _expiresAt,
     };
 
     try {
@@ -365,6 +385,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                 bagOptions: _bagOptions,
                 selectedDate: _selectedDate,
                 selectedTime: _selectedTime,
+                selectedExpiresAt: _expiresAt,
                 isLoading: _isLoading,
                 onSubmit: _submit,
                 isEditing: _isEditing,
@@ -374,6 +395,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                 onBagChanged: (v) => setState(() => _selectedBag = v),
                 onDateChanged: (v) => setState(() => _selectedDate = v),
                 onTimeChanged: (v) => setState(() => _selectedTime = v),
+                onExpiryChanged: (v) => setState(() => _expiresAt = v),
                 selectedLatitude: _latitude,
                 selectedLongitude: _longitude,
                 locationAddress: _locationAddress,

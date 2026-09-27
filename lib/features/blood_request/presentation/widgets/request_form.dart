@@ -5,6 +5,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../shared/widgets/map_location_picker_page.dart';
 import 'blood_group_selector.dart';
+import 'expiry_duration_selector.dart';
 
 class RequestForm extends StatefulWidget {
   final TextEditingController nameController;
@@ -16,6 +17,7 @@ class RequestForm extends StatefulWidget {
   final List<String> bagOptions;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
+  final DateTime? selectedExpiresAt;
   final bool isLoading;
   final VoidCallback onSubmit;
   final bool isEditing;
@@ -24,6 +26,7 @@ class RequestForm extends StatefulWidget {
   final ValueChanged<String?> onBagChanged;
   final ValueChanged<DateTime?> onDateChanged;
   final ValueChanged<TimeOfDay?> onTimeChanged;
+  final ValueChanged<DateTime?> onExpiryChanged;
 
   final double? selectedLatitude;
   final double? selectedLongitude;
@@ -41,6 +44,7 @@ class RequestForm extends StatefulWidget {
     required this.bagOptions,
     this.selectedDate,
     this.selectedTime,
+    this.selectedExpiresAt,
     required this.isLoading,
     required this.onSubmit,
     required this.isEditing,
@@ -49,6 +53,7 @@ class RequestForm extends StatefulWidget {
     required this.onBagChanged,
     required this.onDateChanged,
     required this.onTimeChanged,
+    required this.onExpiryChanged,
     this.selectedLatitude,
     this.selectedLongitude,
     this.locationAddress,
@@ -353,6 +358,22 @@ class _RequestFormState extends State<RequestForm> {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+
+        SizedBox(height: 24.h),
+
+        _SectionHeader(
+          icon: PhosphorIcons.hourglass,
+          title: 'Active Duration',
+        ),
+        SizedBox(height: 12.h),
+        _SectionCard(
+          children: [
+            ExpiryDurationSelector(
+              selectedExpiresAt: widget.selectedExpiresAt,
+              onExpiryChanged: widget.onExpiryChanged,
             ),
           ],
         ),

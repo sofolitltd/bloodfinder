@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,8 +22,19 @@ class CommunityInfoSection extends StatelessWidget {
     required this.uid,
   });
 
-  String get _shareLink =>
-      'https://bloodfinder.web.app/open-app.html?community=${community.id}';
+  String get _shareLink => community.slug != null
+      ? 'https://bloodfinder.web.app/open-app.html?c=${community.slug}'
+      : 'https://bloodfinder.web.app/open-app.html?community=${community.id}';
+
+  Future<void> _openInGoogleMaps() async {
+    final uri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query='
+      '${community.latitude},${community.longitude}',
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   void _showQrDialog(BuildContext context) {
     showDialog(
@@ -45,11 +58,6 @@ class CommunityInfoSection extends StatelessWidget {
                 data: _shareLink,
                 size: 220.w,
                 backgroundColor: Colors.white,
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'Code: ${community.code}',
-                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
               ),
               SizedBox(height: 16.h),
               SizedBox(
@@ -193,6 +201,11 @@ class CommunityInfoSection extends StatelessWidget {
           ),
         ),
 
+        if (community.latitude != null && community.longitude != null) ...[
+          SizedBox(height: 12.h),
+          _LocationCard(community: community, onOpenMaps: _openInGoogleMaps),
+        ],
+
         SizedBox(height: 12.h),
 
         // Share card
@@ -282,6 +295,113 @@ class CommunityInfoSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _LocationCard extends StatelessWidget {
+  final Community community;
+  final VoidCallback onOpenMaps;
+
+  const _LocationCard({required this.community, required this.onOpenMaps});
+
+  @override
+  Widget build(BuildContext context) {
+    final point = LatLng(community.latitude!, community.longitude!);
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(16.r),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28.w,
+                height: 28.h,
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Icon(PhosphorIcons.mapPin,
+                    size: 15.w, color: Colors.red.shade600),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                'Location',
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade800,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: SizedBox(
+              height: 160.h,
+              child: IgnorePointer(
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: point,
+                    initialZoom: 14,
+                    interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.none,
+                    ),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.sofolitltd.bloodfinder',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: point,
+                          width: 40.w,
+                          height: 48.h,
+                          child: Icon(Icons.location_pin,
+                              color: Colors.red.shade600, size: 40.w),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: onOpenMaps,
+              icon: Icon(PhosphorIcons.mapTrifold,
+                  size: 16.w, color: Colors.red.shade600),
+              label: Text(
+                'Open in Google Maps',
+                style: TextStyle(color: Colors.red.shade600),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.red.shade200),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

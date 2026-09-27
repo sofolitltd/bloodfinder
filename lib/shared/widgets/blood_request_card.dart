@@ -192,15 +192,15 @@ class BloodRequestCard extends ConsumerWidget {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                             decoration: BoxDecoration(
-                              color: _statusColor(request.status).withValues(alpha: 0.15),
+                              color: _statusColor(request.effectiveStatus).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
-                              _statusLabel(request.status),
+                              _statusLabel(request.effectiveStatus),
                               style: TextStyle(
                                 fontSize: 9.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _statusColor(request.status),
+                                color: _statusColor(request.effectiveStatus),
                               ),
                             ),
                           ),
@@ -508,11 +508,11 @@ class BloodRequestCard extends ConsumerWidget {
                   children: [
                     _InfoTile(
                       icon: PhosphorIcons.flag,
-                      iconColor: _statusColor(request.status),
+                      iconColor: _statusColor(request.effectiveStatus),
                       label: 'Status',
-                      value: _statusLabel(request.status),
+                      value: _statusLabel(request.effectiveStatus),
                       isDark: isDark,
-                      valueColor: _statusColor(request.status),
+                      valueColor: _statusColor(request.effectiveStatus),
                     ),
                     SizedBox(height: 10.h),
                     _InfoTile(
@@ -782,6 +782,8 @@ Color _statusColor(String status) {
       return Colors.blue;
     case 'cancelled':
       return Colors.red;
+    case 'expired':
+      return Colors.orange;
     default:
       return Colors.grey;
   }
@@ -795,6 +797,8 @@ String _statusLabel(String status) {
       return 'Fulfilled';
     case 'cancelled':
       return 'Cancelled';
+    case 'expired':
+      return 'Expired';
     default:
       return status;
   }

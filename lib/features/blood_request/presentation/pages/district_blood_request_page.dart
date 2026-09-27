@@ -64,7 +64,7 @@ class _DistrictRequestsPageState extends ConsumerState<DistrictRequestsPage> {
             .map(
               (doc) => BloodRequest.fromFirestore(doc),
             )
-            .where((req) => req.uid != uid)
+            .where((req) => req.uid != uid && req.isVisibleToFinders)
             .toList());
   }
 

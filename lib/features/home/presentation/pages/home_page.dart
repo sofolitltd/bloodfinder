@@ -11,6 +11,7 @@ import '/data/providers/notification_provider.dart';
 import '/data/providers/user_providers.dart';
 
 import '/features/notification/presentation/pages/notification_page.dart';
+import '/features/profile/presentation/pages/address_management_page.dart';
 
 import '../widgets/home_actions.dart';
 
@@ -112,34 +113,61 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
-                  // Blood drop + tagline
-                  Row(
-                    children: [
-                      Container(
-                        width: 20.w,
-                        height: 20.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          PhosphorIcons.drop,
-                          color: Colors.white,
-                          size: 16.w,
-                        ),
+                  SizedBox(height: 8.h),
+                  // Current location / set location
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AddressManagementPage(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 20.w,
+                            height: 20.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              PhosphorIcons.mapPin,
+                              color: Colors.white,
+                              size: 14.w,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              user?.locationAddress != null
+                                  ? user!.locationAddress!
+                                  : 'Tap to set your location',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right,
+                            color: Colors.white.withValues(alpha: 0.8),
+                            size: 18.w,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        'Ready to make a difference?',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
+                  SizedBox(height: 8.h),
+                
                 ],
               ),
             ),

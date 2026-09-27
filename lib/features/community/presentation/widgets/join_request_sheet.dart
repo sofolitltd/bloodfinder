@@ -100,34 +100,6 @@ class JoinRequestSheet extends ConsumerWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.h),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 12.w, vertical: 8.h),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        PhosphorIcons.hash,
-                        size: 14,
-                        color: Colors.blue.shade600,
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        'Code: ${community.code}',
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 20.h),
                 Container(
                   width: double.infinity,

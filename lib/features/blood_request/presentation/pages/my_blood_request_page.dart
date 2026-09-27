@@ -92,6 +92,16 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
               )
               .toList();
 
+          final expiredToHeal =
+              requests.where((r) => r.isActive && r.isExpired).toList();
+          if (expiredToHeal.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              for (final r in expiredToHeal) {
+                bloodRequestRepo.updateRequestStatus(r.id, 'expired');
+              }
+            });
+          }
+
           return ListView.separated(
             padding: EdgeInsets.all(16.w),
             itemCount: requests.length,

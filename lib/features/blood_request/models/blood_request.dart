@@ -17,6 +17,7 @@ class BloodRequest {
   final String? note;
   final String status;
   final DateTime createdAt;
+  final DateTime? expiresAt;
 
   BloodRequest({
     required this.id,
@@ -35,11 +36,17 @@ class BloodRequest {
     this.note,
     this.status = 'active',
     required this.createdAt,
+    this.expiresAt,
   });
 
   bool get isActive => status == 'active';
   bool get isFulfilled => status == 'fulfilled';
   bool get isCancelled => status == 'cancelled';
+
+  bool get isExpired =>
+      isActive && expiresAt != null && DateTime.now().isAfter(expiresAt!);
+  String get effectiveStatus => isExpired ? 'expired' : status;
+  bool get isVisibleToFinders => effectiveStatus == 'active';
 
   factory BloodRequest.fromJson(Map<String, dynamic> json) {
     return BloodRequest(
@@ -59,6 +66,7 @@ class BloodRequest {
       note: json['note'],
       status: json['status'] as String? ?? 'active',
       createdAt: (json['createdAt'] as Timestamp).toDate(),
+      expiresAt: (json['expiresAt'] as Timestamp?)?.toDate(),
     );
   }
 
@@ -85,6 +93,7 @@ class BloodRequest {
       'status': status,
       'note': note,
       'createdAt': createdAt,
+      'expiresAt': expiresAt,
     };
   }
 }

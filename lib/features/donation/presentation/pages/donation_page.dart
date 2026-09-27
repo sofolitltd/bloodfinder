@@ -8,9 +8,11 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../data/providers/repository_providers.dart';
+import '../../../../data/providers/user_providers.dart';
 import '../../../../features/blood_request/models/blood_request.dart';
 import '../widgets/donation_info_card.dart';
 import '../widgets/donation_poster_card.dart';
+import '../widgets/request_location_card.dart';
 
 class DonationPage extends ConsumerWidget {
   final String requestId;
@@ -38,6 +40,7 @@ class DonationPage extends ConsumerWidget {
     final requestStream = ref
         .read(bloodRequestRepositoryProvider)
         .requestStream(requestId);
+    final finder = ref.watch(userProvider).value;
 
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -320,10 +323,10 @@ class DonationPage extends ConsumerWidget {
                         ),
                         SizedBox(height: 10.h),
                         Card(
-  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    color: theme.colorScheme.surface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          color: theme.colorScheme.surface,
                           child: Container(
                             width: .infinity,
                             padding: EdgeInsets.all(12.w),
@@ -450,6 +453,48 @@ class DonationPage extends ConsumerWidget {
                   ),
                 ),
               ),
+              if (request.latitude != null && request.longitude != null) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 12.h),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28.w,
+                          height: 28.h,
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(
+                            PhosphorIcons.mapPin,
+                            size: 16,
+                            color: Colors.red.shade600,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Location',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 24.h),
+                    child: RequestLocationCard(
+                      posterLatitude: request.latitude!,
+                      posterLongitude: request.longitude!,
+                      finderLatitude: finder?.latitude,
+                      finderLongitude: finder?.longitude,
+                    ),
+                  ),
+                ),
+              ],
             ],
           );
         },

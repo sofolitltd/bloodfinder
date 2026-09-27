@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
+import '../../../../shared/widgets/search_field.dart';
 import '../../models/my_circle_contact.dart';
 import '../../providers/my_circle_provider.dart';
 import '../../../chat/models/chat_model.dart';
@@ -39,15 +40,31 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
   /// Ensures the auto-link check only runs once per page lifecycle.
   bool _autoLinkChecked = false;
 
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void dispose() {
     _tabController?.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  List<MyCircleContact> _filterContacts(List<MyCircleContact> contacts) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return contacts;
+    return contacts
+        .where((c) =>
+            c.name.toLowerCase().contains(query) ||
+            c.relation.toLowerCase().contains(query) ||
+            c.phone.toLowerCase().contains(query) ||
+            c.bloodGroup.toLowerCase().contains(query))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final contactsAsync = ref.watch(myCircleProvider);
+    final contactsAsync = ref.watch(myCircleProvider).whenData(_filterContacts);
 
     // Auto-link: once per page load, check non-app-user contacts
     // to see if they've since joined the app.
@@ -133,10 +150,21 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
           );
         },
       ),
-      body: contactsAsync.when(
-        data: (contacts) => _buildBody(context, ref, contacts),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+      body: Column(
+        children: [
+          SearchField(
+            controller: _searchController,
+            hintText: 'Search contacts',
+            onChanged: (value) => setState(() => _searchQuery = value),
+          ),
+          Expanded(
+            child: contactsAsync.when(
+              data: (contacts) => _buildBody(context, ref, contacts),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Error: $e')),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -149,6 +177,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (contacts.isEmpty) {
+      final isSearching = _searchQuery.trim().isNotEmpty;
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -161,14 +190,14 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Icon(
-                PhosphorIcons.usersThree,
+                isSearching ? PhosphorIcons.magnifyingGlass : PhosphorIcons.usersThree,
                 size: 34.w,
                 color: Colors.red.shade300,
               ),
             ),
             SizedBox(height: 8.h),
             Text(
-              'No contacts yet',
+              isSearching ? 'No matching contacts' : 'No contacts yet',
               style: TextStyle(
                 fontSize: 17.sp,
                 fontWeight: FontWeight.bold,
@@ -177,7 +206,9 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
             ),
             SizedBox(height: 6.h),
             Text(
-              "Tap + to add family & friends\nto your circle",
+              isSearching
+                  ? 'Try a different name, relation or phone'
+                  : "Tap + to add family & friends\nto your circle",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,

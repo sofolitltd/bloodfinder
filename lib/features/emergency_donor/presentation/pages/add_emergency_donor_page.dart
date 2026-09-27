@@ -43,8 +43,10 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
 
   Future<void> _toggleEmergencyDonor(String uid) async {
     final donorRepo = ref.read(emergencyDonorRepositoryProvider);
+    final userRepo = ref.read(userRepositoryProvider);
     if (_emergencyDonorUids.contains(uid)) {
       await donorRepo.removeDonor(uid);
+      await userRepo.updateUser(uid, {'isEmergencyDonor': false});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -62,6 +64,7 @@ class _AddEmergencyDonorPageState extends ConsumerState<AddEmergencyDonorPage> {
       });
     } else {
       await donorRepo.addDonor(uid);
+      await userRepo.updateUser(uid, {'isEmergencyDonor': true});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

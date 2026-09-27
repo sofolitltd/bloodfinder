@@ -1,12 +1,18 @@
 <script>
   const urlParams = new URLSearchParams(window.location.search);
+  const slug = urlParams.get("c");
   const communityId = urlParams.get("community");
 
-  if (!communityId) {
+  const deepLink = slug
+    ? `bloodfinder://c/${slug}`
+    : communityId
+      ? `bloodfinder://community/${communityId}`
+      : null;
+
+  if (!deepLink) {
     window.location = "https://play.google.com/store/apps/details?id=com.sofolit.bloodfinder";
   } else {
     const packageName = "com.sofolit.bloodfinder";
-    const deepLink = `bloodfinder://community/${communityId}`;
     const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
 
     const start = Date.now();

@@ -10,30 +10,46 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
+import '../../../../data/repositories/community_repository.dart';
 
 import '../widgets/admin_management_section.dart';
 import '../widgets/announcements_section.dart';
-import '../widgets/blood_group_count_chips.dart';
+import '../widgets/blood_tab_section.dart';
+import '../widgets/community_admins_section.dart';
 import '../widgets/community_info_section.dart';
-import '../widgets/join_request_sheet.dart';
-import '../widgets/member_content_section.dart';
-import '../widgets/request_blood_from_community_sheet.dart';
+import '../widgets/community_members_list.dart';
+import '../widgets/non_member_join_card.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-class CommunityDetailsPage extends ConsumerWidget {
+class CommunityDetailsPage extends ConsumerStatefulWidget {
   final String communityId;
 
   const CommunityDetailsPage({super.key, required this.communityId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CommunityDetailsPage> createState() =>
+      _CommunityDetailsPageState();
+}
+
+class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
+    with TickerProviderStateMixin {
+  TabController? _tabController;
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final uid = ref.read(authRepositoryProvider).currentUser!.uid;
     final communityRepo = ref.read(communityRepositoryProvider);
 
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot>(
-        stream: communityRepo.communityStream(communityId),
+        stream: communityRepo.communityStream(widget.communityId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -43,328 +59,271 @@ class CommunityDetailsPage extends ConsumerWidget {
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
-          final community = Community.fromJson({...data, 'id': communityId});
+          final community =
+              Community.fromJson({...data, 'id': widget.communityId});
+          final canManage = community.canManageMembers(uid);
+          final tabCount = canManage ? 6 : 5;
 
-          return CustomScrollView(
-            slivers: [
-              // Gradient hero header
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.red.shade800,
-                        Colors.red.shade600,
-                        Colors.red.shade400,
-                      ],
-                    ),
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.elliptical(300, 40),
-                    ),
-                  ),
-                  child: SafeArea(
-                    bottom: false,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  PhosphorIcons.arrowLeft,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                              const Spacer(),
-                              if (community.canManageCommunity(uid))
-                                IconButton(
-                                  icon: Icon(
-                                    PhosphorIcons.trash,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text("Delete Community"),
-                                          content: const Text(
-                                            "Are you sure you want to delete this community? This action cannot be undone.",
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text("Cancel"),
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                            ),
-                                            TextButton(
-                                              child: Text(
-                                                "Delete",
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ),
-                                              onPressed: () async {
-                                                await communityRepo
-                                                    .deleteCommunity(
-                                                        communityId);
-                                                Navigator.of(context).popUntil(
-                                                  (route) => route.isFirst,
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
-                          SizedBox(height: 4.h),
-                          Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 16.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 56.w,
-                                      height: 56.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(16.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black
-                                                .withValues(alpha: 0.2),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: community.images.isEmpty
-                                          ? Center(
-                                              child: Text(
-                                                community.name.isNotEmpty
-                                                    ? community.name[0]
-                                                        .toUpperCase()
-                                                    : '',
-                                                style: TextStyle(
-                                                  fontSize: 22.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red.shade600,
-                                                ),
-                                              ),
-                                            )
-                                          : CachedNetworkImage(
-                                              imageUrl:
-                                                  community.images.first,
-                                              width: 56.w,
-                                              height: 56.h,
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                    SizedBox(width: 14.w),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            community.name,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4.h),
-                                          Text(
-                                            community.address,
-                                            style: TextStyle(
-                                              color: Colors.white
-                                                  .withValues(alpha: 0.8),
-                                              fontSize: 14.sp,
-                                            ),
-                                          ),
-                                          if (community.locationAddress != null &&
-                                              community.locationAddress!.isNotEmpty)
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 2.h),
-                                              child: Text(
-                                                community.locationAddress!,
-                                                style: TextStyle(
-                                                  color: Colors.white.withValues(alpha: 0.65),
-                                                  fontSize: 12.sp,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+          if (_tabController == null || _tabController!.length != tabCount) {
+            _tabController?.dispose();
+            _tabController = TabController(length: tabCount, vsync: this);
+          }
+
+          return Column(
+            children: [
+              _CommunityHero(
+                community: community,
+                uid: uid,
+                communityRepo: communityRepo,
+              ),
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  labelColor: Colors.red.shade700,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.red.shade700,
+                  tabs: [
+                    const Tab(text: 'About'),
+                    const Tab(text: 'Blood'),
+                    const Tab(text: 'Members'),
+                    const Tab(text: 'Admins'),
+                    const Tab(text: 'Announcements'),
+                    if (canManage) const Tab(text: 'Manage'),
+                  ],
                 ),
               ),
+              Expanded(
+                child: StreamBuilder<DocumentSnapshot>(
+                  stream: communityRepo.memberStream(community.id, uid),
+                  builder: (context, memberStatusSnapshot) {
+                    bool isApprovedMember = false;
 
-              // Content
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    CommunityInfoSection(community: community, uid: uid),
+                    if (memberStatusSnapshot.hasData &&
+                        memberStatusSnapshot.data!.exists) {
+                      final memberData = memberStatusSnapshot.data!.data()
+                          as Map<String, dynamic>?;
+                      if (memberData != null &&
+                          memberData['member'] == true) {
+                        isApprovedMember = true;
+                      }
+                    }
 
-                    SizedBox(height: 16.h),
-
-                    AnnouncementsSection(community: community, uid: uid),
-
-                    SizedBox(height: 16.h),
-
-                    StreamBuilder<DocumentSnapshot>(
-                      stream: communityRepo.memberStream(
-                          community.id, uid),
-                      builder: (context, memberStatusSnapshot) {
-                        bool isApprovedMember = false;
-
-                        if (memberStatusSnapshot.hasData &&
-                            memberStatusSnapshot.data!.exists) {
-                          final memberData =
-                              memberStatusSnapshot.data!.data()
-                                  as Map<String, dynamic>?;
-                          if (memberData != null &&
-                              memberData['member'] == true) {
-                            isApprovedMember = true;
-                          }
-                        }
-
-                        if (isApprovedMember) {
-                          return MemberContentSection(
-                              community: community, uid: uid);
-                        } else {
-                          return Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      Colors.black.withValues(alpha: 0.04),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
+                    return TabBarView(
+                      controller: _tabController,
+                      children: [
+                        SingleChildScrollView(
+                          padding: EdgeInsets.all(16.w),
+                          child: CommunityInfoSection(
+                              community: community, uid: uid),
+                        ),
+                        BloodTabSection(community: community),
+                        isApprovedMember
+                            ? CommunityMembersList(
+                                community: community, currentUserId: uid)
+                            : NonMemberJoinCard(community: community),
+                        CommunityAdminsSection(community: community),
+                        SingleChildScrollView(
+                          padding: EdgeInsets.all(16.w),
+                          child: AnnouncementsSection(
+                              community: community, uid: uid),
+                        ),
+                        if (canManage)
+                          SingleChildScrollView(
                             padding: EdgeInsets.all(16.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (community.bloodGroupCounts != null &&
-                                    community.bloodGroupCounts!.values
-                                        .any((c) => c > 0)) ...[
-                                  Text(
-                                    'Members by Blood Group',
-                                    style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  BloodGroupCountChips(
-                                    bloodGroupCounts:
-                                        community.bloodGroupCounts,
-                                  ),
-                                  SizedBox(height: 16.h),
-                                ],
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20)),
-                                        ),
-                                        builder: (context) =>
-                                            JoinRequestSheet(
-                                                community: community),
-                                      );
-                                    },
-                                    icon: Icon(PhosphorIcons.usersThree),
-                                    label: const Text(
-                                        'View Join Instructions'),
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: OutlinedButton.icon(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20)),
-                                        ),
-                                        builder: (context) =>
-                                            RequestBloodFromCommunitySheet(
-                                                community: community),
-                                      );
-                                    },
-                                    icon: Icon(PhosphorIcons.drop,
-                                        color: Colors.red.shade600),
-                                    label: Text(
-                                      'Request Blood from this Community',
-                                      style:
-                                          TextStyle(color: Colors.red.shade600),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                          color: Colors.red.shade200),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
-
-                    if (community.canManageMembers(uid))
-                      Padding(
-                        padding: EdgeInsets.only(top: 16.h),
-                        child: AdminManagementSection(
-                            community: community, uid: uid),
-                      ),
-                  ]),
+                            child: AdminManagementSection(
+                                community: community, uid: uid),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// Fixed (non-scrolling) gradient hero header shown above the tabs.
+class _CommunityHero extends StatelessWidget {
+  final Community community;
+  final String uid;
+  final CommunityRepository communityRepo;
+
+  const _CommunityHero({
+    required this.community,
+    required this.uid,
+    required this.communityRepo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.red.shade800,
+            Colors.red.shade600,
+            Colors.red.shade400,
+          ],
+        ),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.elliptical(300, 40),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(PhosphorIcons.arrowLeft, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const Spacer(),
+                  if (community.canManageCommunity(uid))
+                    IconButton(
+                      icon: Icon(
+                        PhosphorIcons.trash,
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Delete Community"),
+                              content: const Text(
+                                "Are you sure you want to delete this community? This action cannot be undone.",
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(),
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onPressed: () async {
+                                    await communityRepo
+                                        .deleteCommunity(community.id);
+                                    Navigator.of(context).popUntil(
+                                      (route) => route.isFirst,
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                ],
+              ),
+              SizedBox(height: 4.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 56.w,
+                          height: 56.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: community.images.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    community.name.isNotEmpty
+                                        ? community.name[0].toUpperCase()
+                                        : '',
+                                    style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red.shade600,
+                                    ),
+                                  ),
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: community.images.first,
+                                  width: 56.w,
+                                  height: 56.h,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                        SizedBox(width: 14.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                community.name,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                community.address,
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                              if (community.locationAddress != null &&
+                                  community.locationAddress!.isNotEmpty)
+                                Padding(
+                                  padding: EdgeInsets.only(top: 2.h),
+                                  child: Text(
+                                    community.locationAddress!,
+                                    style: TextStyle(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.65),
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

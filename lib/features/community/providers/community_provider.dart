@@ -24,3 +24,15 @@ final joinRequestsStreamProvider =
         .toList();
   });
 });
+
+/// The current user's own pending community invites (sent by an admin/
+/// moderator), across all communities — shown on "My Community" so the
+/// invited user can accept or decline.
+final myPendingInvitesProvider = StreamProvider<List<Member>>((ref) {
+  final repo = ref.watch(communityRepositoryProvider);
+  final uid = ref.watch(authRepositoryProvider).currentUser!.uid;
+  return repo.userPendingInvitesStream(uid).map(
+        (snapshot) =>
+            snapshot.docs.map((doc) => Member.fromJson(doc.data())).toList(),
+      );
+});

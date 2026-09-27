@@ -3,7 +3,6 @@ import '../../../shared/models/social_media_link.dart';
 
 class Community {
   final String id;
-  final String code;
   final String name;
   final String mobile;
   final String address;
@@ -18,10 +17,10 @@ class Community {
   final Timestamp createdAt;
   final List<String> images;
   final Map<String, int>? bloodGroupCounts;
+  final String? slug;
 
   Community({
     required this.id,
-    required this.code,
     required this.name,
     required this.mobile,
     required this.address,
@@ -36,12 +35,12 @@ class Community {
     required this.createdAt,
     required this.images,
     this.bloodGroupCounts,
+    this.slug,
   });
 
   factory Community.fromJson(Map<String, dynamic> json) {
     return Community(
       id: json['id'] as String,
-      code: json['code'] as String,
       name: json['name'] as String,
       mobile: json['mobile'] as String,
       address: json['address'] as String,
@@ -57,13 +56,13 @@ class Community {
       images: List<String>.from(json['images'] ?? []),
       bloodGroupCounts: (json['bloodGroupCounts'] as Map<String, dynamic>?)
           ?.map((k, v) => MapEntry(k, (v as num).toInt())),
+      slug: json['slug'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'code': code,
       'name': name,
       'mobile': mobile,
       'address': address,
@@ -80,6 +79,7 @@ class Community {
       'createdAt': createdAt,
       'images': images,
       if (bloodGroupCounts != null) 'bloodGroupCounts': bloodGroupCounts,
+      if (slug != null) 'slug': slug,
     };
   }
 

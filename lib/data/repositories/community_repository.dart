@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/utils/geohash.dart';
+import '../../core/utils/slug_utils.dart';
 import '../../data/datasources/remote/firebase_datasource.dart';
 
 abstract class CommunityRepository {
@@ -16,6 +17,9 @@ abstract class CommunityRepository {
   DocumentReference<Map<String, dynamic>> communityDoc(String communityId);
   Stream<DocumentSnapshot<Map<String, dynamic>>> communityStream(
       String communityId);
+  Future<DocumentSnapshot<Map<String, dynamic>>?> getCommunityBySlug(
+      String slug);
+  Future<String> generateUniqueSlug(String name);
   Future<void> createCommunity(Map<String, dynamic> data);
   Future<void> updateCommunity(String communityId, Map<String, dynamic> data);
   Future<void> deleteCommunity(String communityId);
@@ -49,6 +53,8 @@ abstract class CommunityRepository {
       String communityId, String uid, String invitedByUid, String bloodGroup);
 
   Stream<QuerySnapshot<Map<String, dynamic>>> userMembershipsStream(String uid);
+  Stream<QuerySnapshot<Map<String, dynamic>>> userPendingInvitesStream(
+      String uid);
   Future<DocumentReference<Map<String, dynamic>>> addChat(
       Map<String, dynamic> data);
 
@@ -155,6 +161,29 @@ class FirebaseCommunityRepository implements CommunityRepository {
   Stream<DocumentSnapshot<Map<String, dynamic>>> communityStream(
           String communityId) =>
       communityDoc(communityId).snapshots();
+
+  @override
+  Future<DocumentSnapshot<Map<String, dynamic>>?> getCommunityBySlug(
+      String slug) async {
+    final snap = await _dataSource
+        .collection('communities')
+        .where('slug', isEqualTo: slug)
+        .limit(1)
+        .get();
+    return snap.docs.isEmpty ? null : snap.docs.first;
+  }
+
+  @override
+  Future<String> generateUniqueSlug(String name) async {
+    final base = slugify(name);
+    var candidate = base.isEmpty ? 'community' : base;
+    var suffix = 2;
+    while (await getCommunityBySlug(candidate) != null) {
+      candidate = '$base-$suffix';
+      suffix++;
+    }
+    return candidate;
+  }
 
   @override
   Future<void> createCommunity(Map<String, dynamic> data) =>
@@ -321,6 +350,16 @@ class FirebaseCommunityRepository implements CommunityRepository {
           .collection('community_members')
           .where('uid', isEqualTo: uid)
           .where('member', isEqualTo: true)
+          .snapshots();
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> userPendingInvitesStream(
+          String uid) =>
+      _dataSource
+          .collection('community_members')
+          .where('uid', isEqualTo: uid)
+          .where('member', isEqualTo: false)
+          .where('source', isEqualTo: 'invited')
           .snapshots();
 
   @override

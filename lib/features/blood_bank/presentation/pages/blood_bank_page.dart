@@ -12,6 +12,7 @@ import '../../../../data/providers/user_providers.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
 import '../widgets/add_blood_bank_sheet.dart';
 import '../../../../shared/widgets/location_picker_header.dart';
+import '../../../../shared/widgets/search_field.dart';
 import '../widgets/paginated_bank_list.dart';
 
 const _pageSize = 15;
@@ -46,6 +47,9 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
   double? _longitude;
   String? _locationAddress;
 
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -65,7 +69,19 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     _tabController.dispose();
     _nearbyScrollCtrl.dispose();
     _allScrollCtrl.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  List<BloodBank> _filterBanks(List<BloodBank> banks) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return banks;
+    return banks
+        .where((b) =>
+            b.name.toLowerCase().contains(query) ||
+            b.address.toLowerCase().contains(query) ||
+            (b.locationAddress?.toLowerCase().contains(query) ?? false))
+        .toList();
   }
 
   Future<void> _openLocationPicker() async {
@@ -262,17 +278,28 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
           );
         },
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _nearbyTab(),
+          SearchField(
+            controller: _searchController,
+            hintText: 'Search blood banks',
+            onChanged: (value) => setState(() => _searchQuery = value),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _nearbyTab(),
 
-          //
-          PaginatedBankList(
-            banks: _allBanks,
-            isLoading: _allLoading,
-            hasMore: _allHasMore,
-            scrollController: _allScrollCtrl,
+                //
+                PaginatedBankList(
+                  banks: _filterBanks(_allBanks),
+                  isLoading: _allLoading,
+                  hasMore: _allHasMore && _searchQuery.trim().isEmpty,
+                  scrollController: _allScrollCtrl,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -324,9 +351,9 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
         ),
         Expanded(
           child: PaginatedBankList(
-            banks: _nearbyBanks,
+            banks: _filterBanks(_nearbyBanks),
             isLoading: _nearbyLoading,
-            hasMore: _nearbyHasMore,
+            hasMore: _nearbyHasMore && _searchQuery.trim().isEmpty,
             scrollController: _nearbyScrollCtrl,
             emptyMessage: 'No nearby blood banks found',
           ),

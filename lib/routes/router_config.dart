@@ -15,6 +15,7 @@ import '../features/blood_bank/presentation/pages/blood_bank_page.dart';
 import '../features/blood_request/presentation/pages/post_blood_request_page.dart';
 import '../features/chat/presentation/pages/chat_detail_page.dart';
 import '../features/chat/presentation/pages/chat_page.dart';
+import '../features/community/presentation/pages/community_by_slug_page.dart';
 import '../features/community/presentation/pages/community_details_page.dart';
 import '../features/community/presentation/pages/community_page.dart';
 import '../features/donation/presentation/pages/donation_history_page.dart';
@@ -150,6 +151,17 @@ final routerConfig = GoRouter(
         final communityId = state.pathParameters['communityId']!;
         return MaterialPage(
           child: CommunityDetailsPage(communityId: communityId),
+        );
+      },
+    ),
+
+    GoRoute(
+      name: 'communityBySlug',
+      path: '/c/:slug',
+      pageBuilder: (context, state) {
+        final slug = state.pathParameters['slug']!;
+        return MaterialPage(
+          child: CommunityBySlugPage(slug: slug),
         );
       },
     ),

@@ -41,6 +41,7 @@ abstract class UserRepository {
   );
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEmergencyDonors(
     int limit, {
+    String? country,
     DocumentSnapshot<Map<String, dynamic>>? startAfter,
   });
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEmergencyDonorsByProximity(
@@ -256,13 +257,16 @@ class FirebaseUserRepository implements UserRepository {
   @override
   Future<QuerySnapshot<Map<String, dynamic>>> getPaginatedEmergencyDonors(
     int limit, {
+    String? country,
     DocumentSnapshot<Map<String, dynamic>>? startAfter,
   }) {
-    var query = _dataSource
+    Query<Map<String, dynamic>> query = _dataSource
         .collection(_col)
-        .where('isEmergencyDonor', isEqualTo: true)
-        .orderBy('name')
-        .limit(limit);
+        .where('isEmergencyDonor', isEqualTo: true);
+    if (country != null && country.isNotEmpty) {
+      query = query.where('country', isEqualTo: country);
+    }
+    query = query.orderBy('firstName').limit(limit);
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
     }

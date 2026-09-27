@@ -78,24 +78,6 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
     return compressedFile;
   }
 
-  Future<String> _generateCommunityCode() async {
-    final firestore = ref.read(firebaseDataSourceProvider).firestore;
-    final counterRef = firestore.collection('settings').doc('communityCounter');
-
-    return firestore.runTransaction((transaction) async {
-      final snapshot = await transaction.get(counterRef);
-
-      int current = 0;
-      if (snapshot.exists && snapshot.data()?['count'] is int) {
-        current = snapshot['count'];
-      }
-
-      int next = current + 1;
-      transaction.set(counterRef, {'count': next}, SetOptions(merge: true));
-      return '$next';
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final hasLocation = _selectedLatitude != null;
@@ -385,12 +367,15 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                             );
                           }
 
-                          var communityCode =
-                              await _generateCommunityCode();
+                          final communityRepo =
+                              ref.read(communityRepositoryProvider);
+                          final generatedSlug = await communityRepo
+                              .generateUniqueSlug(
+                                  _nameController.text.trim());
 
                           Community newCommunity = Community(
                             id: generatedId.toString(),
-                            code: communityCode.toString(),
+                            slug: generatedSlug,
                             name: _nameController.text.trim(),
                             mobile: PhoneUtils.toCanonical(_mobileController.text.trim()),
                             address: _addressController.text.trim(),
@@ -417,8 +402,6 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
 
                           await docRef.set(newCommunity.toJson());
 
-                          final communityRepo =
-                              ref.read(communityRepositoryProvider);
                           await communityRepo.addMember(
                             generatedId,
                             uid,

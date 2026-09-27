@@ -22,7 +22,10 @@ final _homeRequestsProvider = FutureProvider.autoDispose
     radiusInKm: radius,
     limit: 3,
   );
-  return snapshot.docs.map((d) => BloodRequest.fromFirestore(d)).toList();
+  return snapshot.docs
+      .map((d) => BloodRequest.fromFirestore(d))
+      .where((r) => r.isVisibleToFinders)
+      .toList();
 });
 
 class HomeBloodRequestsSection extends ConsumerWidget {

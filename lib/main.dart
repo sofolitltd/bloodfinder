@@ -66,6 +66,13 @@ class _MyAppState extends ConsumerState<MyApp> {
   void handleDeepLink(Uri uri) {
     if (uri.pathSegments.isEmpty) return;
 
+    final slugIndex = uri.pathSegments.indexOf('c');
+    if (slugIndex != -1 && uri.pathSegments.length > slugIndex + 1) {
+      final slug = uri.pathSegments[slugIndex + 1];
+      routerConfig.push('/c/$slug');
+      return;
+    }
+
     final communityIndex = uri.pathSegments.indexOf('community');
     if (communityIndex != -1 && uri.pathSegments.length > communityIndex + 1) {
       final communityId = uri.pathSegments[communityIndex + 1];

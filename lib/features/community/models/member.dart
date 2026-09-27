@@ -7,6 +7,7 @@ class Member {
   final String source; // 'requested' (user asked to join) or 'invited' (admin/moderator invited them)
   final String? invitedBy; // uid of the admin/moderator who sent the invite
   final String? bloodGroup; // set when invited, so accept doesn't need an extra user fetch
+  final String? communityId; // present on docs queried across communities (e.g. by uid)
 
   Member({
     required this.uid,
@@ -15,6 +16,7 @@ class Member {
     this.source = 'requested',
     this.invitedBy,
     this.bloodGroup,
+    this.communityId,
   });
 
   // Factory constructor to create from Firestore document
@@ -26,6 +28,7 @@ class Member {
       source: json['source'] as String? ?? 'requested',
       invitedBy: json['invitedBy'] as String?,
       bloodGroup: json['bloodGroup'] as String?,
+      communityId: json['communityId'] as String?,
     );
   }
 
@@ -38,6 +41,7 @@ class Member {
       'source': source,
       if (invitedBy != null) 'invitedBy': invitedBy,
       if (bloodGroup != null) 'bloodGroup': bloodGroup,
+      if (communityId != null) 'communityId': communityId,
     };
   }
 }

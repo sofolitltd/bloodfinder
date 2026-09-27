@@ -3,15 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../data/models/user_model.dart';
 import '../../../../data/providers/repository_providers.dart';
+import '../../../../data/providers/user_providers.dart';
+import '../../../../shared/widgets/location_picker_header.dart';
+import '../../../../shared/widgets/map_location_picker_page.dart';
 import '../../../../shared/widgets/start_chat_btn.dart';
 import '../../../../shared/widgets/admin_widget.dart';
+import '../../../../shared/widgets/search_field.dart';
 import '../../../chat/models/chat_model.dart';
 import 'add_emergency_donor_page.dart';
 
@@ -40,15 +43,30 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
   bool _allHasMore = true;
   late ScrollController _allScrollCtrl;
 
-  Position? _position;
+  double _radiusInKm = 25.0;
+  bool _showFilter = false;
+
+  double? _latitude;
+  double? _longitude;
+  String? _locationAddress;
+
+  String? _userCountry;
+  bool _countryInitialized = false;
+
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
     _nearbyScrollCtrl = ScrollController()..addListener(_onNearbyScroll);
     _allScrollCtrl = ScrollController()..addListener(_onAllScroll);
-    _initLocation();
     _loadAllDonors();
   }
 
@@ -57,31 +75,57 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     _tabController.dispose();
     _nearbyScrollCtrl.dispose();
     _allScrollCtrl.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
-  Future<void> _initLocation() async {
-    try {
-      final pos = await Geolocator.getCurrentPosition();
-      if (mounted) {
-        setState(() => _position = pos);
-        _loadNearbyDonors();
-      }
-    } catch (_) {
-      if (mounted) setState(() {});
+  List<UserModel> _filterDonors(List<UserModel> donors) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return donors;
+    return donors
+        .where((d) =>
+            '${d.firstName} ${d.lastName}'.toLowerCase().contains(query) ||
+            d.bloodGroup.toLowerCase().contains(query) ||
+            d.mobileNumber.toLowerCase().contains(query) ||
+            (d.locationAddress?.toLowerCase().contains(query) ?? false))
+        .toList();
+  }
+
+  Future<void> _openLocationPicker() async {
+    final result = await MapLocationPickerPage.show(
+      context,
+      initialLatitude: _latitude,
+      initialLongitude: _longitude,
+    );
+    if (result != null && mounted) {
+      setState(() {
+        _latitude = result.latitude;
+        _longitude = result.longitude;
+        _locationAddress = result.displayAddress;
+      });
+      _resetNearby();
     }
   }
 
+  void _resetNearby() {
+    _nearbyDonors.clear();
+    _nearbyLastDoc = null;
+    _nearbyHasMore = true;
+    _loadNearbyDonors();
+  }
+
   Future<void> _loadNearbyDonors() async {
-    if (_nearbyLoading || !_nearbyHasMore || _position == null) return;
+    if (_nearbyLoading || !_nearbyHasMore || _latitude == null || _longitude == null) {
+      return;
+    }
     setState(() => _nearbyLoading = true);
 
     final repo = ref.read(userRepositoryProvider);
     try {
       final snap = await repo.getPaginatedEmergencyDonorsByProximity(
-        _position!.latitude,
-        _position!.longitude,
-        20.0,
+        _latitude!,
+        _longitude!,
+        _radiusInKm,
         _pageSize,
         startAfter: _nearbyLastDoc,
       );
@@ -97,12 +141,13 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         }
         _nearbyLoading = false;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load nearby emergency donors: $e');
       if (mounted) setState(() => _nearbyLoading = false);
     }
   }
 
-  Future<void> _loadAllDonors() async {
+  Future<void> _loadAllDonors({String? country}) async {
     if (_allLoading || !_allHasMore) return;
     setState(() => _allLoading = true);
 
@@ -110,6 +155,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     try {
       final snap = await repo.getPaginatedEmergencyDonors(
         _pageSize,
+        country: country ?? _userCountry,
         startAfter: _allLastDoc,
       );
       if (!mounted) return;
@@ -123,7 +169,8 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         }
         _allLoading = false;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load emergency donors: $e');
       if (mounted) setState(() => _allLoading = false);
     }
   }
@@ -144,6 +191,32 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
 
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userProvider);
+    final user = userAsync.value;
+
+    if (user != null && _latitude == null && _longitude == null) {
+      if (user.latitude != null && user.longitude != null) {
+        _latitude = user.latitude;
+        _longitude = user.longitude;
+        _locationAddress = user.locationAddress;
+        WidgetsBinding.instance.addPostFrameCallback((_) => _resetNearby());
+      }
+    }
+
+    if (user != null && !_countryInitialized) {
+      _countryInitialized = true;
+      final country = user.country;
+      if (country != _userCountry) {
+        _userCountry = country;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _allDonors.clear();
+          _allLastDoc = null;
+          _allHasMore = true;
+          _loadAllDonors(country: country);
+        });
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -168,6 +241,18 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
             ),
           ],
         ),
+        actions: [
+          if (_latitude != null && _tabController.index == 0)
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.funnel,
+                size: 20.w,
+                color: _showFilter ? Colors.red.shade600 : null,
+              ),
+              tooltip: _showFilter ? 'Hide filters' : 'Show filters',
+              onPressed: () => setState(() => _showFilter = !_showFilter),
+            ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.red.shade700,
@@ -181,6 +266,11 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
       ),
       body: Column(
         children: [
+          SearchField(
+            controller: _searchController,
+            hintText: 'Search donors',
+            onChanged: (value) => setState(() => _searchQuery = value),
+          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -221,33 +311,69 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
   }
 
   Widget _buildNearbyTab() {
-    if (_position == null) {
+    if (_latitude == null || _longitude == null) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(PhosphorIcons.mapPinLine, size: 48, color: Colors.grey.shade300),
-            SizedBox(height: 12.h),
-            Text(
-              'Enable location to see nearby donors',
-              style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade500),
-            ),
-          ],
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(PhosphorIcons.mapPinLine, size: 48, color: Colors.grey.shade300),
+              SizedBox(height: 12.h),
+              Text(
+                'Set your location to see nearby donors',
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade500),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 12.h),
+              ElevatedButton.icon(
+                onPressed: _openLocationPicker,
+                icon: Icon(Icons.location_on, size: 20.w),
+                label: const Text('Set Location'),
+              ),
+            ],
+          ),
         ),
       );
     }
+
+    return Column(
+      children: [
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          child: _showFilter
+              ? LocationPickerHeader(
+                  locationAddress: _locationAddress,
+                  radiusInKm: _radiusInKm,
+                  onOpenLocationPicker: _openLocationPicker,
+                  onRadiusChanged: (val) => setState(() => _radiusInKm = val),
+                  onRadiusChangeEnd: _resetNearby,
+                )
+              : const SizedBox.shrink(),
+        ),
+        Expanded(child: _buildNearbyList()),
+      ],
+    );
+  }
+
+  Widget _buildNearbyList() {
     if (_nearbyDonors.isEmpty && _nearbyLoading) {
       return const Center(child: CircularProgressIndicator());
     }
     if (_nearbyDonors.isEmpty && !_nearbyLoading) {
       return _emptyState();
     }
+    final donors = _filterDonors(_nearbyDonors);
+    final hasMore = _nearbyHasMore && _searchQuery.trim().isEmpty;
+    if (donors.isEmpty) return _emptyState();
     return ListView.builder(
       controller: _nearbyScrollCtrl,
       padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-      itemCount: _nearbyDonors.length + (_nearbyHasMore ? 1 : 0),
+      itemCount: donors.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index >= _nearbyDonors.length) {
+        if (index >= donors.length) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 16.h),
             child: Center(child: CircularProgressIndicator()),
@@ -255,7 +381,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         }
         return Padding(
           padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
-          child: _DonorCard(donor: _nearbyDonors[index]),
+          child: _DonorCard(donor: donors[index]),
         );
       },
     );
@@ -268,12 +394,15 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     if (_allDonors.isEmpty && !_allLoading) {
       return _emptyState();
     }
+    final donors = _filterDonors(_allDonors);
+    final hasMore = _allHasMore && _searchQuery.trim().isEmpty;
+    if (donors.isEmpty) return _emptyState();
     return ListView.builder(
       controller: _allScrollCtrl,
       padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-      itemCount: _allDonors.length + (_allHasMore ? 1 : 0),
+      itemCount: donors.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index >= _allDonors.length) {
+        if (index >= donors.length) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 16.h),
             child: Center(child: CircularProgressIndicator()),
@@ -281,7 +410,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         }
         return Padding(
           padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
-          child: _DonorCard(donor: _allDonors[index]),
+          child: _DonorCard(donor: donors[index]),
         );
       },
     );
