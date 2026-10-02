@@ -1,5 +1,6 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'auth_section.dart';
@@ -22,7 +23,7 @@ class RegistrationForm extends StatelessWidget {
   final String? bloodGroup;
   final bool isDonor;
   final String? donorError;
-  final XFile? pickedImage;
+  final Uint8List? pickedImage;
   final bool obscurePassword;
   final bool isLoading;
   final VoidCallback onPickImage;

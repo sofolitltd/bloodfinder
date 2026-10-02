@@ -1,14 +1,14 @@
 import 'dart:developer';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/utils/geohash.dart';
+import '../../../core/utils/image_compress_utils.dart';
 import '../../../core/utils/phone_utils.dart';
 import '../../../data/models/address_model.dart';
 import '../../../data/models/user_model.dart';
@@ -23,7 +23,7 @@ class RegistrationState {
   final String? bloodGroup;
   final bool isDonor;
   final String? donorError;
-  final XFile? pickedImage;
+  final Uint8List? pickedImage;
   final bool isLoading;
 
   const RegistrationState({
@@ -48,7 +48,7 @@ class RegistrationState {
     String? bloodGroup,
     bool? isDonor,
     String? donorError,
-    XFile? pickedImage,
+    Uint8List? pickedImage,
     bool? isLoading,
   }) {
     return RegistrationState(
@@ -106,27 +106,10 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final compressed = await _compressImage(File(pickedFile.path));
+      final bytes = await pickedFile.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
       state = state.copyWith(pickedImage: compressed);
     }
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    final ext = file.path.split('.').last.toLowerCase();
-    final isPng = ext == 'png';
-    final format = isPng ? CompressFormat.png : CompressFormat.jpeg;
-    final newExt = isPng ? 'png' : 'jpg';
-    final targetPath =
-        '${file.parent.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.$newExt';
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 70,
-      minWidth: 500,
-      minHeight: 500,
-      format: format,
-    );
-    return result != null ? XFile(result.path) : null;
   }
 
   int _calculateAge(DateTime dob) {
@@ -139,9 +122,9 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
     return age;
   }
 
-  Future<String> _uploadImage(File file, String uid) async {
+  Future<String> _uploadImage(Uint8List bytes, String uid) async {
     final storageRepo = ref.read(storageRepositoryProvider);
-    return await storageRepo.uploadFile(file, 'users/$uid.jpg');
+    return await storageRepo.uploadFile(bytes, 'users/$uid.jpg');
   }
 
   Future<UserCredential> register({
@@ -167,7 +150,7 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
       String imageUrl = '';
 
       if (state.pickedImage != null) {
-        imageUrl = await _uploadImage(File(state.pickedImage!.path), uid);
+        imageUrl = await _uploadImage(state.pickedImage!, uid);
       }
 
       final createdAt = DateTime.now().toIso8601String();

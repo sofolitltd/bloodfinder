@@ -1,9 +1,9 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import '../../data/datasources/remote/firebase_datasource.dart';
 
 abstract class StorageRepository {
-  Future<String> uploadFile(File file, String storagePath);
+  Future<String> uploadFile(Uint8List bytes, String storagePath);
   Future<void> deleteFile(String storagePath);
 }
 
@@ -13,9 +13,9 @@ class FirebaseStorageRepository implements StorageRepository {
   final FirebaseDataSource _dataSource;
 
   @override
-  Future<String> uploadFile(File file, String storagePath) async {
+  Future<String> uploadFile(Uint8List bytes, String storagePath) async {
     final ref = _dataSource.storageRef(storagePath);
-    await ref.putFile(file);
+    await ref.putData(bytes);
     return ref.getDownloadURL();
   }
 

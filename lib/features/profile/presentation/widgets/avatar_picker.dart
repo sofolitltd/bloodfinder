@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -11,7 +11,7 @@ class AvatarPicker extends StatelessWidget {
     required this.onPickImage,
   });
 
-  final File? selectedImage;
+  final Uint8List? selectedImage;
   final String? profileImageUrl;
   final VoidCallback onPickImage;
 
@@ -33,7 +33,7 @@ class AvatarPicker extends StatelessWidget {
               image: hasImage
                   ? DecorationImage(
                       image: selectedImage != null
-                          ? FileImage(selectedImage!)
+                          ? MemoryImage(selectedImage!)
                           : NetworkImage(profileImageUrl!) as ImageProvider,
                       fit: BoxFit.cover,
                     )

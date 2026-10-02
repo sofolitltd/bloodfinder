@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 /// Full-screen interactive map picker with search bar, zoom controls, and GPS.
@@ -143,14 +143,14 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
   Future<void> _forwardGeocode(String query) async {
     setState(() => _isSearching = true);
     try {
-      final client = HttpClient()..userAgent = 'BloodFinderApp/1.0';
       final url =
           'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&limit=5&accept-language=en';
-      final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'User-Agent': 'BloodFinderApp/1.0'},
+      );
       if (response.statusCode == 200) {
-        final body = await response.transform(utf8.decoder).join();
-        final list = jsonDecode(body) as List<dynamic>;
+        final list = jsonDecode(response.body) as List<dynamic>;
         setState(() {
           _searchResults = list
               .map((e) => _SearchResult(
@@ -162,7 +162,6 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
           _showResults = _searchResults.isNotEmpty;
         });
       }
-      client.close();
     } catch (_) {
       // silently fail
     } finally {
@@ -191,20 +190,19 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
       _displayAddress = 'Finding address...';
     });
     try {
-      final client = HttpClient()..userAgent = 'BloodFinderApp/1.0';
       final url =
           'https://nominatim.openstreetmap.org/reverse?lat=${point.latitude}&lon=${point.longitude}&format=json&accept-language=en';
-      final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'User-Agent': 'BloodFinderApp/1.0'},
+      );
       if (response.statusCode == 200) {
-        final body = await response.transform(utf8.decoder).join();
-        final json = jsonDecode(body) as Map<String, dynamic>;
+        final json = jsonDecode(response.body) as Map<String, dynamic>;
         setState(() => _displayAddress = json['display_name'] as String? ?? '');
       } else {
         setState(() => _displayAddress =
             '${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}');
       }
-      client.close();
     } catch (_) {
       setState(() => _displayAddress =
           '${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}');

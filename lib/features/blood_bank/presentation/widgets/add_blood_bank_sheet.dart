@@ -1,14 +1,14 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../core/utils/geohash.dart';
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../shared/models/social_media_link.dart';
 import '../../../../shared/widgets/map_location_picker_page.dart';
@@ -30,7 +30,7 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
   final _mobile2Controller = TextEditingController();
   List<SocialMediaLink> _socialMediaLinks = [];
 
-  XFile? _pickedImage;
+  Uint8List? _pickedImage;
   double? _latitude;
   double? _longitude;
   String? _locationAddress;
@@ -304,20 +304,10 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final compressed = await _compressImage(File(pickedFile.path));
+      final bytes = await pickedFile.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
       setState(() => _pickedImage = compressed);
     }
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      '${file.parent.path}/compressed_${file.path.split('/').last}',
-      quality: 70,
-      minWidth: 500,
-      minHeight: 500,
-    );
-    return compressedFile;
   }
 
   Future<void> _addBloodBank() async {
@@ -336,7 +326,7 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
       if (_pickedImage != null) {
         final storageRepo = ref.read(storageRepositoryProvider);
         imageUrl = await storageRepo.uploadFile(
-          File(_pickedImage!.path),
+          _pickedImage!,
           'blood_banks/$slug.jpg',
         );
       }

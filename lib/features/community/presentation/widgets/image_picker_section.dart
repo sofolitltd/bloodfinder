@@ -1,11 +1,10 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ImagePickerSection extends StatelessWidget {
-  final XFile? pickedImage;
+  final Uint8List? pickedImage;
   final VoidCallback onPickImage;
   final VoidCallback onClearImage;
 
@@ -28,7 +27,7 @@ class ImagePickerSection extends StatelessWidget {
             width: 140,
             color: Colors.red.shade50.withValues(alpha: 0.4),
             child: pickedImage != null
-                ? Image.file(File(pickedImage!.path))
+                ? Image.memory(pickedImage!)
                 : Icon(
                     Icons.image,
                     size: 50,

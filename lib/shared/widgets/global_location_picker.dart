@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 class GlobalLocationPicker extends StatefulWidget {
   const GlobalLocationPicker({
@@ -69,15 +69,14 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
 
     final query = Uri.encodeComponent(queryParts.join(', '));
     final url = 'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1';
-    final client = HttpClient();
-    client.userAgent = 'BloodFinderApp/1.0';
 
     try {
-      final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'User-Agent': 'BloodFinderApp/1.0'},
+      );
       if (response.statusCode == 200) {
-        final jsonString = await response.transform(utf8.decoder).join();
-        final List results = json.decode(jsonString);
+        final List results = json.decode(response.body);
         if (results.isNotEmpty) {
           final lat = double.tryParse(results[0]['lat'].toString());
           final lon = double.tryParse(results[0]['lon'].toString());
@@ -103,7 +102,6 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
       });
       widget.onLocationSelected(country, state, city, 0.0, 0.0);
     } finally {
-      client.close();
       setState(() {
         _isGeocoding = false;
       });
@@ -118,15 +116,14 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
     });
 
     final url = 'https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json';
-    final client = HttpClient();
-    client.userAgent = 'BloodFinderApp/1.0';
 
     try {
-      final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'User-Agent': 'BloodFinderApp/1.0'},
+      );
       if (response.statusCode == 200) {
-        final jsonString = await response.transform(utf8.decoder).join();
-        final Map<String, dynamic> result = json.decode(jsonString);
+        final Map<String, dynamic> result = json.decode(response.body);
         final address = result['address'] as Map<String, dynamic>?;
 
         if (address != null) {
@@ -154,7 +151,6 @@ class _GlobalLocationPickerState extends State<GlobalLocationPicker> {
         _statusMessage = 'Failed to load address details.';
       });
     } finally {
-      client.close();
       setState(() {
         _isGeocoding = false;
       });

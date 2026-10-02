@@ -1,14 +1,13 @@
 import 'dart:developer';
+import 'dart:typed_data';
 import '../../../../core/utils/geohash.dart';
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../core/utils/phone_utils.dart';
-
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -43,7 +42,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
   double? _selectedLatitude;
   double? _selectedLongitude;
   String? _selectedLocationAddress;
-  XFile? _pickedImage;
+  Uint8List? _pickedImage;
 
   bool _isLoading = false;
 
@@ -59,22 +58,12 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final compressed = await _compressImage(File(pickedFile.path));
+      final bytes = await pickedFile.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
       setState(() {
         _pickedImage = compressed;
       });
     }
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      '${file.parent.path}/compressed_${file.path.split('/').last}',
-      quality: 70,
-      minWidth: 500,
-      minHeight: 500,
-    );
-    return compressedFile;
   }
 
   @override
@@ -361,7 +350,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                             final storageRepo =
                                 ref.read(storageRepositoryProvider);
                             imageUrl = await storageRepo.uploadFile(
-                              File(_pickedImage!.path),
+                              _pickedImage!,
                               'communities/$generatedId.jpg',
                             );
                           }

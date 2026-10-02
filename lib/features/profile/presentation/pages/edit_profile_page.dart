@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/models/address_model.dart';
 import '../../../../data/models/user_model.dart';
@@ -36,7 +37,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   String? _selectedBloodGroup;
   bool isDonor = true;
   String? _profileImageUrl;
-  File? _selectedImage;
+  Uint8List? _selectedImage;
 
   bool _isLoading = false;
 
@@ -175,7 +176,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     }
   }
 
-  Future<String?> _uploadImage(File image) async {
+  Future<String?> _uploadImage(Uint8List image) async {
     try {
       final uid = ref.read(authRepositoryProvider).currentUser?.uid;
       if (uid == null) return null;
@@ -202,7 +203,9 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      setState(() => _selectedImage = File(image.path));
+      final bytes = await image.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
+      setState(() => _selectedImage = compressed);
     }
   }
 

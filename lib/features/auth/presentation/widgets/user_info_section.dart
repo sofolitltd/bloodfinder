@@ -1,14 +1,13 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class UserInfoSection extends StatelessWidget {
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController mobileController;
-  final XFile? pickedImage;
+  final Uint8List? pickedImage;
   final VoidCallback onPickImage;
 
   const UserInfoSection({
@@ -39,7 +38,7 @@ class UserInfoSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     image: pickedImage != null
                         ? DecorationImage(
-                            image: FileImage(File(pickedImage!.path)),
+                            image: MemoryImage(pickedImage!),
                             fit: BoxFit.cover,
                           )
                         : null,

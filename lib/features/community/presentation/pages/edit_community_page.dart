@@ -1,15 +1,15 @@
 import 'dart:developer';
 
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../core/utils/phone_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../shared/models/social_media_link.dart';
@@ -36,7 +36,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
   final TextEditingController _addressController = TextEditingController();
   List<SocialMediaLink> _socialMediaLinks = [];
 
-  XFile? _pickedImage;
+  Uint8List? _pickedImage;
   bool _isLoading = false;
   String? _existingImageUrl;
 
@@ -274,8 +274,8 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: _pickedImage != null
-                              ? Image.file(
-                                  File(_pickedImage!.path),
+                              ? Image.memory(
+                                  _pickedImage!,
                                   fit: BoxFit.cover,
                                 )
                               : _existingImageUrl != null
@@ -365,7 +365,7 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
       if (_pickedImage != null) {
         final storageRepo = ref.read(storageRepositoryProvider);
         imageUrl = await storageRepo.uploadFile(
-          File(_pickedImage!.path),
+          _pickedImage!,
           'communities/${widget.community.id}.jpg',
         );
       }
@@ -423,31 +423,10 @@ class _EditCommunityState extends ConsumerState<EditCommunity> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
-      final compressed = await _compressImage(File(picked.path));
+      final bytes = await picked.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
       setState(() => _pickedImage = compressed);
     }
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    final ext = file.path.split('.').last.toLowerCase();
-
-    final isPng = ext == 'png';
-    final format = isPng ? CompressFormat.png : CompressFormat.jpeg;
-
-    final newExt = isPng ? 'png' : 'jpg';
-    final targetPath =
-        '${file.parent.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.$newExt';
-
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 70,
-      minWidth: 500,
-      minHeight: 500,
-      format: format,
-    );
-
-    return result != null ? XFile(result.path) : null;
   }
 
 }

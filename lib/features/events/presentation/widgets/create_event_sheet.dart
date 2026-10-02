@@ -1,10 +1,11 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/geohash.dart';
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/user_providers.dart';
 import '../../../../features/notification/services/fcm_sender.dart';
@@ -41,7 +42,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
   double? _latitude;
   double? _longitude;
   String? _locationAddress;
-  XFile? _image;
+  Uint8List? _image;
   bool _imageChanged = false;
   bool _loading = false;
 
@@ -73,8 +74,10 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
   Future<void> _pickImage() async {
     final file = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (file != null) {
+      final bytes = await file.readAsBytes();
+      final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
       setState(() {
-        _image = file;
+        _image = compressed;
         _imageChanged = true;
       });
     }
@@ -153,7 +156,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
       String? imageUrl = widget.event?.imageUrl;
       if (_imageChanged && _image != null) {
         imageUrl = await storage.uploadFile(
-          File(_image!.path),
+          _image!,
           'events/${DateTime.now().millisecondsSinceEpoch}.jpg',
         );
       }

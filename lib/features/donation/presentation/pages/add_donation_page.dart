@@ -1,13 +1,13 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
+import '../../../../core/utils/image_compress_utils.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/providers/user_providers.dart';
 import '../../services/donation_service.dart';
@@ -28,7 +28,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
   final _notesController = TextEditingController();
   final _waitingDaysController = TextEditingController();
   String _donationType = 'whole_blood';
-  XFile? _pickedImage;
+  Uint8List? _pickedImage;
   bool _isLoading = false;
 
   static const _donationTypes = [
@@ -64,29 +64,10 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
     final file = await picker.pickImage(source: source, imageQuality: 85);
     if (file == null) return;
 
-    final compressed = await _compressImage(File(file.path));
+    final bytes = await file.readAsBytes();
+    final compressed = await ImageCompressUtils.compressToMaxSize(bytes);
     if (!mounted) return;
-    setState(() => _pickedImage = compressed ?? file);
-  }
-
-  Future<XFile?> _compressImage(File file) async {
-    try {
-      final ext = file.path.split('.').last.toLowerCase();
-      final isPng = ext == 'png';
-      final targetPath =
-          '${file.parent.path}/donation_${DateTime.now().millisecondsSinceEpoch}.${isPng ? 'png' : 'jpg'}';
-      final result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path,
-        targetPath,
-        quality: 50,
-        minWidth: 300,
-        minHeight: 300,
-        format: isPng ? CompressFormat.png : CompressFormat.jpeg,
-      );
-      return result != null ? XFile(result.path) : null;
-    } catch (_) {
-      return null;
-    }
+    setState(() => _pickedImage = compressed);
   }
 
   void _showImageSourceSheet() {
@@ -124,11 +105,11 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
     );
   }
 
-  Future<String?> _uploadImage(File file, String uid) async {
+  Future<String?> _uploadImage(Uint8List bytes, String uid) async {
     try {
       final storageRepo = ref.read(storageRepositoryProvider);
       final path = 'donations/$uid/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      return await storageRepo.uploadFile(file, path);
+      return await storageRepo.uploadFile(bytes, path);
     } catch (_) {
       return null;
     }
@@ -168,7 +149,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
       // Upload image first if picked
       String? imageUrl;
       if (_pickedImage != null) {
-        imageUrl = await _uploadImage(File(_pickedImage!.path), user.uid);
+        imageUrl = await _uploadImage(_pickedImage!, user.uid);
       }
 
       final typeData = _donationTypes.firstWhere((t) => t.$1 == _donationType);
@@ -466,8 +447,8 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.file(
-              File(_pickedImage!.path),
+            child: Image.memory(
+              _pickedImage!,
               height: 180,
               width: double.infinity,
               fit: BoxFit.contain,
