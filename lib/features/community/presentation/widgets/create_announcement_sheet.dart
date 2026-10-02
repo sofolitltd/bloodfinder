@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/providers/repository_providers.dart';
@@ -50,10 +49,7 @@ class _CreateAnnouncementSheetState
           topic: widget.community.id,
           title: widget.community.name,
           body: message,
-          data: {
-            'type': 'community',
-            'communityId': widget.community.id,
-          },
+          data: {'type': 'community', 'communityId': widget.community.id},
         );
       } catch (_) {
         // Announcement is already posted; a failed push shouldn't fail the flow.
@@ -79,10 +75,10 @@ class _CreateAnnouncementSheetState
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 24.w,
-        right: 24.w,
-        top: 24.w,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24.w,
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -90,20 +86,29 @@ class _CreateAnnouncementSheetState
         children: [
           Center(
             child: Container(
-              width: 40.w,
-              height: 4.h,
-              margin: EdgeInsets.only(bottom: 20.h),
+              width: 40,
+              height: 4,
+              margin: EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2.r),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
-          Text(
-            'New Announcement',
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'New Announcement',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 8),
           TextField(
             controller: _messageController,
             maxLines: 4,
@@ -113,18 +118,20 @@ class _CreateAnnouncementSheetState
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            height: 50.h,
+            height: 50,
             child: ElevatedButton(
               onPressed: _isSending ? null : _submit,
               child: _isSending
                   ? SizedBox(
-                      width: 18.w,
-                      height: 18.h,
+                      width: 18,
+                      height: 18,
                       child: const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2),
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
                     )
                   : const Text('Post'),
             ),

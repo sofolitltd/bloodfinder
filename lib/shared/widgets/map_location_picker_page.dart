@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -250,10 +249,10 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
         actions: [
           _isGpsLoading
               ? Padding(
-                  padding: EdgeInsets.all(16.r),
+                  padding: EdgeInsets.all(16),
                   child: SizedBox(
-                    width: 20.w,
-                    height: 20.h,
+                    width: 20,
+                    height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                   ),
                 )
@@ -283,9 +282,9 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                 markers: [
                   Marker(
                     point: _pickedPoint,
-                    width: 48.w,
-                    height: 56.h,
-                    child: Icon(Icons.location_pin, color: Colors.red, size: 48.w),
+                    width: 48,
+                    height: 56,
+                    child: Icon(Icons.location_pin, color: Colors.red, size: 48),
                   ),
                 ],
               ),
@@ -294,15 +293,15 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
 
           // ── Search bar (top) ─────────────────────────────────────────────────
           Positioned(
-            top: 12.h,
-            left: 12.w,
-            right: 12.w,
+            top: 12,
+            left: 12,
+            right: 12,
             child: Column(
               children: [
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(10),
                     boxShadow: const [
                       BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2)),
                     ],
@@ -319,16 +318,16 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
                       suffixIcon: _isSearching
                           ? Padding(
-                              padding: EdgeInsets.all(12.r),
+                              padding: EdgeInsets.all(12),
                               child: SizedBox(
-                                width: 16.w,
-                                height: 16.h,
+                                width: 16,
+                                height: 16,
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               ),
                             )
                           : _searchController.text.isNotEmpty
                               ? IconButton(
-                                  icon: Icon(Icons.clear, size: 18.w),
+                                  icon: Icon(Icons.clear, size: 18),
                                   onPressed: () {
                                     _searchController.clear();
                                     setState(() {
@@ -339,17 +338,17 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                                 )
                               : null,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+                      contentPadding: EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
 
                 if (_showResults && _searchResults.isNotEmpty)
                   Container(
-                    margin: EdgeInsets.only(top: 4.h),
+                    margin: EdgeInsets.only(top: 4),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2)),
                       ],
@@ -360,7 +359,7 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _searchResults.length,
                       separatorBuilder: (_, _) =>
-                          Divider(height: 8.h, indent: 48),
+                          Divider(height: 8, indent: 48),
                       itemBuilder: (_, i) {
                         final r = _searchResults[i];
                         return Material(
@@ -368,12 +367,12 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                           child: ListTile(
                             dense: true,
                             leading: Icon(Icons.location_on_outlined,
-                                color: Colors.redAccent, size: 20.w),
+                                color: Colors.redAccent, size: 20),
                             title: Text(
                               r.displayName,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 13.sp),
+                              style: TextStyle(fontSize: 13),
                             ),
                             onTap: () => _selectSearchResult(r),
                           ),
@@ -387,12 +386,12 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
 
           // ── Zoom controls (right side) ────────────────────────────────────────
           Positioned(
-            right: 12.w,
-            bottom: 180.h,
+            right: 12,
+            bottom: 180,
             child: Column(
               children: [
                 _ZoomButton(icon: Icons.add, onTap: _zoomIn),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 _ZoomButton(icon: Icons.remove, onTap: _zoomOut),
               ],
             ),
@@ -404,10 +403,10 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 boxShadow: const [
                   BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, -2)),
                 ],
@@ -419,8 +418,8 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.location_on, color: Colors.red, size: 20.w),
-                      SizedBox(width: 8.w),
+                      Icon(Icons.location_on, color: Colors.red, size: 20),
+                      SizedBox(width: 8),
                       Expanded(
                         child: _isReverseGeocoding
                             ? const Text('Finding address...',
@@ -429,17 +428,17 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                                 _displayAddress.isNotEmpty
                                     ? _displayAddress
                                     : 'Tap on the map to select a location',
-                                style: TextStyle(fontSize: 13.sp, height: 1.4),
+                                style: TextStyle(fontSize: 13, height: 1.4),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    height: 48.h,
+                    height: 48,
                     child: ElevatedButton.icon(
                       onPressed: _isReverseGeocoding ? null : _confirmLocation,
                       icon: const Icon(Icons.check_circle_outline),
@@ -448,7 +447,7 @@ class _MapLocationPickerPageState extends State<MapLocationPickerPage> {
                         backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.r),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
@@ -475,15 +474,15 @@ class _ZoomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 3,
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       color: Colors.white,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(8),
         child: SizedBox(
-          width: 40.w,
-          height: 40.h,
-          child: Icon(icon, size: 22.w, color: Colors.black87),
+          width: 40,
+          height: 40,
+          child: Icon(icon, size: 22, color: Colors.black87),
         ),
       ),
     );

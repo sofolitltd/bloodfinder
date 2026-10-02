@@ -5,7 +5,6 @@ import '/features/chat/presentation/pages/archieve_message_page.dart';
 import '/features/community/presentation/pages/edit_community_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -335,7 +334,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
         ),
         child: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
-          height: 70.h,
+          height: 70,
           labelPadding: .zero,
           destinations: [
             NavigationDestination(

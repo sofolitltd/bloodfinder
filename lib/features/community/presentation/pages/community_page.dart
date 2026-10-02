@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -78,10 +77,10 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
           ? FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: Icon(PhosphorIcons.plusBold, size: 20.w),
+        icon: Icon(PhosphorIcons.plusBold, size: 20),
         label: const Text('Create Community'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
           Navigator.push(
@@ -98,16 +97,16 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
         children: [
           Container(
             color: Theme.of(context).colorScheme.surface,
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search by name...',
-                prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20.w),
+                prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20),
                 suffixIcon: _searchController.text.isEmpty
                     ? null
                     : IconButton(
-                        icon: Icon(PhosphorIcons.x, size: 18.w),
+                        icon: Icon(PhosphorIcons.x, size: 18),
                         onPressed: () {
                           _searchController.clear();
                           setState(() => _searchQuery = '');
@@ -206,37 +205,37 @@ class _CommunityTab extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72.w,
-              height: 72.h,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 PhosphorIcons.usersFour,
-                size: 34.w,
+                size: 34,
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               showNearby
                   ? 'No nearby communities'
                   : 'No communities found',
               style: TextStyle(
-                fontSize: 17.sp,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 6),
             Text(
               showNearby
                   ? 'Check back later or explore other tabs'
                   : 'Create a new community or join one',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 14,
                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 height: 1.4,
               ),
@@ -247,7 +246,7 @@ class _CommunityTab extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 96),
       itemCount: communities.length,
       itemBuilder: (context, index) {
         final community = communities[index];
@@ -263,7 +262,7 @@ class _CommunityTab extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -273,17 +272,17 @@ class _CommunityTab extends StatelessWidget {
                 ],
               ),
               child: Padding(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 48.w,
-                      height: 48.h,
+                      width: 48,
+                      height: 48,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(14.r),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: community.images.isEmpty
@@ -292,26 +291,26 @@ class _CommunityTab extends StatelessWidget {
                                   ? community.name[0].toUpperCase()
                                   : '',
                               style: TextStyle(
-                                fontSize: 18.sp,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red.shade600,
                               ),
                             )
                           : CachedNetworkImage(
                               imageUrl: community.images.first,
-                              width: 48.w,
-                              height: 48.h,
+                              width: 48,
+                              height: 48,
                               fit: BoxFit.cover,
                               placeholder: (context, url) =>
                                   const CupertinoActivityIndicator(),
                               errorWidget: (context, url, error) => Icon(
                                 PhosphorIcons.warningCircle,
                                 color: Colors.red.shade300,
-                                size: 22.w,
+                                size: 22,
                               ),
                             ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,23 +319,23 @@ class _CommunityTab extends StatelessWidget {
                             community.name,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: 6.h),
+                          SizedBox(height: 6),
                           Row(
                             children: [
                               Icon(PhosphorIcons.mapPin,
-                                  size: 14.w, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-                              SizedBox(width: 6.w),
+                                  size: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                              SizedBox(width: 6),
                               Expanded(
                                 child: Text(
                                   community.address,
                                   style: TextStyle(
-                                      fontSize: 13.sp,
+                                      fontSize: 13,
                                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -344,20 +343,20 @@ class _CommunityTab extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 6.h),
+                          SizedBox(height: 6),
                           Row(
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w, vertical: 3.h),
+                                    horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(6.r),
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
                                   '${community.memberCount} members',
                                   style: TextStyle(
-                                    fontSize: 11.sp,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.green.shade700,
                                   ),
@@ -368,7 +367,7 @@ class _CommunityTab extends StatelessWidget {
                           if (community.bloodGroupCounts != null &&
                               community.bloodGroupCounts!.values
                                   .any((c) => c > 0)) ...[
-                            SizedBox(height: 8.h),
+                            SizedBox(height: 8),
                             BloodGroupCountChips(
                               bloodGroupCounts: community.bloodGroupCounts,
                               dense: true,
@@ -378,10 +377,10 @@ class _CommunityTab extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8.w),
+                      padding: EdgeInsets.only(left: 8),
                       child: Icon(
                         PhosphorIcons.caretRight,
-                        size: 16.w,
+                        size: 16,
                         color: Colors.grey,
                       ),
                     ),

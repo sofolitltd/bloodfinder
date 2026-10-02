@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/notification.dart';
 import '../../models/announcement_model.dart';
 
@@ -107,22 +106,30 @@ class _NotificationPageState extends ConsumerState<NotificationPage>
               }
 
               return ListView.separated(
-                separatorBuilder: (_, _) => Divider(height: 10.h),
+                separatorBuilder: (_, _) => SizedBox(height: 10),
                 controller: _scrollCtrl,
                 itemCount: _notifications.length,
-                padding: .symmetric(vertical: 8.h),
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                 itemBuilder: (context, index) {
                   final n = _notifications[index];
 
                   return Card(
+                    elevation: 0,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     color: n.read ? null : Colors.red.shade50,
                     child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       title: Row(
                         children: [
                           Expanded(child: Text(n.title)),
                           Text(
                             timeAgo(n.createdAt),
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
@@ -196,14 +203,14 @@ class _NotificationPageState extends ConsumerState<NotificationPage>
         children: [
           Icon(
             Icons.notifications_none,
-            size: 48.w,
+            size: 48,
             color: Colors.grey.shade300,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             message,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               color: Colors.grey.shade500,
             ),
           ),
@@ -237,14 +244,14 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
         children: [
           Icon(
             Icons.notifications_none,
-            size: 48.w,
+            size: 48,
             color: Colors.grey.shade300,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             message,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               color: Colors.grey.shade500,
             ),
           ),
@@ -268,11 +275,11 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
         // Country filter bar
         if (widget.countries.isNotEmpty)
           Container(
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: Row(
               children: [
-                Icon(Icons.filter_list, size: 16.w, color: Colors.grey.shade600),
-                SizedBox(width: 6.w),
+                Icon(Icons.filter_list, size: 16, color: Colors.grey.shade600),
+                SizedBox(width: 6),
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -283,9 +290,9 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
                           selected: _selectedCountry == null,
                           onTap: () => setState(() => _selectedCountry = null),
                         ),
-                        SizedBox(width: 6.w),
+                        SizedBox(width: 6),
                         ...widget.countries.map((c) => Padding(
-                          padding: EdgeInsets.only(right: 6.w),
+                          padding: EdgeInsets.only(right: 6),
                           child: _filterChip(
                             label: c,
                             selected: _selectedCountry == c,
@@ -305,14 +312,19 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
           child: filtered.isEmpty
               ? _buildEmpty('No announcements for this country.')
               : ListView.separated(
-                  padding: EdgeInsets.symmetric(vertical: 8.w),
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final broadcast = AnnouncementModel.fromDoc(filtered[index]);
                     return Card(
+                      elevation: 0,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(16),
                         onTap: () {
                           routerConfig.push(
                             '/announcement-detail',
@@ -320,7 +332,7 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
                           );
                         },
                         child: Padding(
-                        padding: EdgeInsets.all(12.w),
+                        padding: EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -328,26 +340,26 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
                               children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                    vertical: 4.h,
+                                    horizontal: 8,
+                                    vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.amber.shade50,
-                                    borderRadius: BorderRadius.circular(8.r),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
                                         Icons.campaign,
-                                        size: 14.w,
+                                        size: 14,
                                         color: Colors.amber.shade700,
                                       ),
-                                      SizedBox(width: 4.w),
+                                      SizedBox(width: 4),
                                       Text(
                                         'Announcement',
                                         style: TextStyle(
-                                          fontSize: 11.sp,
+                                          fontSize: 11,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.amber.shade700,
                                         ),
@@ -359,44 +371,44 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
                                 if (broadcast.country != null)
                                   Container(
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: 6.w,
-                                      vertical: 2.h,
+                                      horizontal: 6,
+                                      vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
                                       color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(6.r),
+                                      borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
                                       broadcast.country!,
                                       style: TextStyle(
-                                        fontSize: 10.sp,
+                                        fontSize: 10,
                                         color: Colors.blue.shade700,
                                       ),
                                     ),
                                   ),
-                                SizedBox(width: 6.w),
+                                SizedBox(width: 6),
                                 Text(
                                   timeAgo(broadcast.createdAt),
                                   style: TextStyle(
-                                    fontSize: 12.sp,
+                                    fontSize: 12,
                                     color: Colors.grey.shade500,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10.h),
+                            SizedBox(height: 10),
                             Text(
                               broadcast.title,
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 6.h),
+                            SizedBox(height: 6),
                             Text(
                               broadcast.body,
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 14,
                                 color: Colors.grey.shade700,
                                 height: 1.4,
                               ),
@@ -421,10 +433,10 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: selected ? Colors.red.shade50 : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected ? Colors.red.shade400 : Colors.grey.shade300,
           ),
@@ -432,7 +444,7 @@ class _AnnouncementsListState extends State<_AnnouncementsList> {
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
             color: selected ? Colors.red.shade700 : Colors.grey.shade600,
           ),

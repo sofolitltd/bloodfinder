@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/chat_model.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -27,8 +26,8 @@ class MessageBubble extends StatelessWidget {
       child: GestureDetector(
         onLongPress: onLongPress,
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
-          padding: EdgeInsets.fromLTRB(10.w, 7.h, 10.w, 6.h),
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          padding: EdgeInsets.fromLTRB(10, 7, 10, 6),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.8,
           ),
@@ -36,7 +35,7 @@ class MessageBubble extends StatelessWidget {
             color: isMe
                 ? Colors.red.shade100.withValues(alpha: .5)
                 : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             crossAxisAlignment:
@@ -44,9 +43,9 @@ class MessageBubble extends StatelessWidget {
             children: [
               Text(
                 message.text,
-                style: TextStyle(fontSize: 15.sp),
+                style: TextStyle(fontSize: 15),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -54,24 +53,24 @@ class MessageBubble extends StatelessWidget {
                     Text(
                       'Edited',
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 10,
                         color: Colors.black54,
                       ),
                     ),
-                  SizedBox(width: 5.w),
+                  SizedBox(width: 5),
                   Text(
                     formatTime(message.timestamp),
                     style: TextStyle(
-                      fontSize: 10.sp,
+                      fontSize: 10,
                       color: Colors.black54,
                     ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 8),
                   if (isMe)
                     Text(
                       seenText,
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 10,
                         letterSpacing: -2,
                         color: message.seenBy.contains(otherUserId)
                             ? Colors.blue

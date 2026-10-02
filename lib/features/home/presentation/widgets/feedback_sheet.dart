@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../feedback/models/app_feedback.dart';
 import '../../../../data/providers/repository_providers.dart';
 
@@ -72,9 +71,9 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 20.w,
-        right: 20.w,
-        top: 20.h,
+        left: 20,
+        right: 20,
+        top: 20,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -85,7 +84,10 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
             children: [
               Text(
                 'Share Feedback',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -93,19 +95,22 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
-          DropdownButtonFormField<String>(
-            initialValue: _categories[0],
-            decoration: const InputDecoration(
-              labelText: 'Category',
-              border: OutlineInputBorder(),
+          SizedBox(height: 16),
+          Material(
+            
+            child: DropdownButtonFormField<String>(
+              initialValue: _categories[0],
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                border: OutlineInputBorder(),
+              ),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
+              onChanged: (v) => _categoryController.text = v ?? '',
             ),
-            items: _categories
-                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                .toList(),
-            onChanged: (v) => _categoryController.text = v ?? '',
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           TextFormField(
             controller: _messageController,
             maxLines: 5,
@@ -116,18 +121,18 @@ class _FeedbackSheetState extends ConsumerState<FeedbackSheet> {
               alignLabelWithHint: true,
             ),
           ),
-          SizedBox(height: 20.h),
-          FilledButton(
+          SizedBox(height: 20),
+          ElevatedButton(
             onPressed: _submitting ? null : _submit,
             child: _submitting
                 ? SizedBox(
-                    width: 20.w,
-                    height: 20.h,
+                    width: 20,
+                    height: 20,
                     child: const CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Text('Submit'),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
         ],
       ),
     );

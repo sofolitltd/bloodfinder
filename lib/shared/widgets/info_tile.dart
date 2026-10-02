@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 class InfoTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -24,15 +23,15 @@ class InfoTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 36.w,
-          height: 36.h,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, size: 18.w, color: iconColor),
+          child: Icon(icon, size: 18, color: iconColor),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,15 +39,15 @@ class InfoTile extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 11,
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: valueColor ??
                       (isDark ? Colors.grey.shade200 : Colors.grey.shade800),
@@ -84,15 +83,15 @@ class AddressTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 32.w,
-          height: 32.h,
+          width: 32,
+          height: 32,
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 16.w, color: iconColor),
+          child: Icon(icon, size: 16, color: iconColor),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,15 +99,15 @@ class AddressTile extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 11,
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 2),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                 ),

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/geohash.dart';
@@ -259,9 +258,9 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16.w,
-        right: 16.w,
-        top: 16.h,
+        left: 16,
+        right: 16,
+        top: 16,
       ),
       child: Form(
         key: _formKey,
@@ -283,7 +282,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
@@ -293,7 +292,7 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               TextFormField(
                 controller: _descController,
                 maxLines: 3,
@@ -303,66 +302,66 @@ class _CreateEventSheetState extends State<_CreateEventSheet> {
                   alignLabelWithHint: true,
                 ),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _pickDate,
-                      icon: Icon(Icons.calendar_today, size: 18.w),
+                      icon: Icon(Icons.calendar_today, size: 18),
                       label:
-                          Text(dateText, style: TextStyle(fontSize: 13.sp)),
+                          Text(dateText, style: TextStyle(fontSize: 13)),
                     ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 8),
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _pickTime,
-                      icon: Icon(Icons.access_time, size: 18.w),
+                      icon: Icon(Icons.access_time, size: 18),
                       label:
-                          Text(timeText, style: TextStyle(fontSize: 13.sp)),
+                          Text(timeText, style: TextStyle(fontSize: 13)),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _pickEndDate,
-                icon: Icon(Icons.date_range, size: 18.w),
+                icon: Icon(Icons.date_range, size: 18),
                 label: Text(endDateText,
-                    style: TextStyle(fontSize: 13.sp)),
+                    style: TextStyle(fontSize: 13)),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _pickLocation,
-                icon: Icon(Icons.location_on, size: 18.w),
+                icon: Icon(Icons.location_on, size: 18),
                 label: Text(locText,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 13.sp)),
+                    style: TextStyle(fontSize: 13)),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _pickImage,
-                icon: Icon(Icons.image, size: 18.w),
+                icon: Icon(Icons.image, size: 18),
                 label: Text(
                   _image != null || widget.event?.imageUrl != null
                       ? 'Image selected'
                       : 'Add Cover Image',
-                  style: TextStyle(fontSize: 13.sp),
+                  style: TextStyle(fontSize: 13),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               FilledButton(
                 onPressed: _loading ? null : _submit,
                 child: _loading
                     ? SizedBox(
-                        width: 20.w,
-                        height: 20.h,
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(_isEditing ? 'Save Changes' : 'Create Event'),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
             ],
           ),
         ),

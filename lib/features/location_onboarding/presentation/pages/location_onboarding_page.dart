@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -154,51 +153,51 @@ class _LocationOnboardingPageState
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
+        padding: EdgeInsets.fromLTRB(20, 16, 20, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Hero icon area
             Center(
               child: Container(
-                width: 80.w,
-                height: 80.h,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   PhosphorIcons.mapPin,
-                  size: 40.w,
+                  size: 40,
                   color: Colors.red.shade600,
                 ),
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
 
             // Title
             Center(
               child: Text(
                 'Update Your Location',
                 style: TextStyle(
-                  fontSize: 22.sp,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Center(
               child: Text(
                 'We need your location to connect you with nearby\nblood seekers and donors in your area.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   color: Colors.grey.shade600,
                   height: 1.5,
                 ),
               ),
             ),
-            SizedBox(height: 32.h),
+            SizedBox(height: 32),
 
             // Saved addresses list
             Row(
@@ -207,47 +206,47 @@ class _LocationOnboardingPageState
                 Text(
                   'Your Addresses',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _addAddress,
-                  icon: Icon(Icons.add_location_alt, size: 18.w),
+                  icon: Icon(Icons.add_location_alt, size: 18),
                   label: const Text('Add'),
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
 
             if (_savedAddresses.isEmpty)
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 40.h),
+                padding: EdgeInsets.symmetric(vertical: 40),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       PhosphorIcons.mapPinLine,
-                      size: 40.w,
+                      size: 40,
                       color: Colors.grey.shade400,
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 12),
                     Text(
                       'No addresses added yet',
                       style: TextStyle(
-                        fontSize: 15.sp,
+                        fontSize: 15,
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4),
                     Text(
                       'Tap "Add" to set up your first location',
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 13,
                         color: Colors.grey.shade400,
                       ),
                     ),
@@ -259,7 +258,7 @@ class _LocationOnboardingPageState
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _savedAddresses.length,
-                separatorBuilder: (_, _) => Divider(height: 8.h),
+                separatorBuilder: (_, _) => Divider(height: 8),
                 itemBuilder: (context, index) {
                   final address = _savedAddresses[index];
                   final isFirst = index == 0;
@@ -269,29 +268,29 @@ class _LocationOnboardingPageState
                       color: isFirst
                           ? Colors.green.shade50
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                       border: isFirst
                           ? Border.all(color: Colors.green.shade200)
                           : null,
                     ),
                     child: ListTile(
                       contentPadding: EdgeInsets.only(
-                        left: 12.w,
-                        right: 4.w,
-                        top: 4.h,
-                        bottom: 4.h,
+                        left: 12,
+                        right: 4,
+                        top: 4,
+                        bottom: 4,
                       ),
                       leading: Container(
-                        width: 36.w,
-                        height: 36.h,
+                        width: 36,
+                        height: 36,
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           PhosphorIcons.mapPin,
                           color: Colors.red.shade600,
-                          size: 18.w,
+                          size: 18,
                         ),
                       ),
                       title: Row(
@@ -303,20 +302,20 @@ class _LocationOnboardingPageState
                           ),
                           if (isFirst)
                             Container(
-                              margin: EdgeInsets.only(left: 8.w),
+                              margin: EdgeInsets.only(left: 8),
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 6.w, vertical: 2.h),
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
-                                    BorderRadius.circular(4.r),
+                                    BorderRadius.circular(4),
                                 border: Border.all(
                                     color: Colors.green.shade200),
                               ),
                               child: Text(
                                 'Active',
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 10,
                                   color: Colors.green,
                                 ),
                               ),
@@ -327,11 +326,11 @@ class _LocationOnboardingPageState
                         address.addressText,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12.sp),
+                        style: TextStyle(fontSize: 12),
                       ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete_outline,
-                            color: Colors.redAccent, size: 20.w),
+                            color: Colors.redAccent, size: 20),
                         onPressed: () => _removeAddress(address),
                       ),
                     ),
@@ -339,17 +338,17 @@ class _LocationOnboardingPageState
                 },
               ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: 32),
 
             SizedBox(
               width: double.infinity,
-              height: 52.h,
+              height: 52,
               child: ElevatedButton.icon(
                 onPressed: _isSaving ? null : _saveAndContinue,
                 icon: _isSaving
                     ? SizedBox(
-                        width: 20.w,
-                        height: 20.h,
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: Colors.white,
@@ -359,7 +358,7 @@ class _LocationOnboardingPageState
                 label: Text(
                   _isSaving ? 'Saving...' : 'Save & Continue',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -367,7 +366,7 @@ class _LocationOnboardingPageState
                   backgroundColor: Colors.redAccent,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),

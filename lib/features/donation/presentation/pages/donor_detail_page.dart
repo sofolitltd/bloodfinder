@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -49,7 +48,7 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
     _mapController.fitCamera(
       CameraFit.bounds(
         bounds: LatLngBounds(donorPoint, finderPoint),
-        padding: EdgeInsets.all(48.w),
+        padding: EdgeInsets.all(48),
       ),
     );
   }
@@ -89,7 +88,7 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
               child: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
+                  padding: EdgeInsets.fromLTRB(4, 4, 16, 28),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -105,18 +104,18 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                           const Spacer(),
                         ],
                       ),
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 4),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: 64.w,
-                              height: 64.h,
+                              width: 64,
+                              height: 64,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(18.r),
+                                borderRadius: BorderRadius.circular(18),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.2),
@@ -131,7 +130,7 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                       child: Text(
                                         donor.firstName[0].toUpperCase(),
                                         style: TextStyle(
-                                          fontSize: 26.sp,
+                                          fontSize: 26,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red.shade600,
                                         ),
@@ -139,8 +138,8 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                     )
                                   : CachedNetworkImage(
                                       imageUrl: donor.image,
-                                      width: 64.w,
-                                      height: 64.h,
+                                      width: 64,
+                                      height: 64,
                                       fit: BoxFit.cover,
                                       placeholder: (_, _) => const Center(
                                         child: CircularProgressIndicator(
@@ -153,7 +152,7 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                       ),
                                     ),
                             ),
-                            SizedBox(width: 14.w),
+                            SizedBox(width: 14),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,24 +161,24 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                     '${donor.firstName} ${donor.lastName}',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 20.sp,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(height: 6.h),
+                                  SizedBox(height: 6),
                                   Wrap(
-                                    spacing: 6.w,
-                                    runSpacing: 6.h,
+                                    spacing: 6,
+                                    runSpacing: 6,
                                     children: [
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w,
-                                          vertical: 3.h,
+                                          horizontal: 10,
+                                          vertical: 3,
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white24,
                                           borderRadius: BorderRadius.circular(
-                                            6.r,
+                                            6,
                                           ),
                                         ),
                                         child: Text(
@@ -187,20 +186,20 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 13.sp,
+                                            fontSize: 13,
                                           ),
                                         ),
                                       ),
                                       if (donor.isEmergencyDonor)
                                         Container(
                                           padding: EdgeInsets.symmetric(
-                                            horizontal: 10.w,
-                                            vertical: 3.h,
+                                            horizontal: 10,
+                                            vertical: 3,
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.white24,
                                             borderRadius: BorderRadius.circular(
-                                              6.r,
+                                              6,
                                             ),
                                           ),
                                           child: Row(
@@ -209,15 +208,15 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                               Icon(
                                                 PhosphorIcons.siren,
                                                 color: Colors.white,
-                                                size: 12.w,
+                                                size: 12,
                                               ),
-                                              SizedBox(width: 4.w),
+                                              SizedBox(width: 4),
                                               Text(
                                                 'Emergency Donor',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 12.sp,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ],
@@ -226,13 +225,13 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                       if (isVerified)
                                         Container(
                                           padding: EdgeInsets.symmetric(
-                                            horizontal: 10.w,
-                                            vertical: 3.h,
+                                            horizontal: 10,
+                                            vertical: 3,
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.white24,
                                             borderRadius: BorderRadius.circular(
-                                              6.r,
+                                              6,
                                             ),
                                           ),
                                           child: Row(
@@ -241,15 +240,15 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                               Icon(
                                                 Icons.verified,
                                                 color: Colors.blue.shade100,
-                                                size: 13.w,
+                                                size: 13,
                                               ),
-                                              SizedBox(width: 4.w),
+                                              SizedBox(width: 4),
                                               Text(
                                                 'Verified',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 12.sp,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ],
@@ -260,14 +259,14 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
                                   if (donor.locationAddress != null &&
                                       donor.locationAddress!.isNotEmpty)
                                     Padding(
-                                      padding: EdgeInsets.only(top: 6.h),
+                                      padding: EdgeInsets.only(top: 6),
                                       child: Text(
                                         donor.locationAddress!,
                                         style: TextStyle(
                                           color: Colors.white.withValues(
                                             alpha: 0.8,
                                           ),
-                                          fontSize: 12.sp,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),
@@ -284,18 +283,18 @@ class _DonorDetailPageState extends ConsumerState<DonorDetailPage> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
+            padding: EdgeInsets.fromLTRB(16, 20, 16, 32),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 if (widget.availability != null) ...[
                   _AvailabilityCard(availability: widget.availability!),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                 ],
                 _ContactCard(donor: donor, onCall: _launchUrl),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 _LastDonationCard(uid: donor.uid),
                 if (donor.latitude != null && donor.longitude != null) ...[
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   _LocationMapCard(
                     donor: donor,
                     finderLatitude: widget.finderLatitude,
@@ -325,7 +324,7 @@ class _ContactCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -334,18 +333,18 @@ class _ContactCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 28.w,
-                height: 28.h,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   PhosphorIcons.phoneCall,
@@ -353,36 +352,36 @@ class _ContactCard extends StatelessWidget {
                   color: Colors.red.shade600,
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               Text(
                 'Contact',
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           if (donor.mobileNumber.isNotEmpty)
             InkWell(
               onTap: () => onCall('tel:${donor.mobileNumber}'),
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
                     Container(
-                      width: 36.w,
-                      height: 36.h,
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.r),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         PhosphorIcons.phoneCall,
@@ -390,7 +389,7 @@ class _ContactCard extends StatelessWidget {
                         color: Colors.red.shade600,
                       ),
                     ),
-                    SizedBox(width: 12.w),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,16 +397,16 @@ class _ContactCard extends StatelessWidget {
                           Text(
                             'Phone',
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 11,
                               color: Colors.grey.shade500,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 2),
                           Text(
                             donor.mobileNumber,
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               color: Colors.grey.shade800,
                               fontWeight: FontWeight.w500,
                             ),
@@ -419,7 +418,7 @@ class _ContactCard extends StatelessWidget {
                 ),
               ),
             ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
             child: StartChatButton(otherUserId: donor.uid),
@@ -450,18 +449,18 @@ class _AvailabilityCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
           Icon(icon, size: 22, color: color),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12),
           Text(
             label,
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               color: color,
             ),
@@ -487,7 +486,7 @@ class _LastDonationCard extends ConsumerWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -496,7 +495,7 @@ class _LastDonationCard extends ConsumerWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: donationsStream,
         builder: (context, snapshot) {
@@ -514,11 +513,11 @@ class _LastDonationCard extends ConsumerWidget {
           return Row(
             children: [
               Container(
-                width: 36.w,
-                height: 36.h,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(10.r),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   PhosphorIcons.drop,
@@ -526,23 +525,23 @@ class _LastDonationCard extends ConsumerWidget {
                   color: Colors.red.shade600,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Last Donation',
                     style: TextStyle(
-                      fontSize: 11.sp,
+                      fontSize: 11,
                       color: Colors.grey.shade500,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 2),
                   Text(
                     value,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       color: Colors.grey.shade800,
                       fontWeight: FontWeight.w500,
                     ),
@@ -583,7 +582,7 @@ class _LocationMapCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -597,15 +596,15 @@ class _LocationMapCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 16.w, 16.w, 8.h),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Row(
               children: [
                 Container(
-                  width: 28.w,
-                  height: 28.h,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     PhosphorIcons.mapPin,
@@ -613,11 +612,11 @@ class _LocationMapCard extends StatelessWidget {
                     color: Colors.red.shade600,
                   ),
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 8),
                 Text(
                   'Location',
                   style: TextStyle(
-                    fontSize: 15.sp,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade800,
                   ),
@@ -626,7 +625,7 @@ class _LocationMapCard extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 220.h,
+            height: 220,
             child: FlutterMap(
               mapController: mapController,
               options: MapOptions(
@@ -643,23 +642,23 @@ class _LocationMapCard extends StatelessWidget {
                   markers: [
                     Marker(
                       point: donorPoint,
-                      width: 44.w,
-                      height: 52.h,
+                      width: 44,
+                      height: 52,
                       child: Icon(
                         Icons.location_pin,
                         color: Colors.red,
-                        size: 44.w,
+                        size: 44,
                       ),
                     ),
                     if (finderPoint != null)
                       Marker(
                         point: finderPoint,
-                        width: 44.w,
-                        height: 52.h,
+                        width: 44,
+                        height: 52,
                         child: Icon(
                           Icons.person_pin_circle,
                           color: Colors.blue,
-                          size: 40.w,
+                          size: 40,
                         ),
                       ),
                   ],
@@ -668,17 +667,17 @@ class _LocationMapCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 4.h),
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: Row(
               children: [
                 _MapLegendDot(color: Colors.red, label: 'Donor'),
-                SizedBox(width: 16.w),
+                SizedBox(width: 16),
                 if (hasFinder) _MapLegendDot(color: Colors.blue, label: 'You'),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+            padding: EdgeInsets.fromLTRB(12, 4, 12, 12),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -686,7 +685,7 @@ class _LocationMapCard extends StatelessWidget {
                   origin: finderPoint,
                   destination: donorPoint,
                 ),
-                icon: Icon(PhosphorIcons.navigationArrow, size: 18.w),
+                icon: Icon(PhosphorIcons.navigationArrow, size: 18),
                 label: Text(
                   hasFinder
                       ? 'Navigate to Donor (Google Maps)'
@@ -734,14 +733,14 @@ class _MapLegendDot extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10.w,
-          height: 10.w,
+          width: 10,
+          height: 10,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        SizedBox(width: 6.w),
+        SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
       ],
     );

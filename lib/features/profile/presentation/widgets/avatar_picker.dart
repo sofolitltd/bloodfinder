@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AvatarPicker extends StatelessWidget {
@@ -26,11 +25,11 @@ class AvatarPicker extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            height: 90.h,
-            width: 90.w,
+            height: 90,
+            width: 90,
             decoration: BoxDecoration(
               color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(20),
               image: hasImage
                   ? DecorationImage(
                       image: selectedImage != null
@@ -47,14 +46,14 @@ class AvatarPicker extends StatelessWidget {
                     children: [
                       Icon(
                         PhosphorIcons.camera,
-                        size: 28.w,
+                        size: 28,
                         color: Colors.red.shade400,
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
                       Text(
                         'Add Photo',
                         style: TextStyle(
-                          fontSize: 10.sp,
+                          fontSize: 10,
                           color: Colors.red.shade400,
                         ),
                       ),
@@ -66,15 +65,15 @@ class AvatarPicker extends StatelessWidget {
               bottom: 0,
               right: -2,
               child: Container(
-                padding: EdgeInsets.all(4.w),
+                padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: Colors.red.shade500,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2.w),
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
                 child: Icon(
                   Icons.edit,
-                  size: 14.w,
+                  size: 14,
                   color: Colors.white,
                 ),
               ),

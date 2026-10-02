@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/models/user_model.dart';
@@ -133,7 +132,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   offset: const Offset(0, -80),
                   child: Column(
                     children: [
-                      SizedBox(height: 28.h),
+                      SizedBox(height: 28),
 
                       // Animated settings
                       FadeTransition(
@@ -141,7 +140,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         child: SlideTransition(
                           position: _slideAnim,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             child: ProfileSettings(
                               uid: user.uid,
                               isDonorStatus: isDonorStatus,

@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -38,10 +37,10 @@ class HomeBloodRequestsSection extends ConsumerWidget {
     final requestsAsync = ref.watch(_homeRequestsProvider(50.0));
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       // decoration: BoxDecoration(
       //   color: theme.colorScheme.surface,
-      //   borderRadius: BorderRadius.circular(16.r),
+      //   borderRadius: BorderRadius.circular(16),
       //   border: Border.all(
       //     color: isDark ? Colors.transparent : Colors.grey.shade200,
       //     width: 0.5,
@@ -54,7 +53,7 @@ class HomeBloodRequestsSection extends ConsumerWidget {
       //     ),
       //   ],
       // ),
-      // padding: EdgeInsets.all(20.w),
+      // padding: EdgeInsets.all(20),
       child: Column(
         children: [
           Row(
@@ -64,16 +63,16 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                 spacing: 10,
                 children: [
                   Container(
-                    width: 36.w,
-                    height: 40.h,
+                    width: 36,
+                    height: 40,
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       PhosphorIcons.warningCircle,
                       color: Colors.red.shade500,
-                      size: 20.w,
+                      size: 20,
                     ),
                   ),
                   Column(
@@ -82,7 +81,7 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                       Text(
                         'Emergency Near You',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                         ),
@@ -90,8 +89,8 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                       Text(
                         'Immediate blood needs in your area',
                         style: TextStyle(
-                          fontSize: 10.sp,
-                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                          fontSize: 12,
+                          color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                         ),
                       ),
                     ],
@@ -101,7 +100,7 @@ class HomeBloodRequestsSection extends ConsumerWidget {
               TextButton(
                 onPressed: () => context.goNamed(AppRoute.feed.name),
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
@@ -110,20 +109,20 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                   style: TextStyle(
                     color: Colors.red.shade600,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13.sp,
+                    fontSize: 13,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           requestsAsync.when(
             loading: () => SizedBox(
-              height: 150.h,
+              height: 150,
               child: const Center(child: CircularProgressIndicator()),
             ),
             error: (err, _) => SizedBox(
-              height: 150.h,
+              height: 150,
               child: Center(
                 child: Text(
                   'Something went wrong',
@@ -134,16 +133,16 @@ class HomeBloodRequestsSection extends ConsumerWidget {
             data: (requests) {
               if (requests.isEmpty) {
                 return SizedBox(
-                  height: 120.h,
+                  height: 120,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(PhosphorIcons.drop, size: 36.w, color: Colors.grey.shade300),
-                        SizedBox(height: 8.h),
+                        Icon(PhosphorIcons.drop, size: 36, color: Colors.grey.shade300),
+                        SizedBox(height: 8),
                         Text(
                           'No urgent requests nearby',
-                          style: TextStyle(color: Colors.grey.shade500, fontSize: 14.sp),
+                          style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                         ),
                       ],
                     ),
@@ -160,7 +159,7 @@ class HomeBloodRequestsSection extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemCount: requests.length,
-                separatorBuilder: (_, _) => SizedBox(height: 12.h),
+                separatorBuilder: (_, _) => SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final req = requests[index];
                   double? distance;

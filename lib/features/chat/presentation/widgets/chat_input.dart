@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ChatInput extends StatelessWidget {
@@ -23,13 +22,13 @@ class ChatInput extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
           ),
           margin: EdgeInsets.zero,
           child: Container(
-            padding: EdgeInsets.only(top: 10.h, left: 12.w, bottom: 10.h),
+            padding: EdgeInsets.only(top: 10, left: 12, bottom: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: Row(
@@ -49,8 +48,8 @@ class ChatInput extends StatelessWidget {
                             ? "Edit message..."
                             : "Type a message...",
                         contentPadding: EdgeInsets.symmetric(
-                          horizontal: 0.w,
-                          vertical: 0.h,
+                          horizontal: 0,
+                          vertical: 0,
                         ),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -65,7 +64,7 @@ class ChatInput extends StatelessWidget {
                   GestureDetector(
                     onTap: onSend,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 4.w, right: 8.w),
+                      padding: EdgeInsets.only(left: 4, right: 8),
                       child: Icon(
                         PhosphorIcons.paperPlaneRight,
                         color: Colors.red,

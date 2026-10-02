@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AuthSection extends StatelessWidget {
@@ -19,14 +18,14 @@ class AuthSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 8.h,
+      spacing: 8,
       children: [
         TextFormField(
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             labelText: 'Email',
-            prefixIcon: Icon(PhosphorIcons.envelope, size: 20.w),
+            prefixIcon: Icon(PhosphorIcons.envelope, size: 20),
           ),
           validator: (v) {
             if (v == null || v.isEmpty) return 'Required';
@@ -36,19 +35,19 @@ class AuthSection extends StatelessWidget {
             return null;
           },
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         TextFormField(
           controller: passwordController,
           obscureText: obscurePassword,
           decoration: InputDecoration(
             labelText: 'Password',
-            prefixIcon: Icon(PhosphorIcons.lock, size: 20.w),
+            prefixIcon: Icon(PhosphorIcons.lock, size: 20),
             suffixIcon: IconButton(
               icon: Icon(
                 obscurePassword
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
-                size: 20.w,
+                size: 20,
               ),
               onPressed: onTogglePasswordVisibility,
             ),

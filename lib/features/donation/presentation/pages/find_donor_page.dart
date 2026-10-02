@@ -6,7 +6,6 @@ import 'package:bloodfinder/features/community/models/community.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -114,11 +113,15 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Theme.of(context).colorScheme.primary,
+          labelColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.red[700]
+              : Colors.red.shade700,
           unselectedLabelColor: Theme.of(
             context,
           ).colorScheme.onSurface.withValues(alpha: 0.6),
-          indicatorColor: Theme.of(context).colorScheme.primary,
+          indicatorColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.red[700]
+              : Colors.red.shade700,
           tabs: const [
             Tab(text: 'Donors'),
             Tab(text: 'Communities'),
@@ -147,7 +150,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Text(
               'No ${widget.bloodGroup} donors found\nwithin ${widget.radiusInKm.round()} km',
               textAlign: TextAlign.center,
@@ -159,9 +162,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       itemCount: _donors.length + (_hasMore ? 1 : 0),
-      separatorBuilder: (_, _) => SizedBox(height: 16.h),
+      separatorBuilder: (_, _) => SizedBox(height: 16),
       itemBuilder: (context, index) {
         if (index == _donors.length) {
           return const Center(child: CircularProgressIndicator());
@@ -216,7 +219,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 Text(
                   'No communities with ${widget.bloodGroup}\ndonors found within ${widget.radiusInKm.round()} km',
                   textAlign: TextAlign.center,
@@ -228,9 +231,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         }
 
         return ListView.separated(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           itemCount: docs.length,
-          separatorBuilder: (_, _) => SizedBox(height: 16.h),
+          separatorBuilder: (_, _) => SizedBox(height: 16),
           itemBuilder: (context, index) {
             final community = Community.fromJson({
               ...docs[index].data(),
@@ -269,7 +272,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isDark ? Colors.transparent : Colors.grey.shade200,
             width: 0.5,
@@ -283,17 +286,17 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48.w,
-                height: 48.h,
+                width: 48,
+                height: 48,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: community.images.isEmpty
@@ -302,7 +305,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                             ? community.name[0].toUpperCase()
                             : 'C',
                         style: TextStyle(
-                          fontSize: 20.sp,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.red.shade600,
                         ),
@@ -310,11 +313,11 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                     : CachedNetworkImage(
                         imageUrl: community.images.first,
                         fit: BoxFit.cover,
-                        width: 48.w,
-                        height: 48.h,
+                        width: 48,
+                        height: 48,
                       ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,30 +326,34 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       community.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.sp,
+                        fontSize: 16,
                         color: isDark
                             ? Colors.grey.shade200
                             : Colors.grey.shade800,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4),
                     if (community.locationAddress != null &&
                         community.locationAddress!.isNotEmpty)
                       Row(
+                        crossAxisAlignment: .start,
                         children: [
-                          Icon(
-                            PhosphorIcons.mapPin,
-                            size: 13,
-                            color: isDark
-                                ? Colors.grey.shade500
-                                : Colors.grey.shade400,
+                          Padding(
+                            padding: const EdgeInsets.only(top:2),
+                            child: Icon(
+                              PhosphorIcons.mapPin,
+                              size: 13,
+                              color: isDark
+                                  ? Colors.grey.shade500
+                                  : Colors.grey.shade400,
+                            ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               community.locationAddress!,
                               style: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 12,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
@@ -357,44 +364,44 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           ),
                         ],
                       ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         if (distance != null)
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 3.h,
+                              horizontal: 8,
+                              vertical: 3,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6.r),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               '${distance.toStringAsFixed(1)} km',
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.red.shade700,
                               ),
                             ),
                           ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 8),
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 3.h,
+                            horizontal: 8,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
                             color: count > 0
                                 ? Colors.red.shade50
                                 : Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(6.r),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             '$count ${widget.bloodGroup} donor${count == 1 ? '' : 's'}',
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 11,
                               fontWeight: FontWeight.w600,
                               color: count > 0
                                   ? Colors.red.shade700
@@ -408,7 +415,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 4.w),
+                padding: EdgeInsets.only(left: 4),
                 child: Icon(
                   PhosphorIcons.caretRight,
                   size: 16,
@@ -449,7 +456,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                   size: 64,
                   color: Colors.grey.shade400,
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 Text(
                   'No blood banks found\nwithin ${widget.radiusInKm.round()} km',
                   textAlign: TextAlign.center,
@@ -461,9 +468,9 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
         }
 
         return ListView.separated(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           itemCount: docs.length,
-          separatorBuilder: (_, _) => SizedBox(height: 16.h),
+          separatorBuilder: (_, _) => SizedBox(height: 16),
           itemBuilder: (context, index) {
             final bank = BloodBank.fromJson({
               ...docs[index].data(),
@@ -503,7 +510,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isDark ? Colors.transparent : Colors.grey.shade200,
             width: 0.5,
@@ -517,16 +524,16 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48.w,
-                height: 48.h,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: bank.imageUrl != null && bank.imageUrl!.isNotEmpty
@@ -547,7 +554,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         size: 22,
                       ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,7 +563,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       bank.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.sp,
+                        fontSize: 16,
                         color: isDark
                             ? Colors.grey.shade200
                             : Colors.grey.shade800,
@@ -564,24 +571,28 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4),
                     if (bank.locationAddress != null &&
                         bank.locationAddress!.isNotEmpty)
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            PhosphorIcons.mapPin,
-                            size: 13,
-                            color: isDark
-                                ? Colors.grey.shade500
-                                : Colors.grey.shade400,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Icon(
+                              PhosphorIcons.mapPin,
+                              size: 13,
+                              color: isDark
+                                  ? Colors.grey.shade500
+                                  : Colors.grey.shade400,
+                            ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               bank.locationAddress!,
                               style: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 12,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
@@ -592,43 +603,43 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           ),
                         ],
                       ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         if (distance != null)
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 3.h,
+                              horizontal: 8,
+                              vertical: 3,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6.r),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               '${distance.toStringAsFixed(1)} km',
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.red.shade700,
                               ),
                             ),
                           ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 8),
                         if (bank.mobile1.isNotEmpty)
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 3.h,
+                              horizontal: 8,
+                              vertical: 3,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(6.r),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               bank.mobile1,
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.green.shade700,
                               ),
@@ -640,7 +651,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 4.w),
+                padding: EdgeInsets.only(left: 4),
                 child: Icon(
                   PhosphorIcons.caretRight,
                   size: 16,
@@ -687,7 +698,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDark ? Colors.transparent : Colors.grey.shade200,
             width: 0.5,
@@ -701,15 +712,15 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(12.w),
+          padding: EdgeInsets.fromLTRB(12, 12, 12, 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 44.w,
-                height: 44.h,
+                width: 54,
+                height: 56,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(8),
                   color: Colors.red.shade50,
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -718,7 +729,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         child: Text(
                           donor.firstName[0].toUpperCase(),
                           style: TextStyle(
-                            fontSize: 18.sp,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.red.shade600,
                           ),
@@ -735,7 +746,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         ),
                       ),
               ),
-              SizedBox(width: 10.w),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -747,7 +758,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                             '${donor.firstName} ${donor.lastName}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 14.sp,
+                              fontSize: 15,
                               color: isDark
                                   ? Colors.grey.shade200
                                   : Colors.grey.shade800,
@@ -756,7 +767,7 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                           ),
                         ),
                         if (isVerified) ...[
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 4),
                           Icon(
                             Icons.verified,
                             size: 14,
@@ -765,34 +776,40 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                         ],
                       ],
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 4),
                     if (donor.locationAddress != null &&
                         donor.locationAddress!.isNotEmpty)
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            PhosphorIcons.mapPin,
-                            size: 11,
-                            color: isDark
-                                ? Colors.grey.shade500
-                                : Colors.grey.shade400,
+                           Padding(
+                            padding: const EdgeInsets.only(top:1),
+                            child: Icon(
+                              PhosphorIcons.mapPin,
+                              size: 13,
+                              color: isDark
+                                  ? Colors.grey.shade500
+                                  : Colors.grey.shade400,
+                            ),
                           ),
-                          SizedBox(width: 3.w),
+                          SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               donor.locationAddress!,
+                              maxLines: 2,
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 12,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
                               ),
-                              maxLines: 1,
+                                                  
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
+                  
                   ],
                 ),
               ),
@@ -801,40 +818,35 @@ class _FindDonorPageState extends ConsumerState<FindDonorPage>
                 children: [
                   if (distance != null)
                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 6.w,
-                        vertical: 2.h,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(4.r),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         '${distance.toStringAsFixed(1)} km',
                         style: TextStyle(
-                          fontSize: 10.sp,
+                          fontSize: 10,
                           fontWeight: FontWeight.w600,
                           color: Colors.red.shade700,
                         ),
                       ),
                     ),
-                  if (distance != null) SizedBox(height: 4.h),
+                  if (distance != null) SizedBox(height: 4),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 2.h,
-                    ),
+                    margin: EdgeInsets.only(top: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.red.shade700, Colors.red.shade500],
                       ),
-                      borderRadius: BorderRadius.circular(6.r),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       donor.bloodGroup,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 11.sp,
+                        fontSize: 11,
                         color: Colors.white,
                       ),
                     ),

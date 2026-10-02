@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -116,19 +115,19 @@ class _MyFeedbackPageState extends ConsumerState<MyFeedbackPage> {
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 PhosphorIcons.chatCircleDots,
                 color: Colors.red.shade600,
-                size: 18.w,
+                size: 18,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             const Text(
               'My Feedback',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -142,7 +141,7 @@ class _MyFeedbackPageState extends ConsumerState<MyFeedbackPage> {
         icon: const Icon(PhosphorIcons.plus, size: 20),
         label: const Text('Add Feedback'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
         ),
         onPressed: _add,
       ),
@@ -155,22 +154,22 @@ class _MyFeedbackPageState extends ConsumerState<MyFeedbackPage> {
                     children: [
                       Icon(
                         PhosphorIcons.chatCircleDots,
-                        size: 48.w,
+                        size: 48,
                         color: Colors.grey.shade300,
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         'No feedback yet',
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           color: Colors.grey.shade500,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         'Tap the button below to share your thoughts',
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 13,
                           color: Colors.grey.shade400,
                         ),
                       ),
@@ -180,9 +179,9 @@ class _MyFeedbackPageState extends ConsumerState<MyFeedbackPage> {
               : RefreshIndicator(
                   onRefresh: _load,
                   child: ListView.separated(
-                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 80.h),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 80),
                     itemCount: _feedbacks.length,
-                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
+                    separatorBuilder: (_, _) => SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final fb = _feedbacks[index];
                       return _FeedbackCard(
@@ -214,7 +213,7 @@ class _FeedbackCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -224,22 +223,22 @@ class _FeedbackCard extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     feedback.category,
                     style: TextStyle(
-                      fontSize: 11.sp,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: Colors.red.shade700,
                     ),
@@ -249,29 +248,29 @@ class _FeedbackCard extends StatelessWidget {
                 Text(
                   dateStr,
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 11,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               feedback.message,
-              style: TextStyle(fontSize: 14.sp, height: 1.4),
+              style: TextStyle(fontSize: 14, height: 1.4),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: Icon(PhosphorIcons.pencil, size: 18.w),
+                  icon: Icon(PhosphorIcons.pencil, size: 18),
                   color: Colors.grey.shade600,
                   onPressed: onEdit,
                 ),
-                SizedBox(width: 4.w),
+                SizedBox(width: 4),
                 IconButton(
-                  icon: Icon(PhosphorIcons.trash, size: 18.w),
+                  icon: Icon(PhosphorIcons.trash, size: 18),
                   color: Colors.red.shade400,
                   onPressed: onDelete,
                 ),
@@ -358,9 +357,9 @@ class _EditFeedbackSheetState extends ConsumerState<_EditFeedbackSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 20.w,
-        right: 20.w,
-        top: 20.h,
+        left: 20,
+        right: 20,
+        top: 20,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -379,7 +378,7 @@ class _EditFeedbackSheetState extends ConsumerState<_EditFeedbackSheet> {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: widget.feedback.category,
             decoration: const InputDecoration(
@@ -391,7 +390,7 @@ class _EditFeedbackSheetState extends ConsumerState<_EditFeedbackSheet> {
                 .toList(),
             onChanged: (v) => _categoryController.text = v ?? '',
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           TextFormField(
             controller: _messageController,
             maxLines: 5,
@@ -401,18 +400,18 @@ class _EditFeedbackSheetState extends ConsumerState<_EditFeedbackSheet> {
               alignLabelWithHint: true,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           FilledButton(
             onPressed: _submitting ? null : _submit,
             child: _submitting
                 ? SizedBox(
-                    width: 20.w,
-                    height: 20.h,
+                    width: 20,
+                    height: 20,
                     child: const CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Text('Update'),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
         ],
       ),
     );

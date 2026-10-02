@@ -13,7 +13,8 @@ abstract class UserModel with _$UserModel {
     required String uid,
     required String firstName,
     required String lastName,
-    required String email,
+    // Optional because an admin can add a donor with only a phone number.
+    String? email,
     required String mobileNumber,
     required String gender,
     required DateTime dateOfBirth,
@@ -35,6 +36,14 @@ abstract class UserModel with _$UserModel {
     String? country,
     // Saved addresses for the user
     @Default([]) List<AddressModel> savedAddresses,
+    // Firebase Auth UID once this person has their own account. Null for a
+    // record a superadmin/community admin added manually before that.
+    String? authUid,
+    // "unclaimed" for an admin-added record with no Firebase Auth account
+    // yet; "active" once self-registered or claimed via signup.
+    @Default('active') String accountStatus,
+    @Default('self') String createdBy,
+    String? createdByAdminEmail,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -57,10 +56,10 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                 children: [
                   Icon(
                     PhosphorIcons.archive,
-                    size: 100.w,
+                    size: 100,
                     color: Colors.grey.shade300,
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 10),
                   const Text("No archived chats"),
                 ],
               ),
@@ -80,8 +79,8 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
 
           return ListView.separated(
             itemCount: chatDocs.length,
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            separatorBuilder: (_, _) => SizedBox(height: 12.h),
+            padding: EdgeInsets.symmetric(vertical: 8),
+            separatorBuilder: (_, _) => SizedBox(height: 12),
             itemBuilder: (context, index) {
               final chatDoc = chatDocs[index];
               final chatData = chatDoc.data();
@@ -129,11 +128,11 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                       child: Card(
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
+                            horizontal: 12,
                           ),
-                          horizontalTitleGap: 8.w,
+                          horizontalTitleGap: 8,
                           leading: CircleAvatar(
-                            radius: 20.r,
+                            radius: 20,
                             backgroundColor: Colors.redAccent.shade200,
                             child: image.isEmpty
                                 ? Text(
@@ -141,15 +140,15 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20.sp,
+                                      fontSize: 20,
                                     ),
                                   )
                                 : ClipRRect(
-                                    borderRadius: BorderRadius.circular(50.r),
+                                    borderRadius: BorderRadius.circular(50),
                                     child: Image.network(
                                       image,
-                                      width: 40.w,
-                                      height: 40.h,
+                                      width: 40,
+                                      height: 40,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -160,7 +159,7 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                               if (timestamp != null)
                                 Text(
                                   timeAgo(timestamp),
-                                  style: TextStyle(fontSize: 12.sp),
+                                  style: TextStyle(fontSize: 12),
                                 ),
                           ],
                         ),
@@ -170,17 +169,17 @@ class _ArchivedMessagesPageState extends ConsumerState<ArchivedMessagesPage> {
                                 !seenBy.contains(otherUserId))
                               Icon(
                                 Icons.check,
-                                size: 16.w,
+                                size: 16,
                                 color: Colors.grey,
                               ),
                             if (lastSenderId == uid &&
                                 seenBy.contains(otherUserId))
                               Icon(
                                 Icons.done_all,
-                                size: 16.w,
+                                size: 16,
                                 color: Colors.blue,
                               ),
-                            SizedBox(width: 4.w),
+                            SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 lastText,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'activity_section.dart';
 import 'appearance_section.dart';
@@ -36,7 +35,7 @@ class ProfileSettings extends ConsumerWidget {
       children: [
         ChangeAddressSection(locationAddress: locationAddress),
 
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         DonorSettingsSection(
           uid: uid,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DonorInfoSection extends StatelessWidget {
   final String? bloodGroup;
   final ValueChanged<String?> onBloodGroupChanged;
@@ -39,7 +38,7 @@ class DonorInfoSection extends StatelessWidget {
     return ButtonTheme(
       alignedDropdown: true,
       child: Column(
-        spacing: 8.h,
+        spacing: 8,
         children: [
             // Blood group + Gender — row
             Row(
@@ -59,7 +58,7 @@ class DonorInfoSection extends StatelessWidget {
                     validator: (v) => v == null ? 'Required' : null,
                   ),
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 8),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: gender,
@@ -77,7 +76,7 @@ class DonorInfoSection extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
 
             // DOB
             GestureDetector(
@@ -86,7 +85,7 @@ class DonorInfoSection extends StatelessWidget {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Date of Birth',
-                    prefixIcon: Icon(Icons.calendar_today_outlined, size: 20.w),
+                    prefixIcon: Icon(Icons.calendar_today_outlined, size: 20),
                   ),
                   controller: TextEditingController(
                     text: dob == null
@@ -98,13 +97,13 @@ class DonorInfoSection extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
 
             // Donor toggle
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14.r),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isDonor ? Colors.red.shade200 : Colors.grey.shade200,
                 ),
@@ -120,7 +119,7 @@ class DonorInfoSection extends StatelessWidget {
                           'Sign up as a donor',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            fontSize: 15.sp,
+                            fontSize: 15,
                             color: isDonor
                                 ? Colors.red.shade800
                                 : Colors.grey.shade700,
@@ -131,7 +130,7 @@ class DonorInfoSection extends StatelessWidget {
                               ? "You're ready to save lives"
                               : 'Donors must set their location below',
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: isDonor
                                 ? Colors.red.shade400
                                 : Colors.grey.shade500,
@@ -152,15 +151,15 @@ class DonorInfoSection extends StatelessWidget {
 
             if (donorError != null)
               Padding(
-                padding: EdgeInsets.only(top: 8.h, left: 4.w),
+                padding: EdgeInsets.only(top: 8, left: 4),
                 child: Row(
                   children: [
-                    Icon(Icons.error_outline, size: 16.w, color: Colors.red.shade600),
-                    SizedBox(width: 6.w),
+                    Icon(Icons.error_outline, size: 16, color: Colors.red.shade600),
+                    SizedBox(width: 6),
                     Flexible(
                       child: Text(
                         donorError!,
-                        style: TextStyle(color: Colors.red.shade600, fontSize: 13.sp),
+                        style: TextStyle(color: Colors.red.shade600, fontSize: 13),
                       ),
                     ),
                   ],

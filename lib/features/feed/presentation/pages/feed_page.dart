@@ -2,7 +2,6 @@ import 'package:bloodfinder/core/constants/app_data.dart';
 import 'package:bloodfinder/features/feed/providers/feed_provider.dart';
 import 'package:bloodfinder/shared/widgets/blood_request_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -54,8 +53,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
             return Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.15),
@@ -69,7 +67,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
               ),
               child: SafeArea(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+                  padding: EdgeInsets.fromLTRB(20, 12, 20, 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,15 +75,15 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                       // Drag handle
                       Center(
                         child: Container(
-                          width: 40.w,
-                          height: 4.h,
+                          width: 40,
+                          height: 4,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(2.r),
+                            borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
 
                       // Header
                       Row(
@@ -94,46 +92,58 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           Text(
                             'Filters',
                             style: TextStyle(
-                              fontSize: 22.sp,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              setSheetState(() {
-                                selectedBloodGroup = null;
-                                selectedRadius = 50.0;
-                                proximityOn = true;
-                              });
-                            },
-                            child: Text(
-                              'Reset',
-                              style: TextStyle(
-                                color: Colors.red.shade400,
-                                fontWeight: FontWeight.w600,
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setSheetState(() {
+                                    selectedBloodGroup = null;
+                                    selectedRadius = 50.0;
+                                    proximityOn = true;
+                                  });
+                                },
+                                child: Text(
+                                  'Reset',
+                                  style: TextStyle(
+                                    color: Colors.red.shade400,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () =>
+                                    Navigator.of(sheetContext).pop(),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
 
                       // ── Blood Group Section ──
                       Row(
                         children: [
-                          Icon(PhosphorIcons.drop,
-                              size: 18.w, color: Colors.red.shade400),
-                          SizedBox(width: 8.w),
+                          Icon(
+                            PhosphorIcons.drop,
+                            size: 18,
+                            color: Colors.red.shade400,
+                          ),
+                          SizedBox(width: 8),
                           Text(
                             'Blood Group',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -142,61 +152,63 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           return GestureDetector(
                             onTap: () {
                               setSheetState(() {
-                                selectedBloodGroup =
-                                    isSelected ? null : group;
+                                selectedBloodGroup = isSelected ? null : group;
                               });
                             },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 10.h,
+                                horizontal: 16,
+                                vertical: 10,
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? Colors.red.shade600
                                     : Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.grey.shade800
-                                        : Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(20.r),
+                                          Brightness.dark
+                                    ? Colors.grey.shade800
+                                    : Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                   color: isSelected
                                       ? Colors.red.shade600
                                       : Colors.grey.shade400,
-                                  width: 1.w,
+                                  width: 1,
                                 ),
                               ),
                               child: Text(
                                 group,
                                 style: TextStyle(
-                                  fontSize: 14.sp,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: isSelected
                                       ? Colors.white
                                       : Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white70
-                                          : Colors.grey.shade700,
+                                            Brightness.dark
+                                      ? Colors.white70
+                                      : Colors.grey.shade700,
                                 ),
                               ),
                             ),
                           );
                         }).toList(),
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
 
                       // ── Proximity Section ──
                       Row(
                         children: [
-                          Icon(PhosphorIcons.mapPin,
-                              size: 18.w, color: Colors.blue.shade400),
-                          SizedBox(width: 8.w),
+                          Icon(
+                            PhosphorIcons.mapPin,
+                            size: 18,
+                            color: Colors.blue.shade400,
+                          ),
+                          SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Proximity',
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -209,7 +221,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 4),
 
                       AnimatedOpacity(
                         opacity: proximityOn ? 1.0 : 0.35,
@@ -225,23 +237,23 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                                   Text(
                                     '5 km',
                                     style: TextStyle(
-                                      fontSize: 12.sp,
+                                      fontSize: 12,
                                       color: Colors.grey.shade500,
                                     ),
                                   ),
                                   Container(
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 4.h,
+                                      horizontal: 12,
+                                      vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
                                       color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(12.r),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       '${selectedRadius.round()} km',
                                       style: TextStyle(
-                                        fontSize: 14.sp,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red.shade700,
                                       ),
@@ -250,7 +262,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                                   Text(
                                     '100 km',
                                     style: TextStyle(
-                                      fontSize: 12.sp,
+                                      fontSize: 12,
                                       color: Colors.grey.shade500,
                                     ),
                                   ),
@@ -265,26 +277,25 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                                 inactiveColor: Colors.grey.shade300,
                                 label: '${selectedRadius.round()} km',
                                 onChanged: (v) {
-                                  setSheetState(
-                                      () => selectedRadius = v);
+                                  setSheetState(() => selectedRadius = v);
                                 },
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
 
                       // ── Apply Button ──
                       SizedBox(
                         width: double.infinity,
-                        height: 48.h,
+                        height: 48,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red.shade600,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 0,
                           ),
@@ -299,7 +310,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           child: Text(
                             'Apply Filters',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -327,20 +338,20 @@ class _FeedPageState extends ConsumerState<FeedPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(PhosphorIcons.drop, size: 64.w, color: Colors.grey[400]),
-                SizedBox(height: 8.h),
+                Icon(PhosphorIcons.drop, size: 64, color: Colors.grey[400]),
+                SizedBox(height: 8),
                 Text(
                   'No blood requests found',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 18,
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 Text(
                   'Try adjusting your filters or increasing the distance',
-                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -350,8 +361,8 @@ class _FeedPageState extends ConsumerState<FeedPage> {
 
         final notifier = ref.read(feedPaginationProvider.notifier);
         return ListView.separated(
-          padding: EdgeInsets.all(16.w),
-          separatorBuilder: (_, _) => SizedBox(height: 8.h),
+          padding: EdgeInsets.all(16),
+          separatorBuilder: (_, _) => SizedBox(height: 8),
           controller: _scrollController,
           itemCount: docs.length + (notifier.hasMore ? 1 : 0),
           itemBuilder: (context, index) {
@@ -360,10 +371,10 @@ class _FeedPageState extends ConsumerState<FeedPage> {
             } else {
               return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16.w),
+                  padding: EdgeInsets.all(16),
                   child: SizedBox(
-                    width: 24.w,
-                    height: 24.h,
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                 ),
@@ -377,20 +388,16 @@ class _FeedPageState extends ConsumerState<FeedPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              PhosphorIcons.warningCircle,
-              size: 64.w,
-              color: Colors.red[300],
-            ),
-            SizedBox(height: 8.h),
+            Icon(PhosphorIcons.warningCircle, size: 64, color: Colors.red[300]),
+            SizedBox(height: 8),
             Text(
               'Something went wrong',
-              style: TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
+              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               'Error: $e',
-              style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -420,8 +427,8 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                   right: 8,
                   top: 8,
                   child: Container(
-                    width: 8.w,
-                    height: 8.h,
+                    width: 8,
+                    height: 8,
                     decoration: BoxDecoration(
                       color: Colors.red.shade600,
                       shape: BoxShape.circle,

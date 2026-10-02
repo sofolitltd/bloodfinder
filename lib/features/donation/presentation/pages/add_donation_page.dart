@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -98,7 +97,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
       ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+          padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -253,51 +252,51 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Add Donation'), centerTitle: true),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Donation Details ──
             _buildSectionHeader(PhosphorIcons.drop, 'Donation Details'),
-            SizedBox(height: 6.h),
+            SizedBox(height: 6),
             _buildSectionCard(
               Column(
                 children: [
                   _buildDateTile(selectedDateText),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   _buildDonationTypeDropdown(),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   TextFormField(
                     controller: _waitingDaysController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Eligible After (days)',
                       hintText: 'e.g., 90',
-                      prefixIcon: Icon(PhosphorIcons.clockCountdown, size: 20.w),
+                      prefixIcon: Icon(PhosphorIcons.clockCountdown, size: 20),
                       border: const OutlineInputBorder(),
                       helperText: 'Standard: 56–120 days. Check local guidelines.',
                       helperMaxLines: 2,
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   TextField(
                     controller: _hospitalController,
                     decoration: InputDecoration(
                       labelText: 'Hospital / Clinic',
                       hintText: 'e.g., Dhaka Medical College',
                       prefixIcon:
-                          Icon(PhosphorIcons.hospital, size: 20.w),
+                          Icon(PhosphorIcons.hospital, size: 20),
                       border: const OutlineInputBorder(),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 20),
 
             // ── Recipient Info ──
             _buildSectionHeader(PhosphorIcons.user, 'Recipient Info'),
-            SizedBox(height: 6.h),
+            SizedBox(height: 6),
             _buildSectionCard(
               Column(
                 children: [
@@ -308,7 +307,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   TextField(
                     controller: _recipientMobileController,
                     keyboardType: TextInputType.phone,
@@ -320,14 +319,14 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 20),
 
             // ── Memories ──
             _buildSectionHeader(PhosphorIcons.camera, 'Memories'),
-            SizedBox(height: 6.h),
+            SizedBox(height: 6),
             _buildSectionCard(
               Column(
-                spacing: 10.h,
+                spacing: 10,
                 children: [
                   _buildImagePicker(),
 
@@ -345,7 +344,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
                 ],
               ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24),
 
             // ── Save Button ──
             SizedBox(
@@ -358,8 +357,8 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
                 onPressed: _isLoading ? null : _saveDonation,
                 child: _isLoading
                     ? SizedBox(
-                        height: 20.h,
-                        width: 20.w,
+                        height: 20,
+                        width: 20,
                         child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2,
@@ -368,11 +367,11 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
                     : Text(
                         'Add Donation',
                         style:
-                            TextStyle(fontSize: 16.sp, color: Colors.white),
+                            TextStyle(fontSize: 16, color: Colors.white),
                       ),
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -383,7 +382,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
 
   Widget _buildSectionHeader(IconData icon, String title) {
     return Padding(
-      padding: EdgeInsets.only(top: 4.h, bottom: 2.h),
+      padding: EdgeInsets.only(top: 4, bottom: 2),
       child: Row(
         spacing: 8,
         children: [
@@ -391,7 +390,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
           Text(
             title,
             style: TextStyle(
-              fontSize: 17.sp,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
               color: Colors.grey.shade800,
             ),
@@ -404,10 +403,10 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
   Widget _buildSectionCard(Widget child) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -423,16 +422,16 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
   Widget _buildDateTile(String text) {
     return InkWell(
       onTap: _pickDonationDate,
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: 'Donation Date *',
-          prefixIcon: Icon(PhosphorIcons.calendar, size: 20.w),
+          prefixIcon: Icon(PhosphorIcons.calendar, size: 20),
           border: const OutlineInputBorder(),
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 16.sp),
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );
@@ -443,7 +442,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
       initialValue: _donationType,
       decoration: InputDecoration(
         labelText: 'Donation Type',
-        prefixIcon: Icon(PhosphorIcons.drop, size: 20.w),
+        prefixIcon: Icon(PhosphorIcons.drop, size: 20),
         border: const OutlineInputBorder(),
       ),
       items: _donationTypes.map((t) {
@@ -466,10 +465,10 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
       return Stack(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
             child: Image.file(
               File(_pickedImage!.path),
-              height: 180.h,
+              height: 180,
               width: double.infinity,
               fit: BoxFit.contain,
             ),
@@ -480,7 +479,7 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
             child: GestureDetector(
               onTap: () => setState(() => _pickedImage = null),
               child: Container(
-                padding: EdgeInsets.all(4.w),
+                padding: EdgeInsets.all(4),
                 decoration: const BoxDecoration(
                   color: Colors.black54,
                   shape: BoxShape.circle,
@@ -501,20 +500,20 @@ class _AddDonationPageState extends ConsumerState<AddDonationPage> {
       onTap: _showImageSourceSheet,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 24.h),
+        padding: EdgeInsets.symmetric(vertical: 24),
         decoration: BoxDecoration(
           color: Colors.red.shade50,
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.red.shade200, width: 1.5, strokeAlign: BorderSide.strokeAlignInside),
         ),
         child: Column(
           children: [
             Icon(PhosphorIcons.camera, size: 28, color: Colors.red.shade400),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               'Add Photo',
               style: TextStyle(
-                fontSize: 13.sp,
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Colors.red.shade400,
               ),

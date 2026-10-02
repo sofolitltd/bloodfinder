@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -73,7 +72,7 @@ class RegistrationForm extends StatelessWidget {
         children: [
           // Section 1: Profile Info
           _SectionHeader(icon: PhosphorIcons.user, title: 'Profile Info'),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           _SectionCard(
             child: UserInfoSection(
               firstNameController: firstNameController,
@@ -84,14 +83,14 @@ class RegistrationForm extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
 
           // Section 2: Medical Info
           _SectionHeader(
             icon: PhosphorIcons.heart,
             title: 'Medical Info',
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           _SectionCard(
             child: DonorInfoSection(
               bloodGroup: bloodGroup,
@@ -106,11 +105,11 @@ class RegistrationForm extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
 
           // Section 3: Location
           _SectionHeader(icon: PhosphorIcons.mapPin, title: 'Location'),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           _SectionCard(
             child: LocationSection(
               selectedLatitude: selectedLatitude,
@@ -120,11 +119,11 @@ class RegistrationForm extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
 
           // Section 4: Authentication
           _SectionHeader(icon: PhosphorIcons.lock, title: 'Authentication'),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           _SectionCard(
             child: AuthSection(
               emailController: emailController,
@@ -134,19 +133,19 @@ class RegistrationForm extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 32.h),
+          SizedBox(height: 32),
 
           // Create Account button
           SizedBox(
             width: double.infinity,
-            height: 50.h,
+            height: 50,
             child: ElevatedButton(
               onPressed: isLoading ? null : onRegister,
               style: ElevatedButton.styleFrom(elevation: 0),
               child: isLoading
                   ? SizedBox(
-                      height: 22.h,
-                      width: 22.w,
+                      height: 22,
+                      width: 22,
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2.5,
@@ -155,13 +154,13 @@ class RegistrationForm extends StatelessWidget {
                   : Text(
                       'Create Account',
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
 
           // Back to Login
           const Center(child: _BackToLoginLink()),
@@ -184,19 +183,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28.w,
-          height: 28.h,
+          width: 28,
+          height: 28,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 15, color: Colors.red.shade600),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),
@@ -217,7 +216,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -226,7 +225,7 @@ class _SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       child: child,
     );
   }
@@ -240,7 +239,7 @@ class _BackToLoginLink extends StatelessWidget {
     return TextButton(
       onPressed: () => Navigator.pop(context),
       style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         visualDensity: VisualDensity.compact,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
@@ -250,16 +249,16 @@ class _BackToLoginLink extends StatelessWidget {
         children: [
           Icon(
             Icons.arrow_back_rounded,
-            size: 18.w,
+            size: 18,
             color: Colors.red.shade600,
           ),
-          SizedBox(width: 4.w),
+          SizedBox(width: 4),
           Text(
             'Back to Login',
             style: TextStyle(
               color: Colors.red.shade600,
               fontWeight: FontWeight.w500,
-              fontSize: 14.sp,
+              fontSize: 14,
             ),
           ),
         ],

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -90,9 +89,9 @@ class BloodGroupMembersScreen extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(16),
             itemCount: members.length,
-            separatorBuilder: (_, _) => SizedBox(height: 8.h),
+            separatorBuilder: (_, _) => SizedBox(height: 8),
             itemBuilder: (context, index) {
               final member = members[index];
               final otherUserId = member['uid'] as String;
@@ -107,7 +106,7 @@ class BloodGroupMembersScreen extends ConsumerWidget {
               return Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.04),
@@ -117,7 +116,7 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                   ],
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(14.w),
+                  padding: EdgeInsets.all(14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -127,11 +126,11 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                         children: [
                           // Avatar
                           Container(
-                            width: 44.w,
-                            height: 44.h,
+                            width: 44,
+                            height: 44,
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             clipBehavior: Clip.antiAlias,
                             child: image.isEmpty
@@ -141,7 +140,7 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                                           ? firstName[0].toUpperCase()
                                           : '',
                                       style: TextStyle(
-                                        fontSize: 18.sp,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red.shade600,
                                       ),
@@ -149,19 +148,19 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                                   )
                                 : CachedNetworkImage(
                                     imageUrl: image,
-                                    width: 44.w,
-                                    height: 44.h,
+                                    width: 44,
+                                    height: 44,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
                                         const CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) => Icon(
                                       PhosphorIcons.warningCircle,
                                       color: Colors.red.shade300,
-                                      size: 22.w,
+                                      size: 22,
                                     ),
                                   ),
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(width: 12),
                           // Name + address
                           Expanded(
                             child: Column(
@@ -170,21 +169,21 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                                 Text(
                                   name.isNotEmpty ? name : 'Unknown',
                                   style: TextStyle(
-                                    fontSize: 15.sp,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 if (address.isNotEmpty) ...[
-                                  SizedBox(height: 4.h),
+                                  SizedBox(height: 4),
                                   Column(
                                     crossAxisAlignment: .start,
                                     children: [
                                       Text(
                                         address,
                                         style: TextStyle(
-                                          fontSize: 13.sp,
+                                          fontSize: 13,
                                           color: Colors.grey.shade600,
                                         ),
                                         maxLines: 2,
@@ -192,7 +191,7 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                                       ),
 
                                       //
-                                      SizedBox(height: 10.h),
+                                      SizedBox(height: 10),
                                       // Chat button
                                       SizedBox(
                                         height: 36,
@@ -208,21 +207,21 @@ class BloodGroupMembersScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          SizedBox(width: 8.w),
+                          SizedBox(width: 8),
                           // Blood group badge
                           Container(
                             padding: EdgeInsets.symmetric(
-                              vertical: 4.h,
-                              horizontal: 10.w,
+                              vertical: 4,
+                              horizontal: 10,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(8.r),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               bloodGroup,
                               style: TextStyle(
-                                fontSize: 13.sp,
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red.shade700,
                               ),

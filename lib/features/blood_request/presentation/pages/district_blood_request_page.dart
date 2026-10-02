@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../models/blood_request.dart';
@@ -130,9 +129,9 @@ class _DistrictRequestsPageState extends ConsumerState<DistrictRequestsPage> {
                 // Simple pagination using ListView.separated
                 // return BloodRequestsPage();
                 return ListView.separated(
-                  padding: EdgeInsets.all(16.w),
+                  padding: EdgeInsets.all(16),
                   itemCount: requests.length,
-                  separatorBuilder: (_, _) => SizedBox(height: 8.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     return BloodRequestCard(request: requests[index]);
                   },

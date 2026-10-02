@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -70,9 +69,9 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
     final existing =
         ref.read(myCircleProvider).asData?.value ?? <MyCircleContact>[];
     final match = existing.cast<MyCircleContact?>().firstWhere(
-          (c) => PhoneUtils.match(c!.phone, phone),
-          orElse: () => null,
-        );
+      (c) => PhoneUtils.match(c!.phone, phone),
+      orElse: () => null,
+    );
 
     if (match != _duplicateContact) {
       setState(() => _duplicateContact = match);
@@ -87,9 +86,9 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
       child: Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 20.w,
-          right: 20.w,
-          top: 12.h,
+          left: 20,
+          right: 20,
+          top: 12,
         ),
         child: SingleChildScrollView(
           child: Form(
@@ -100,64 +99,70 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
               children: [
                 Center(
                   child: Container(
-                    width: 40.w,
-                    height: 4.h,
-                    margin: EdgeInsets.only(bottom: 16.h),
+                    width: 40,
+                    height: 4,
+                    margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: isDark
                           ? Colors.grey.shade700
                           : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
                 Row(
-                  spacing: 10.w,
+                  spacing: 10,
                   children: [
                     Container(
-                      width: 36.w,
-                      height: 36.h,
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(10.r),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         PhosphorIcons.userPlus,
                         color: Colors.red.shade600,
-                        size: 20.w,
+                        size: 20,
                       ),
                     ),
-                    Text(
-                      'Add Contact',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.grey.shade200
-                            : Colors.grey.shade800,
+                    Expanded(
+                      child: Text(
+                        'Add Contact',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? Colors.grey.shade200
+                              : Colors.grey.shade800,
+                        ),
                       ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 16),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: 'Full Name',
-                    prefixIcon: Icon(Icons.person, size: 20.w),
+                    prefixIcon: Icon(Icons.person, size: 20),
                   ),
                   textCapitalization: TextCapitalization.words,
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 TextFormField(
                   controller: _phoneController,
                   decoration: InputDecoration(
                     labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone, size: 20.w),
+                    prefixIcon: Icon(Icons.phone, size: 20),
                     suffixIcon: IconButton(
-                      icon: Icon(PhosphorIcons.addressBookTabs, size: 20.w),
+                      icon: Icon(PhosphorIcons.addressBookTabs, size: 20),
                       tooltip: 'Pick from contacts',
                       onPressed: _pickFromContacts,
                     ),
@@ -170,19 +175,22 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
                 // Duplicate warning
                 if (_duplicateContact != null)
                   Padding(
-                    padding: EdgeInsets.only(top: 6.h, left: 4.w),
+                    padding: EdgeInsets.only(top: 6, left: 4),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline,
-                            size: 14.w, color: Colors.orange.shade700),
-                        SizedBox(width: 4.w),
+                        Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: Colors.orange.shade700,
+                        ),
+                        SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             'Already in your circle as '
                             '"${_duplicateContact!.name}" '
                             '(${_duplicateContact!.relation})',
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                               color: Colors.orange.shade700,
                               fontWeight: FontWeight.w500,
                             ),
@@ -192,12 +200,12 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
                     ),
                   ),
 
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: _selectedBloodGroup,
                   decoration: InputDecoration(
                     labelText: 'Blood Group',
-                    prefixIcon: Icon(Icons.bloodtype, size: 20.w),
+                    prefixIcon: Icon(Icons.bloodtype, size: 20),
                   ),
                   items: _bloodGroups
                       .map((bg) => DropdownMenuItem(value: bg, child: Text(bg)))
@@ -206,12 +214,12 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
                     if (v != null) setState(() => _selectedBloodGroup = v);
                   },
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: _selectedRelation,
                   decoration: InputDecoration(
                     labelText: 'Relation',
-                    prefixIcon: Icon(PhosphorIcons.usersThree, size: 20.w),
+                    prefixIcon: Icon(PhosphorIcons.usersThree, size: 20),
                   ),
                   items: _relationOptions
                       .map((r) => DropdownMenuItem(value: r, child: Text(r)))
@@ -220,35 +228,34 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
                     if (v != null) setState(() => _selectedRelation = v);
                   },
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 16),
                 SizedBox(
-                  height: 50.h,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: _isLoading
                         ? null
                         : (_duplicateContact != null
-                            ? _confirmAddDuplicate
-                            : _addContact),
+                              ? _confirmAddDuplicate
+                              : _addContact),
                     style: ElevatedButton.styleFrom(elevation: 0),
                     child: _isLoading
                         ? SizedBox(
-                            height: 20.h,
-                            width: 20.w,
-                            child:
-                                CircularProgressIndicator(strokeWidth: 2),
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Text(
                             _duplicateContact != null
                                 ? 'Add Anyway'
                                 : 'Save Contact',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
               ],
             ),
           ),
@@ -259,8 +266,9 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
 
   Future<void> _pickFromContacts() async {
     try {
-      final permissionStatus =
-          await FlutterContacts.permissions.request(PermissionType.read);
+      final permissionStatus = await FlutterContacts.permissions.request(
+        PermissionType.read,
+      );
       if (permissionStatus != PermissionStatus.granted &&
           permissionStatus != PermissionStatus.limited) {
         return;
@@ -309,8 +317,10 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Add Anyway',
-                style: TextStyle(color: Colors.red.shade600)),
+            child: Text(
+              'Add Anyway',
+              style: TextStyle(color: Colors.red.shade600),
+            ),
           ),
         ],
       ),
@@ -345,15 +355,15 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
 
       if (context.mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contact added')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Contact added')));
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

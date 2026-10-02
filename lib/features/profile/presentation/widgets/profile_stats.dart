@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ProfileStats extends StatelessWidget {
@@ -30,11 +29,11 @@ class ProfileStats extends StatelessWidget {
     return Transform.translate(
       offset: const Offset(0, -64),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w),
+        margin: EdgeInsets.symmetric(horizontal: 16),
         width: double.infinity,
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -43,7 +42,7 @@ class ProfileStats extends StatelessWidget {
             ),
           ],
         ),
-        padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 0.w),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -106,13 +105,13 @@ class _StatItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: color, size: 26.w),
-        SizedBox(height: 6.h),
+        Icon(icon, color: color, size: 26),
+        SizedBox(height: 6),
         Text(
           value,
           style: TextStyle(
             color: color,
-            fontSize: 16.sp,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -120,7 +119,7 @@ class _StatItem extends StatelessWidget {
           label,
           style: TextStyle(
             color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-            fontSize: 11.sp,
+            fontSize: 11,
           ),
         ),
       ],
@@ -136,8 +135,8 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1.w,
-      height: 48.h,
+      width: 1,
+      height: 48,
       color: isDark ? Colors.grey.shade700.withValues(alpha: 0.4) : Colors.grey.shade200,
     );
   }

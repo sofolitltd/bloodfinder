@@ -154,6 +154,11 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
     state = state.copyWith(isLoading: true, donorError: null);
 
     try {
+      final canonicalPhone = PhoneUtils.toCanonical(mobileNumber);
+      final userRepo = ref.read(userRepositoryProvider);
+      var unclaimed = await userRepo.findUnclaimedByPhone(canonicalPhone);
+      unclaimed ??= await userRepo.findUnclaimedByEmail(email);
+
       final userCredential = await ref
           .read(authRepositoryProvider)
           .signUp(email: email, password: password);
@@ -203,7 +208,7 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        mobileNumber: PhoneUtils.toCanonical(mobileNumber),
+        mobileNumber: canonicalPhone,
         gender: state.gender!,
         dateOfBirth: state.dob!,
         communities: [],
@@ -222,7 +227,15 @@ class RegistrationNotifier extends Notifier<RegistrationState> {
         savedAddresses: savedAddresses,
       );
 
-      await ref.read(userRepositoryProvider).createUser(uid, user.toJson());
+      if (unclaimed != null) {
+        await userRepo.claimUnclaimedUser(
+          placeholderId: unclaimed.id,
+          newUid: uid,
+          selfRegisteredData: user.toJson(),
+        );
+      } else {
+        await userRepo.createUser(uid, user.toJson());
+      }
 
       state = state.copyWith(isLoading: false);
       return userCredential;

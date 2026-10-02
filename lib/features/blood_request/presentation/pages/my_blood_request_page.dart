@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -18,6 +17,13 @@ class MyBloodRequestsPage extends ConsumerStatefulWidget {
 }
 
 class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
+  void _openPostRequestPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const BloodRequestPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final uid = ref.read(authRepositoryProvider).currentUser!.uid;
@@ -26,20 +32,15 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Blood Requests'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('My Blood Requests'), centerTitle: true),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const BloodRequestPage()),
-          );
-        },
+        onPressed: _openPostRequestPage,
         backgroundColor: Colors.red.shade600,
         icon: Icon(PhosphorIcons.plusBold, color: Colors.white),
-        label: const Text('Post Blood Request', style: TextStyle(color: Colors.white)),
+        label: const Text(
+          'Post Blood Request',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: bloodRequestRepo.userRequestsStream(uid),
@@ -50,50 +51,39 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Padding(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(16),
               child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(PhosphorIcons.drop, size: 64.w, color: Colors.grey.shade300),
-                  SizedBox(height: 8.h),
-                  Text(
-                    'No blood requests yet',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      PhosphorIcons.drop,
+                      size: 64,
+                      color: Colors.grey.shade300,
                     ),
-                  ),
-                  SizedBox(height: 16.h),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const BloodRequestPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade600,
-                      minimumSize: Size(200, 40),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    SizedBox(height: 8),
+                    Text(
+                      'No blood requests yet',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                      ),
                     ),
-                    icon: Icon(PhosphorIcons.plus, color: Colors.white),
-                    label: const Text('Post Your First Request', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               ),
             );
           }
 
           final requests = snapshot.data!.docs
-              .map(
-                (doc) => BloodRequest.fromFirestore(doc),
-              )
+              .map((doc) => BloodRequest.fromFirestore(doc))
               .toList();
 
-          final expiredToHeal =
-              requests.where((r) => r.isActive && r.isExpired).toList();
+          final expiredToHeal = requests
+              .where((r) => r.isActive && r.isExpired)
+              .toList();
           if (expiredToHeal.isNotEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               for (final r in expiredToHeal) {
@@ -103,9 +93,9 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
           }
 
           return ListView.separated(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(16),
             itemCount: requests.length,
-            separatorBuilder: (_, _) => SizedBox(height: 8.h),
+            separatorBuilder: (_, _) => SizedBox(height: 8),
             itemBuilder: (context, index) {
               final req = requests[index];
 
@@ -137,7 +127,8 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
                         TextButton(
                           onPressed: () => Navigator.pop(ctx, true),
                           style: TextButton.styleFrom(
-                              foregroundColor: Colors.red),
+                            foregroundColor: Colors.red,
+                          ),
                           child: const Text('Delete'),
                         ),
                       ],
@@ -157,9 +148,9 @@ class _MyBloodRequestsPageState extends ConsumerState<MyBloodRequestsPage> {
                     );
                   } catch (e) {
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $e')));
                   }
                 },
               );

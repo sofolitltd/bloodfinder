@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -62,8 +61,8 @@ class ExpiryDurationSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: 8,
+          runSpacing: 8,
           children: [
             for (final days in _presetDays)
               ChoiceChip(
@@ -80,18 +79,18 @@ class ExpiryDurationSelector extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Row(
           children: [
             Icon(PhosphorIcons.hourglass,
-                size: 16.w, color: Colors.grey.shade500),
-            SizedBox(width: 6.w),
+                size: 16, color: Colors.grey.shade500),
+            SizedBox(width: 6),
             Text(
               selectedExpiresAt == null
                   ? 'Choose how long this request stays active'
                   : 'Expires: ${DateFormat('d MMM, yyyy - h:mm a').format(selectedExpiresAt!)}',
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 12,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),

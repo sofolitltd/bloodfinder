@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/providers/theme_provider.dart';
@@ -16,16 +15,16 @@ class AppearanceSection extends ConsumerWidget {
 
     return Column(
       children: [
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
         const SectionHeader(
           icon: Icons.palette_outlined,
           title: 'Appearance',
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -35,7 +34,7 @@ class AppearanceSection extends ConsumerWidget {
             ],
           ),
           child: Padding(
-            padding: EdgeInsets.only(left: 16.w, right: 12.w),
+            padding: EdgeInsets.only(left: 16, right: 12),
             child: Row(
               children: [
                 Icon(
@@ -46,12 +45,12 @@ class AppearanceSection extends ConsumerWidget {
                       ? Colors.orange
                       : Colors.red,
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     'Change Theme',
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

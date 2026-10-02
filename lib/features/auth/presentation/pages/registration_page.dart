@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../providers/registration_provider.dart';
 import '../widgets/eligibility_bottom_sheet.dart';
@@ -102,7 +101,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
           backgroundColor: Colors.red.shade700,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       );
@@ -128,7 +127,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
             backgroundColor: Colors.red.shade700,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         );
@@ -198,8 +197,8 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: 32.w,
-                                  height: 32.h,
+                                  width: 32,
+                                  height: 32,
                                   decoration: const BoxDecoration(
                                     color: Colors.white24,
                                     shape: BoxShape.circle,
@@ -207,14 +206,14 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                                   child: Icon(
                                     Icons.person_add_outlined,
                                     color: Colors.white,
-                                    size: 16.w,
+                                    size: 16,
                                   ),
                                 ),
-                                SizedBox(width: 4.h),
+                                SizedBox(width: 4),
                                 Text(
                                   'Create Account',
                                   style: TextStyle(
-                                    fontSize: 26.sp,
+                                    fontSize: 26,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     letterSpacing: 0.5,
@@ -222,11 +221,11 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                                 ),
                               ],
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 4),
                             Text(
                               'Join BloodFinder and start saving lives',
                               style: TextStyle(
-                                fontSize: 13.sp,
+                                fontSize: 13,
                                 color: Colors.white.withValues(alpha: 0.8),
                               ),
                             ),
@@ -245,7 +244,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(20, 24, 20, 24),
                   child: RegistrationForm(
                     formKey: _formKey,
                     firstNameController: _firstNameController,

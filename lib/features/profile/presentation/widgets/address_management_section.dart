@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/utils/geohash.dart';
@@ -36,7 +35,7 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
     final String? label = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Address Label'),
+        title: const Text('Address Label', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         content: TextField(
           controller: labelController,
           decoration: const InputDecoration(
@@ -45,17 +44,26 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
           autofocus: true,
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (labelController.text.trim().isNotEmpty) {
-                Navigator.pop(ctx, labelController.text.trim());
-              }
-            },
-            child: const Text('Save'),
+          Row(
+            spacing: 8,
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancel'),
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (labelController.text.trim().isNotEmpty) {
+                      Navigator.pop(ctx, labelController.text.trim());
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -71,7 +79,8 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
         addressText: result.displayAddress,
       );
 
-      final newList = List<AddressModel>.from(widget.savedAddresses)..add(newAddress);
+      final newList = List<AddressModel>.from(widget.savedAddresses)
+        ..add(newAddress);
       widget.onAddressesChanged(newList);
 
       // If it's the first address added, make it active
@@ -96,20 +105,29 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(ctx).colorScheme.surface,
-        title: const Text('Remove Address'),
+        title: const Text('Remove Address', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         content: Text('Remove "${address.label}" from your saved addresses?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Remove'),
+          Row(
+            spacing:8,
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Remove'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -135,20 +153,29 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(ctx).colorScheme.surface,
-        title: const Text('Change Active Address'),
+        title: const Text('Change Active Address', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         content: Text('Set "${address.label}" as your active location?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Set Active'),
+          Row(
+            spacing:8,
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Set Active'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -165,118 +192,141 @@ class _AddressManagementSectionState extends State<AddressManagementSection> {
     final bool isWarning = widget.isDonor && hasNoLocation;
 
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'My Locations',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton.icon(
-                onPressed: _addNewAddress,
-                icon: Icon(Icons.add_location_alt, size: 18.w),
-                label: const Text('Add New'),
-              ),
-            ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'My Locations',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            TextButton.icon(
+              onPressed: _addNewAddress,
+              style: TextButton.styleFrom(foregroundColor: Colors.red.shade700),
+              icon: Icon(Icons.add_location_alt, size: 18),
+              label: const Text('Add New'),
+            ),
+          ],
+        ),
+        if (isWarning)
+          Padding(
+            padding: EdgeInsets.only(bottom: 12),
+            child: Text(
+              'Location is required to be visible as a donor. Please add and select a location.',
+              style: TextStyle(color: Colors.red, fontSize: 13),
+            ),
           ),
-          if (isWarning)
-            Padding(
-              padding: EdgeInsets.only(bottom: 12.h),
+        Divider(height: 8),
+        // const SizedBox(height: 8),
+        if (widget.savedAddresses.isEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
               child: Text(
-                'Location is required to be visible as a donor. Please add and select a location.',
-                style: TextStyle(color: Colors.red, fontSize: 13.sp),
+                'No saved addresses.\nAdd a new one to be visible in searches.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
               ),
             ),
-          Divider(height: 8.h),
-          if (widget.savedAddresses.isEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.h),
-              child: Center(
-                child: Text(
-                  'No saved addresses.\nAdd a new one to be visible in searches.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            )
-          else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.savedAddresses.length,
-              separatorBuilder: (_, _) => Divider(height: 8.h),
-              itemBuilder: (context, index) {
-                final address = widget.savedAddresses[index];
-                // In case of multiple exact same geohashes (rare but possible),
-                // we compare ID if available, else fallback to geohash match for active state.
-                final bool isActive = widget.activeGeohash == address.geohash;
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(vertical: 8),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.savedAddresses.length,
+            separatorBuilder: (_, _) => Container(height: 12),
+            itemBuilder: (context, index) {
+              final address = widget.savedAddresses[index];
+              // In case of multiple exact same geohashes (rare but possible),
+              // we compare ID if available, else fallback to geohash match for active state.
+              final bool isActive = widget.activeGeohash == address.geohash;
 
-                return Ink(
+              return InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => _setActiveAddress(address),
+                child: Container(
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.green.shade50 : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8.r),
+                    color: isActive ? Colors.green.shade50 : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isActive ? Colors.green : Colors.grey.shade300,
+                      width: 1,
+                    ),
                   ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    // vertical: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.only(
-                          left: 8.w,
-                          right: 40.w,
-                          top: 4.h,
-                          bottom: 4.h,
-                        ),
-                        title: Row(
+                      Padding(
+                        padding: .only(left:8),
+                        child: Row(
                           children: [
+                            Icon(
+                              isActive
+                                  ? Icons.radio_button_checked
+                                  : Icons.radio_button_off,
+                              color: isActive ? Colors.green : Colors.grey,
+                            ),
+                            const SizedBox(width: 8),
                             Text(
                               address.label,
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             if (isActive)
                               Container(
-                                margin: EdgeInsets.only(left: 8.w),
+                                margin: EdgeInsets.only(left: 16),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w, vertical: 2.h),
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(4.r),
-                                  border: Border.all(color: Colors.green.shade200),
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(4),
+                               
                                 ),
                                 child: Text(
                                   'Active',
-                                  style: TextStyle(fontSize: 10.sp, color: Colors.green),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
+                            const Spacer(),
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: Colors.redAccent,
+                                size: 20,
+                              ),
+                              onPressed: () => _removeAddress(address),
+                            ),
                           ],
                         ),
-                        subtitle: Text(
+                      ),
+                      Padding(
+                        padding: .only(left:12),
+                        child: Text(
                           address.addressText,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 12.sp),
-                        ),
-                        onTap: () => _setActiveAddress(address),
-                      ),
-                      Positioned(
-                        right: 4.w,
-                        top: 10.h,
-                        child: IconButton(
-                          icon: Icon(Icons.delete_outline,
-                              color: Colors.redAccent, size: 20.w),
-                          onPressed: () => _removeAddress(address),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-        ],
-      );
+                ),
+              );
+            },
+          ),
+      ],
+    );
   }
 }

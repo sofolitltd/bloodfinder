@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../shared/widgets/map_location_picker_page.dart';
@@ -61,32 +60,32 @@ class _LocationPickerTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.red.shade200,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
           color: Colors.red.shade50,
         ),
         child: Row(
           children: [
             Icon(
               PhosphorIcons.mapPin,
-              size: 20.w,
+              size: 20,
               color: hasLocation
                   ? Colors.red.shade600
                   : Colors.red.shade300,
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: 12),
             Expanded(
               child: Text(
                 hasLocation
                     ? (locationAddress ?? 'Location selected')
                     : 'Pick location on map',
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   fontWeight:
                       hasLocation ? FontWeight.w500 : FontWeight.normal,
                   color: hasLocation
@@ -97,12 +96,12 @@ class _LocationPickerTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             Icon(
               hasLocation
                   ? PhosphorIcons.pencilSimple
                   : PhosphorIcons.mapPinArea,
-              size: 18.w,
+              size: 18,
               color: Colors.red.shade400,
             ),
           ],

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloodfinder/features/blood_bank/models/blood_bank.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -216,19 +215,19 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 Icons.local_hospital,
                 color: Colors.red.shade600,
-                size: 18.w,
+                size: 18,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             const Text(
               'Blood Bank',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -240,7 +239,7 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
             IconButton(
               icon: Icon(
                 PhosphorIcons.funnel,
-                size: 20.w,
+                size: 20,
                 color: _showFilter ? Colors.red.shade600 : null,
               ),
               tooltip: _showFilter ? 'Hide filters' : 'Show filters',
@@ -262,10 +261,10 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: Icon(Icons.add, size: 20.w),
+        icon: Icon(Icons.add, size: 20),
         label: const Text('Add Bank'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
           showModalBottomSheet(
@@ -310,21 +309,21 @@ class _BloodBankPageState extends ConsumerState<BloodBankPage>
     if (_latitude == null || _longitude == null) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(PhosphorIcons.mapPinLine, size: 48.w, color: Colors.grey.shade300),
-              SizedBox(height: 8.h),
+              Icon(PhosphorIcons.mapPinLine, size: 48, color: Colors.grey.shade300),
+              SizedBox(height: 8),
               Text(
                 'Set your location to see nearby banks',
-                style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               ElevatedButton.icon(
                 onPressed: _openLocationPicker,
-                icon: Icon(Icons.location_on, size: 20.w),
+                icon: Icon(Icons.location_on, size: 20),
                 label: const Text('Set Location'),
               ),
             ],

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geocoding/geocoding.dart';
@@ -69,144 +68,144 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
             children: [
               Center(
                 child: Container(
-                  width: 40.w,
-                  height: 4.h,
-                  margin: EdgeInsets.only(bottom: 20.h),
+                  width: 40,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                     color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
               Row(
                 children: [
                   Container(
-                    width: 36.w,
-                    height: 36.h,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       PhosphorIcons.hospital,
                       color: Colors.red.shade600,
-                      size: 20.w,
+                      size: 20,
                     ),
                   ),
-                  SizedBox(width: 10.w),
+                  SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Add Blood Bank',
                       style: TextStyle(
-                        fontSize: 18.sp,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, size: 20.w),
+                    icon: Icon(Icons.close, size: 20),
                     color: Colors.grey.shade500,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Blood Bank Name',
-                  prefixIcon: Icon(Icons.local_hospital, size: 20.w),
+                  prefixIcon: Icon(Icons.local_hospital, size: 20),
                 ),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _mobile1Controller,
                 decoration: InputDecoration(
                   labelText: 'Mobile 1',
-                  prefixIcon: Icon(Icons.phone, size: 20.w),
+                  prefixIcon: Icon(Icons.phone, size: 20),
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (v) => (v == null || v.trim().isEmpty)
                     ? 'Required'
                     : null,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               TextFormField(
                 controller: _mobile2Controller,
                 decoration: InputDecoration(
                   labelText: 'Mobile 2 (optional)',
-                  prefixIcon: Icon(Icons.phone, size: 20.w),
+                  prefixIcon: Icon(Icons.phone, size: 20),
                 ),
                 keyboardType: TextInputType.phone,
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               Text(
                 'Social Media Links',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                  fontSize: 14.sp,
+                  fontSize: 14,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               SocialMediaInput(
                 initialLinks: _socialMediaLinks,
                 onLinksChanged: (links) {
                   _socialMediaLinks = links;
                 },
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               Text(
                 'Location',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                  fontSize: 14.sp,
+                  fontSize: 14,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               TextFormField(
                 controller: _addressController,
                 decoration: InputDecoration(
                   labelText: 'Address',
-                  prefixIcon: Icon(Icons.location_on, size: 20.w),
+                  prefixIcon: Icon(Icons.location_on, size: 20),
                 ),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               GestureDetector(
                 onTap: _pickLocation,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.red.shade200,
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                     color: Colors.red.shade50,
                   ),
                   child: Row(
                     children: [
                       Icon(
                         PhosphorIcons.mapPin,
-                        size: 20.w,
+                        size: 20,
                         color: _latitude != null
                             ? Colors.red.shade600
                             : Colors.red.shade300,
                       ),
-                      SizedBox(width: 12.w),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           _latitude != null
                               ? (_locationAddress ?? 'Location selected')
                               : 'Pick location on map',
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: _latitude != null
                                 ? FontWeight.w500
                                 : FontWeight.normal,
@@ -218,55 +217,55 @@ class _AddBloodBankSheetState extends ConsumerState<AddBloodBankSheet> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Icon(
                         _latitude != null
                             ? PhosphorIcons.pencilSimple
                             : PhosphorIcons.mapPinArea,
-                        size: 18.w,
+                        size: 18,
                         color: Colors.red.shade400,
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               Text(
                 'Blood Bank Image',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                  fontSize: 14.sp,
+                  fontSize: 14,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               ImagePickerSection(
                 pickedImage: _pickedImage,
                 onPickImage: _pickImage,
                 onClearImage: () => setState(() => _pickedImage = null),
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
               SizedBox(
-                height: 50.h,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _addBloodBank,
                   style: ElevatedButton.styleFrom(elevation: 0),
                   child: _isLoading
                       ? SizedBox(
-                          height: 20.h,
-                          width: 20.w,
+                          height: 20,
+                          width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(
                           'Save Blood Bank',
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
             ],
           ),
         ),

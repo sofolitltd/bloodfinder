@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -53,7 +52,7 @@ class AnnouncementsSection extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -62,27 +61,27 @@ class AnnouncementsSection extends ConsumerWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 28.w,
-                    height: 28.h,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: Colors.amber.shade50,
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(PhosphorIcons.megaphone,
-                        size: 15.w, color: Colors.amber.shade700),
+                        size: 15, color: Colors.amber.shade700),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 8),
                   Text(
                     'Announcements',
                     style: TextStyle(
-                      fontSize: 15.sp,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey.shade800,
                     ),
@@ -90,7 +89,7 @@ class AnnouncementsSection extends ConsumerWidget {
                   const Spacer(),
                   if (canManage)
                     IconButton(
-                      icon: Icon(PhosphorIcons.plus, size: 18.w),
+                      icon: Icon(PhosphorIcons.plus, size: 18),
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
@@ -108,10 +107,10 @@ class AnnouncementsSection extends ConsumerWidget {
               ),
               if (announcements.isEmpty)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  padding: EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     'No announcements yet.',
-                    style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade500),
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                   ),
                 )
               else
@@ -147,11 +146,11 @@ class _AnnouncementTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 12.h),
-      padding: EdgeInsets.all(12.w),
+      margin: EdgeInsets.only(top: 12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: announcement.pinned ? Colors.amber.shade50 : Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,19 +159,19 @@ class _AnnouncementTile extends StatelessWidget {
             children: [
               if (announcement.pinned) ...[
                 Icon(PhosphorIcons.pushPin,
-                    size: 14.w, color: Colors.amber.shade700),
-                SizedBox(width: 6.w),
+                    size: 14, color: Colors.amber.shade700),
+                SizedBox(width: 6),
               ],
               Expanded(
                 child: Text(
                   DateFormat('MMM d, yyyy · h:mm a')
                       .format(announcement.createdAt.toDate()),
-                  style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                 ),
               ),
               if (canManage)
                 PopupMenuButton<String>(
-                  icon: Icon(PhosphorIcons.dotsThreeVertical, size: 16.w),
+                  icon: Icon(PhosphorIcons.dotsThreeVertical, size: 16),
                   onSelected: (value) {
                     if (value == 'pin') onPin();
                     if (value == 'delete') onDelete();
@@ -190,10 +189,10 @@ class _AnnouncementTile extends StatelessWidget {
                 ),
             ],
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 4),
           Text(
             announcement.message,
-            style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade800),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
           ),
         ],
       ),

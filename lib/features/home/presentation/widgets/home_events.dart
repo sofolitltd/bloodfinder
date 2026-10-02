@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../data/providers/repository_providers.dart';
@@ -42,10 +41,10 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
         final isDark = theme.brightness == Brightness.dark;
 
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          margin: EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark ? Colors.transparent : Colors.grey.shade200,
               width: 0.5,
@@ -58,7 +57,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -70,16 +69,16 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                     spacing: 10,
                     children: [
                       Container(
-                        width: 40.w,
-                        height: 40.h,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
                           PhosphorIcons.calendar,
                           color: Colors.red.shade500,
-                          size: 22.w,
+                          size: 22,
                         ),
                       ),
                       Column(
@@ -88,7 +87,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                           Text(
                             'Upcoming Blood Camps',
                             style: TextStyle(
-                              fontSize: 17.sp,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                             ),
@@ -96,7 +95,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                           Text(
                             'Events near you',
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                               color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                             ),
                           ),
@@ -110,7 +109,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                       MaterialPageRoute(builder: (_) => const EventsPage()),
                     ),
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       visualDensity: VisualDensity.compact,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -119,21 +118,21 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                       style: TextStyle(
                         color: Colors.red.shade600,
                         fontWeight: FontWeight.w600,
-                        fontSize: 13.sp,
+                        fontSize: 13,
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
 
               // Event cards
               SizedBox(
-                height: 210.h,
+                height: 210,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: events.length,
-                  separatorBuilder: (_, _) => SizedBox(width: 12.w),
+                  separatorBuilder: (_, _) => SizedBox(width: 12),
                   itemBuilder: (context, index) {
                     final event = events[index];
                     final dateStr = event.dateDisplay;
@@ -145,10 +144,10 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                         ),
                       ),
                       child: Container(
-                        width: 180.w,
+                        width: 180,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isDark
                                 ? Colors.grey.shade700.withValues(alpha: 0.3)
@@ -170,7 +169,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                               borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(12)),
                               child: Container(
-                                height: 110.h,
+                                height: 110,
                                 width: double.infinity,
                                 color: Colors.red.shade50,
                                 child: event.imageUrl != null &&
@@ -186,43 +185,43 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.all(10.w),
+                                padding: EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       event.title,
                                       style: TextStyle(
-                                        fontSize: 13.sp,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.bold,
                                         color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    SizedBox(height: 6.h),
+                                    SizedBox(height: 6),
                                     Row(
                                       children: [
                                         Icon(PhosphorIcons.calendar,
-                                            size: 12.w,
+                                            size: 12,
                                             color: Colors.red.shade400),
-                                        SizedBox(width: 4.w),
+                                        SizedBox(width: 4),
                                         Text(
                                           dateStr,
                                           style: TextStyle(
-                                            fontSize: 11.sp,
+                                            fontSize: 11,
                                             color: Colors.grey.shade600,
                                           ),
                                         ),
                                         const Spacer(),
                                         Icon(PhosphorIcons.user,
-                                            size: 12.w,
+                                            size: 12,
                                             color: Colors.blue.shade400),
-                                        SizedBox(width: 4.w),
+                                        SizedBox(width: 4),
                                         Text(
                                           '${event.rsvpCount}',
                                           style: TextStyle(
-                                            fontSize: 11.sp,
+                                            fontSize: 11,
                                             color: Colors.blue.shade600,
                                           ),
                                         ),
@@ -234,7 +233,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
                                       child: Text(
                                         'View details',
                                         style: TextStyle(
-                                          fontSize: 11.sp,
+                                          fontSize: 11,
                                           color: Colors.red.shade600,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -262,7 +261,7 @@ class HomeUpcomingEventsSection extends ConsumerWidget {
     return Center(
       child: Icon(
         PhosphorIcons.drop,
-        size: 32.w,
+        size: 32,
         color: Colors.red.shade300,
       ),
     );

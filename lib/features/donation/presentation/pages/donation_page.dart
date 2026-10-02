@@ -1,7 +1,6 @@
 import 'package:bloodfinder/shared/widgets/start_chat_btn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -78,7 +77,7 @@ class DonationPage extends ConsumerWidget {
                   child: SafeArea(
                     bottom: false,
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
+                      padding: EdgeInsets.fromLTRB(4, 4, 16, 28),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -121,14 +120,14 @@ class DonationPage extends ConsumerWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8.h),
+                          SizedBox(height: 8),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Row(
                               children: [
                                 Container(
-                                  width: 72.w,
-                                  height: 72.h,
+                                  width: 72,
+                                  height: 72,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.white,
@@ -146,14 +145,14 @@ class DonationPage extends ConsumerWidget {
                                     child: Text(
                                       request.bloodGroup,
                                       style: TextStyle(
-                                        fontSize: 28.sp,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red,
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 16.w),
+                                SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -162,28 +161,28 @@ class DonationPage extends ConsumerWidget {
                                       Text(
                                         "Patient",
                                         style: TextStyle(
-                                          fontSize: 10.sp,
+                                          fontSize: 10,
                                           color: Colors.white60,
-                                          height: 1.h,
+                                          height: 1,
                                         ),
                                       ),
                                       Text(
                                         request.name,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 22.sp,
+                                          fontSize: 22,
                                           color: Colors.white,
                                         ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      SizedBox(height: 4.h),
+                                      SizedBox(height: 4),
                                       Container(
                                         decoration: BoxDecoration(),
                                         child: Text(
                                           "${request.bag} bag - ${request.date} - ${request.time}",
                                           style: TextStyle(
-                                            fontSize: 13.sp,
+                                            fontSize: 13,
                                             color: Colors.white.withValues(
                                               alpha: 0.8,
                                             ),
@@ -206,15 +205,15 @@ class DonationPage extends ConsumerWidget {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0.h),
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: Row(
                     children: [
                       Container(
-                        width: 28.w,
-                        height: 28.h,
+                        width: 28,
+                        height: 28,
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           PhosphorIcons.userCircle,
@@ -222,7 +221,7 @@ class DonationPage extends ConsumerWidget {
                           color: Colors.red.shade600,
                         ),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Text(
                         'Posted by',
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -236,16 +235,16 @@ class DonationPage extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0.h),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     color: theme.colorScheme.surface,
                     margin: EdgeInsets.zero,
                     child: Padding(
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       child: DonationPosterCard(request: request),
                     ),
                   ),
@@ -254,15 +253,15 @@ class DonationPage extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 12.h),
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
                   child: Row(
                     children: [
                       Container(
-                        width: 28.w,
-                        height: 28.h,
+                        width: 28,
+                        height: 28,
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           PhosphorIcons.info,
@@ -270,7 +269,7 @@ class DonationPage extends ConsumerWidget {
                           color: Colors.red.shade400,
                         ),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Text(
                         'Info',
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -284,15 +283,15 @@ class DonationPage extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     color: theme.colorScheme.surface,
                     margin: EdgeInsets.zero,
                     child: Padding(
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       child: DonationInfoCard(request: request, isDark: isDark),
                     ),
                   ),
@@ -301,7 +300,7 @@ class DonationPage extends ConsumerWidget {
               if (request.note != null && request.note!.isNotEmpty) ...[
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 0.h),
+                    padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -312,7 +311,7 @@ class DonationPage extends ConsumerWidget {
                               size: 20,
                               color: Colors.red.shade400,
                             ),
-                            SizedBox(width: 8.w),
+                            SizedBox(width: 8),
                             Text(
                               'Additional Note',
                               style: theme.textTheme.titleMedium?.copyWith(
@@ -321,20 +320,20 @@ class DonationPage extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                         Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           color: theme.colorScheme.surface,
                           child: Container(
                             width: .infinity,
-                            padding: EdgeInsets.all(12.w),
+                            padding: EdgeInsets.all(12),
                             child: Text(
                               request.note!,
                               style: TextStyle(
                                 height: 1.5,
-                                fontSize: 14.sp,
+                                fontSize: 14,
                                 color: isDark
                                     ? Colors.grey.shade300
                                     : Colors.grey.shade700,
@@ -349,15 +348,15 @@ class DonationPage extends ConsumerWidget {
               ],
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 12.h),
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
                   child: Row(
                     children: [
                       Container(
-                        width: 28.w,
-                        height: 28.h,
+                        width: 28,
+                        height: 28,
                         decoration: BoxDecoration(
                           color: Colors.green.shade50,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           PhosphorIcons.phone,
@@ -365,7 +364,7 @@ class DonationPage extends ConsumerWidget {
                           color: Colors.green.shade600,
                         ),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Text(
                         'Contact',
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -378,15 +377,15 @@ class DonationPage extends ConsumerWidget {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     color: theme.colorScheme.surface,
                     margin: EdgeInsets.zero,
                     child: Padding(
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       child: Column(
                         children: [
                           Row(
@@ -398,17 +397,17 @@ class DonationPage extends ConsumerWidget {
                                     Text(
                                       'Contact Number',
                                       style: TextStyle(
-                                        fontSize: 11.sp,
+                                        fontSize: 11,
                                         color: isDark
                                             ? Colors.grey.shade500
                                             : Colors.grey.shade400,
                                       ),
                                     ),
-                                    SizedBox(height: 8.h),
+                                    SizedBox(height: 8),
                                     Text(
                                       request.mobile,
                                       style: TextStyle(
-                                        fontSize: 14.sp,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                         color: isDark
                                             ? Colors.grey.shade200
@@ -419,13 +418,13 @@ class DonationPage extends ConsumerWidget {
                                 ),
                               ),
                               SizedBox(
-                                height: 40.h,
-                                width: 40.w,
+                                height: 40,
+                                width: 40,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green.shade500,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.r),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: EdgeInsets.zero,
                                   ),
@@ -441,10 +440,10 @@ class DonationPage extends ConsumerWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: 12),
                           SizedBox(
                             width: double.infinity,
-                            height: 48.h,
+                            height: 48,
                             child: StartChatButton(otherUserId: request.uid),
                           ),
                         ],
@@ -456,15 +455,15 @@ class DonationPage extends ConsumerWidget {
               if (request.latitude != null && request.longitude != null) ...[
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 12.h),
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: Row(
                       children: [
                         Container(
-                          width: 28.w,
-                          height: 28.h,
+                          width: 28,
+                          height: 28,
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(8.r),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             PhosphorIcons.mapPin,
@@ -472,7 +471,7 @@ class DonationPage extends ConsumerWidget {
                             color: Colors.red.shade600,
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 8),
                         Text(
                           'Location',
                           style: theme.textTheme.titleMedium?.copyWith(
@@ -485,7 +484,7 @@ class DonationPage extends ConsumerWidget {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 24.h),
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
                     child: RequestLocationCard(
                       posterLatitude: request.latitude!,
                       posterLongitude: request.longitude!,

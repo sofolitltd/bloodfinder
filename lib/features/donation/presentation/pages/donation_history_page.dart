@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -192,9 +191,9 @@ class _DonationHistoryPageState extends ConsumerState<DonationHistoryPage> {
               ),
               Expanded(
                 child: ListView.separated(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.w),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   itemCount: donations.length,
-                  separatorBuilder: (_, _) => SizedBox(height: 8.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final data =
                         donations[index].data() as Map<String, dynamic>;
@@ -283,11 +282,11 @@ class _SummarySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -302,19 +301,19 @@ class _SummarySection extends StatelessWidget {
           Row(
             children: [
               Icon(PhosphorIcons.drop, size: 22, color: Colors.red.shade600),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               Text(
                 '$donationCount',
                 style: TextStyle(
-                  fontSize: 26.sp,
+                  fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.red.shade700,
                 ),
               ),
-              SizedBox(width: 4.w),
+              SizedBox(width: 4),
               Text(
                 'donation${donationCount == 1 ? '' : 's'}',
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
               const Spacer(),
               GestureDetector(
@@ -335,11 +334,11 @@ class _SummarySection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.emoji_events, size: 20, color: Colors.amber.shade700),
-                    SizedBox(width: 6.w),
+                    SizedBox(width: 6),
                     Text(
                       _currentBadge,
                       style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.amber.shade800,
                       ),
@@ -349,10 +348,10 @@ class _SummarySection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           // Milestones
           SizedBox(
-            height: 40.h,
+            height: 40,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -393,11 +392,11 @@ class _SummarySection extends StatelessWidget {
                                     : null,
                               ),
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 4),
                             Text(
                               m.label,
                               style: TextStyle(
-                                fontSize: 9.sp,
+                                fontSize: 9,
                                 fontWeight: reached ? FontWeight.bold : FontWeight.normal,
                                 color: reached ? Colors.red.shade700 : Colors.grey,
                               ),
@@ -411,17 +410,17 @@ class _SummarySection extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           // Donation dots timeline
           Text(
             'Donation Timeline',
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Colors.grey.shade600,
             ),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 6),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -430,7 +429,7 @@ class _SummarySection extends StatelessWidget {
                 return Container(
                   width: isNewest ? 12 : 8,
                   height: isNewest ? 12 : 8,
-                  margin: EdgeInsets.only(right: 4.w),
+                  margin: EdgeInsets.only(right: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isNewest ? Colors.red.shade600 : Colors.red.shade200,
@@ -442,25 +441,25 @@ class _SummarySection extends StatelessWidget {
               }).toList(),
             ),
           ),
-          SizedBox(height: 12.h),
-          Divider(height: 8.h),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
+          Divider(height: 8),
+          SizedBox(height: 12),
           // Next eligible donation
           Row(
             children: [
               Icon(PhosphorIcons.calendar, size: 16, color: Colors.red.shade500),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               Text(
                 'Next Eligible Donation',
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: Colors.grey.shade600,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 6),
           _buildNextDonationDate(),
         ],
       ),
@@ -472,7 +471,7 @@ class _SummarySection extends StatelessWidget {
       return Text(
         'You can donate now',
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.green,
         ),
@@ -488,7 +487,7 @@ class _SummarySection extends StatelessWidget {
       return Text(
         'You can donate now',
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.green,
         ),
@@ -500,22 +499,22 @@ class _SummarySection extends StatelessWidget {
         Text(
           DateFormat('dd MMM, yyyy').format(nextDate),
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(
             color: Colors.orange.shade50,
-            borderRadius: BorderRadius.circular(4.r),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(color: Colors.orange.shade200),
           ),
           child: Text(
             '$remaining days',
             style: TextStyle(
-              fontSize: 10.sp,
+              fontSize: 10,
               fontWeight: FontWeight.w600,
               color: Colors.orange.shade700,
             ),
@@ -537,7 +536,7 @@ class _SummarySection extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(ctx).colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(
@@ -545,7 +544,7 @@ class _SummarySection extends StatelessWidget {
               size: 24,
               color: earned ? Colors.amber.shade700 : Colors.grey,
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
@@ -557,16 +556,16 @@ class _SummarySection extends StatelessWidget {
               earned
                   ? 'You\'ve earned this badge!'
                   : 'Donate $required times to earn this badge.',
-              style: TextStyle(fontSize: 14.sp),
+              style: TextStyle(fontSize: 14),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Row(
               children: [
-                Text('Progress: ', style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600)),
+                Text('Progress: ', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
                 Text(
                   '${donationCount.clamp(0, nextRequired)} / $nextRequired',
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: earned ? Colors.green : Colors.red.shade700,
                   ),
@@ -574,15 +573,15 @@ class _SummarySection extends StatelessWidget {
               ],
             ),
             if (!earned && remaining > 0) ...[
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Text(
                 '$remaining more donation${remaining == 1 ? '' : 's'} needed',
-                style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
               ),
             ],
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
+              borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: (donationCount.clamp(0, nextRequired) / nextRequired).clamp(0.0, 1.0),
                 backgroundColor: Colors.grey.shade200,
@@ -631,7 +630,7 @@ class _DonationCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -641,7 +640,7 @@ class _DonationCard extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -650,7 +649,7 @@ class _DonationCard extends StatelessWidget {
               children: [
                 if (imageUrl != null)
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                     child: Image.network(
                       imageUrl!,
                       height: 56,
@@ -660,10 +659,10 @@ class _DonationCard extends StatelessWidget {
                   )
                 else
                   Container(
-                    padding: EdgeInsets.all(8.w),
+                    padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       PhosphorIcons.drop,
@@ -671,7 +670,7 @@ class _DonationCard extends StatelessWidget {
                       color: Colors.red.shade600,
                     ),
                   ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -681,25 +680,25 @@ class _DonationCard extends StatelessWidget {
                           Text(
                             'Donated',
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                               color: Colors.grey.shade600,
                             ),
                           ),
                           if (donationTypeLabel != null) ...[
-                            SizedBox(width: 8.w),
+                            SizedBox(width: 8),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 6.w,
-                                vertical: 8.h,
+                                horizontal: 6,
+                                vertical: 8,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.red.shade50,
-                                borderRadius: BorderRadius.circular(4.r),
+                                borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 donationTypeLabel!,
                                 style: TextStyle(
-                                  fontSize: 9.sp,
+                                  fontSize: 9,
                                   color: Colors.red.shade700,
                                 ),
                               ),
@@ -707,13 +706,13 @@ class _DonationCard extends StatelessWidget {
                           ],
                         ],
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
                       Text(
                         donationDate != null
                             ? DateFormat('dd MMM, yyyy').format(donationDate!)
                             : '-',
                         style: TextStyle(
-                          fontSize: 15.sp,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -727,7 +726,7 @@ class _DonationCard extends StatelessWidget {
                       icon: Icon(
                         Icons.share_outlined,
                         color: Colors.red.shade400,
-                        size: 20.w,
+                        size: 20,
                       ),
                       onPressed: onShare,
                     ),
@@ -735,7 +734,7 @@ class _DonationCard extends StatelessWidget {
                       icon: Icon(
                         PhosphorIcons.trash,
                         color: Colors.red,
-                        size: 20.w,
+                        size: 20,
                       ),
                       onPressed: onDelete,
                     ),
@@ -743,21 +742,21 @@ class _DonationCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Row(
               children: [
                 Icon(PhosphorIcons.user, size: 16, color: Colors.grey.shade500),
-                SizedBox(width: 6.w),
+                SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     'Recipient: $recipientName',
-                    style: TextStyle(fontSize: 13.sp),
+                    style: TextStyle(fontSize: 13),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 4),
             Row(
               children: [
                 Icon(
@@ -765,15 +764,15 @@ class _DonationCard extends StatelessWidget {
                   size: 16,
                   color: Colors.grey.shade500,
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 6),
                 Text(
                   'Mobile: $recipientMobile',
-                  style: TextStyle(fontSize: 13.sp),
+                  style: TextStyle(fontSize: 13),
                 ),
               ],
             ),
             if (hospitalName != null) ...[
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Row(
                 children: [
                   Icon(
@@ -781,11 +780,11 @@ class _DonationCard extends StatelessWidget {
                     size: 16,
                     color: Colors.grey.shade500,
                   ),
-                  SizedBox(width: 6.w),
+                  SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       hospitalName!,
-                      style: TextStyle(fontSize: 13.sp),
+                      style: TextStyle(fontSize: 13),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -793,7 +792,7 @@ class _DonationCard extends StatelessWidget {
               ),
             ],
             if (notes != null) ...[
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Row(
                 children: [
                   Icon(
@@ -801,11 +800,11 @@ class _DonationCard extends StatelessWidget {
                     size: 16,
                     color: Colors.grey.shade500,
                   ),
-                  SizedBox(width: 6.w),
+                  SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       notes!,
-                      style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

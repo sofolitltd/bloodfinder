@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -42,14 +41,14 @@ class DonationPosterCard extends ConsumerWidget {
                   ? Text(
                       posterName.isNotEmpty ? posterName[0].toUpperCase() : '?',
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.red.shade600,
                       ),
                     )
                   : null,
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,16 +56,16 @@ class DonationPosterCard extends ConsumerWidget {
                   Text(
                     posterName,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 2),
                   Text(
                     DateFormat('dd MMM yyy - hh:mm a').format(request.createdAt),
                     style: TextStyle(
-                      fontSize: 11.sp,
+                      fontSize: 11,
                       color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                     ),
                   ),

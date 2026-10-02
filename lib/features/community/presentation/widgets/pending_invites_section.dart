@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../data/providers/repository_providers.dart';
@@ -23,22 +22,22 @@ class PendingInvitesSection extends ConsumerWidget {
         if (invites.isEmpty) return const SizedBox.shrink();
 
         return Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Community Invites',
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               ...invites.map(
                 (invite) => Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
+                  padding: EdgeInsets.only(bottom: 8),
                   child: _InviteCard(invite: invite),
                 ),
               ),
@@ -125,7 +124,7 @@ class _InviteCardState extends ConsumerState<_InviteCard> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -134,23 +133,23 @@ class _InviteCardState extends ConsumerState<_InviteCard> {
               ),
             ],
           ),
-          padding: EdgeInsets.all(14.w),
+          padding: EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 36.w,
-                    height: 36.h,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(PhosphorIcons.envelopeSimple,
-                        size: 18.w, color: Colors.blue.shade600),
+                        size: 18, color: Colors.blue.shade600),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,17 +157,17 @@ class _InviteCardState extends ConsumerState<_InviteCard> {
                         Text(
                           community.name,
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 2.h),
+                        SizedBox(height: 2),
                         Text(
                           'invited you to join',
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: Colors.grey.shade600,
                           ),
                         ),
@@ -177,7 +176,7 @@ class _InviteCardState extends ConsumerState<_InviteCard> {
                   ),
                 ],
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
@@ -186,14 +185,14 @@ class _InviteCardState extends ConsumerState<_InviteCard> {
                       child: const Text('Decline'),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _isProcessing ? null : () => _respond(true),
                       child: _isProcessing
                           ? SizedBox(
-                              width: 18.w,
-                              height: 18.h,
+                              width: 18,
+                              height: 18,
                               child: const CircularProgressIndicator(
                                   color: Colors.white, strokeWidth: 2),
                             )

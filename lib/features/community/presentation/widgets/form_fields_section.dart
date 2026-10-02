@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -47,11 +46,11 @@ class FormFieldsSection extends StatelessWidget {
           'Community Information',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
+            fontSize: 16,
           ),
         ),
 
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         // Community Name
         TextFormField(
@@ -68,7 +67,7 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         // Mobile Number
         TextFormField(
@@ -85,7 +84,7 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         // Address
         TextFormField(
@@ -101,7 +100,7 @@ class FormFieldsSection extends StatelessWidget {
             return null;
           },
         ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 16),
 
                     // ── Map Location Picker ─────────────────────────────────────────────
         FormField<double>(
@@ -125,14 +124,14 @@ class FormFieldsSection extends StatelessWidget {
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 12.w, vertical: 14.h),
+                        horizontal: 12, vertical: 14),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: state.hasError
                             ? Theme.of(context).colorScheme.error
                             : Colors.grey.shade400,
                       ),
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                       color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.grey.shade900
                           : Colors.grey.shade50,
@@ -143,7 +142,7 @@ class FormFieldsSection extends StatelessWidget {
                             color: selectedLatitude != null
                                 ? Colors.red.shade600
                                 : Colors.grey.shade600),
-                        SizedBox(width: 12.w),
+                        SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,11 +162,11 @@ class FormFieldsSection extends StatelessWidget {
                               ),
                               if (selectedLocationAddress != null &&
                                   selectedLocationAddress!.isNotEmpty) ...[
-                                SizedBox(height: 4.h),
+                                SizedBox(height: 4),
                                 Text(
                                   selectedLocationAddress!,
                                   style: TextStyle(
-                                    fontSize: 12.sp,
+                                    fontSize: 12,
                                     color: Colors.grey.shade600,
                                   ),
                                   maxLines: 1,
@@ -186,12 +185,12 @@ class FormFieldsSection extends StatelessWidget {
                 ),
                 if (state.hasError)
                   Padding(
-                    padding: EdgeInsets.only(left: 12.w, top: 8.h),
+                    padding: EdgeInsets.only(left: 12, top: 8),
                     child: Text(
                       state.errorText!,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
-                        fontSize: 12.sp,
+                        fontSize: 12,
                       ),
                     ),
                   ),
@@ -200,28 +199,28 @@ class FormFieldsSection extends StatelessWidget {
           },
         ),
 
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         Text(
           'Social Media Links',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         SocialMediaInput(
           initialLinks: socialMediaLinks,
           onLinksChanged: onSocialLinksChanged,
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         Text(
           'Community Image',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
+            fontSize: 16,
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
 
         //Image Picker
         ImagePickerSection(

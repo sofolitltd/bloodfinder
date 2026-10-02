@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -21,46 +20,46 @@ class NotificationDetailPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.w),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Type badge
             _buildTypeBadge(),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
 
             // Title
             Text(
               notification.title,
               style: TextStyle(
-                fontSize: 20.sp,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
 
             // Timestamp
             Text(
               DateFormat('MMM d, yyyy – h:mm a').format(notification.createdAt),
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 12,
                 color: Colors.grey.shade500,
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 20),
 
             // Body
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 notification.body,
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   height: 1.5,
                   color: Colors.grey.shade800,
                 ),
@@ -69,7 +68,7 @@ class NotificationDetailPage extends StatelessWidget {
 
             // Action button (only for notifications with a destination)
             if (_actionAvailable()) ...[
-              SizedBox(height: 32.h),
+              SizedBox(height: 32),
               if (notification.type == 'community_invite')
                 _CommunityInviteActions(notification: notification)
               else if (notification.type == 'community_blood_help_request')
@@ -129,20 +128,20 @@ class NotificationDetailPage extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16.w, color: fg),
-          SizedBox(width: 6.w),
+          Icon(icon, size: 16, color: fg),
+          SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: fg,
             ),
@@ -210,9 +209,9 @@ class NotificationDetailPage extends StatelessWidget {
         icon: Icon(buttonIcon),
         label: Text(buttonLabel),
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 14.h),
+          padding: EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -291,14 +290,14 @@ class _CommunityInviteActionsState
             child: const Text('Decline'),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
             onPressed: _isProcessing ? null : () => _respond(true),
             child: _isProcessing
                 ? SizedBox(
-                    width: 18.w,
-                    height: 18.h,
+                    width: 18,
+                    height: 18,
                     child: const CircularProgressIndicator(
                         color: Colors.white, strokeWidth: 2),
                   )
@@ -324,7 +323,7 @@ class _ContactRequesterAction extends StatelessWidget {
     final requesterUid = notification.data['requesterUid'] as String;
     return SizedBox(
       width: double.infinity,
-      height: 48.h,
+      height: 48,
       child: StartChatButton(
         otherUserId: requesterUid,
         buttonText: 'Contact Requester',

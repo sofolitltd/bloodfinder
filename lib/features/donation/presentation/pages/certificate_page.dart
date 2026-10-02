@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
@@ -131,14 +130,14 @@ class _CertificatePageState extends State<CertificatePage> {
             ),
           ),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
 
           // Design selector
           SizedBox(
-            height: 56.h,
+            height: 56,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                 ..._buildDesignThumbnails(hasPhoto),
@@ -146,11 +145,11 @@ class _CertificatePageState extends State<CertificatePage> {
             ),
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
 
           // Bottom buttons
           Padding(
-            padding: EdgeInsets.fromLTRB(24.w, 0.h, 24.w, 24.h),
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
             child: Row(
               children: [
                 Expanded(
@@ -158,34 +157,34 @@ class _CertificatePageState extends State<CertificatePage> {
                     onPressed: _saving ? null : _saveToGallery,
                     icon: _saving
                         ? SizedBox(
-                            width: 18.w,
-                            height: 18.h,
+                            width: 18,
+                            height: 18,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Icon(Icons.download, size: 20.w),
-                    label: Text('Save Image', style: TextStyle(fontSize: 13.sp)),
+                        : Icon(Icons.download, size: 20),
+                    label: Text('Save Image', style: TextStyle(fontSize: 13)),
                     style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      padding: EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 12),
                 Expanded(
                   child: FilledButton.icon(
                     onPressed: _sharing ? null : _share,
                     icon: _sharing
                         ? SizedBox(
-                            width: 18.w,
-                            height: 18.h,
+                            width: 18,
+                            height: 18,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               color: Colors.white,
                             ),
                           )
-                        : Icon(Icons.share, size: 20.w),
-                    label: Text('Share', style: TextStyle(fontSize: 13.sp)),
+                        : Icon(Icons.share, size: 20),
+                    label: Text('Share', style: TextStyle(fontSize: 13)),
                     style: FilledButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      padding: EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
@@ -217,10 +216,10 @@ class _CertificatePageState extends State<CertificatePage> {
   Widget _buildDesignPhoto(BuildContext context, String savedText) {
     return Container(
       key: const ValueKey(0),
-      width: 340.w,
+      width: 340,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -245,7 +244,7 @@ class _CertificatePageState extends State<CertificatePage> {
       children: [
         Image.network(
           widget.donationImageUrl!,
-          height: 200.h,
+          height: 200,
           width: double.infinity,
           fit: BoxFit.cover,
           errorBuilder: (_, _, _) => _buildGradientHeader(context),
@@ -265,20 +264,20 @@ class _CertificatePageState extends State<CertificatePage> {
           ),
         ),
         Positioned(
-          left: 20.w,
-          bottom: 16.h,
+          left: 20,
+          bottom: 16,
           child: Row(
             children: [
               _buildMiniAvatar(22, 20),
-              SizedBox(width: 10.w),
+              SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${widget.user.firstName} ${widget.user.lastName}',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  Text(savedText, style: TextStyle(fontSize: 12.sp, color: Colors.white.withValues(alpha: 0.8))),
+                  Text(savedText, style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.8))),
                 ],
               ),
             ],
@@ -292,10 +291,10 @@ class _CertificatePageState extends State<CertificatePage> {
   Widget _buildDesignClassic(BuildContext context, String savedText) {
     return Container(
       key: const ValueKey(1),
-      width: 340.w,
+      width: 340,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -318,7 +317,7 @@ class _CertificatePageState extends State<CertificatePage> {
   Widget _buildGradientHeader(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 28.h),
+      padding: EdgeInsets.symmetric(vertical: 28),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -329,10 +328,10 @@ class _CertificatePageState extends State<CertificatePage> {
       child: Column(
         children: [
           _buildMiniAvatar(32, 29),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             '${widget.user.firstName} ${widget.user.lastName}',
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.white),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
           ),
         ],
       ),
@@ -343,10 +342,10 @@ class _CertificatePageState extends State<CertificatePage> {
   Widget _buildDesignMinimal(BuildContext context, String savedText) {
     return Container(
       key: const ValueKey(2),
-      width: 340.w,
+      width: 340,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -357,12 +356,12 @@ class _CertificatePageState extends State<CertificatePage> {
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 28.h),
+        padding: EdgeInsets.symmetric(vertical: 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildMiniAvatar(36, 33),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             _buildContentSection(context, savedText, Colors.grey.shade600, Colors.red.shade700, Colors.grey.shade800, Colors.grey.shade500),
           ],
         ),
@@ -374,9 +373,9 @@ class _CertificatePageState extends State<CertificatePage> {
   Widget _buildDesignDark(BuildContext context, String savedText) {
     return Container(
       key: const ValueKey(3),
-      width: 340.w,
+      width: 340,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -392,12 +391,12 @@ class _CertificatePageState extends State<CertificatePage> {
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 28.h),
+        padding: EdgeInsets.symmetric(vertical: 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildMiniAvatarDark(36, 33),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             _buildContentSection(context, savedText, Colors.white.withValues(alpha: 0.6), Colors.amber.shade400, Colors.white, Colors.white.withValues(alpha: 0.5)),
           ],
         ),
@@ -415,49 +414,49 @@ class _CertificatePageState extends State<CertificatePage> {
     Color countColor,
   ) {
     return Padding(
-      padding: EdgeInsets.all(24.w),
+      padding: EdgeInsets.all(24),
       child: Column(
         children: [
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: 'I just helped save\n', style: TextStyle(fontSize: 15.sp, color: subtitleColor)),
+                TextSpan(text: 'I just helped save\n', style: TextStyle(fontSize: 15, color: subtitleColor)),
                 TextSpan(
                   text: savedText,
-                  style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold, color: headlineColor, height: 1.2),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: headlineColor, height: 1.2),
                 ),
               ],
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Text(
             '${widget.user.firstName} ${widget.user.lastName}',
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: nameColor),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: nameColor),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildPill(PhosphorIcons.drop, widget.user.bloodGroup, Colors.red.shade50, Colors.red.shade700),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               _buildPill(_badgeIconData(widget.badgeName), widget.badgeName, Colors.amber.shade50, _badgeColor(widget.badgeName)),
             ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             '${widget.donationCount} Donation${widget.donationCount == 1 ? '' : 's'}',
-            style: TextStyle(fontSize: 13.sp, color: countColor),
+            style: TextStyle(fontSize: 13, color: countColor),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(PhosphorIcons.heartbeat, size: 16, color: headlineColor),
-              SizedBox(width: 6.w),
+              SizedBox(width: 6),
               Text(
                 'BloodFinder',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: headlineColor),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: headlineColor),
               ),
             ],
           ),
@@ -480,7 +479,7 @@ class _CertificatePageState extends State<CertificatePage> {
         child: widget.user.image.isEmpty
             ? Text(
                 widget.user.firstName.isNotEmpty ? widget.user.firstName[0].toUpperCase() : '?',
-                style: TextStyle(fontSize: 24.sp, color: Colors.red.shade700),
+                style: TextStyle(fontSize: 24, color: Colors.red.shade700),
               )
             : null,
       ),
@@ -500,7 +499,7 @@ class _CertificatePageState extends State<CertificatePage> {
         child: widget.user.image.isEmpty
             ? Text(
                 widget.user.firstName.isNotEmpty ? widget.user.firstName[0].toUpperCase() : '?',
-                style: TextStyle(fontSize: 24.sp, color: Colors.white),
+                style: TextStyle(fontSize: 24, color: Colors.white),
               )
             : null,
       ),
@@ -516,7 +515,7 @@ class _CertificatePageState extends State<CertificatePage> {
       _DesignOption(3, 'Dark', const Color(0xFF1A1A2E), const Color(0xFF2D2D44), Colors.amber.shade600, Icons.star, Colors.amber.shade400),
     ];
     return List.generate(items.length * 2 - 1, (i) {
-      if (i.isOdd) return SizedBox(width: 10.w);
+      if (i.isOdd) return SizedBox(width: 10);
       final item = items[i ~/ 2];
       return _DesignThumbnailWidget(
         index: item.index,
@@ -546,17 +545,17 @@ class _CertificatePageState extends State<CertificatePage> {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 56.w,
-        height: 52.h,
+        width: 56,
+        height: 52,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: selected ? Colors.red : Colors.grey.shade300,
             width: selected ? 2.5 : 1,
           ),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(9.r),
+          borderRadius: BorderRadius.circular(9),
           child: Column(
             children: [
               Expanded(
@@ -577,7 +576,7 @@ class _CertificatePageState extends State<CertificatePage> {
                 child: Container(
                   color: index == 3 ? const Color(0xFF1A1A2E) : Colors.white,
                   child: Center(
-                    child: Text(label, style: TextStyle(fontSize: 7.sp, color: index == 3 ? Colors.white70 : Colors.grey.shade700)),
+                    child: Text(label, style: TextStyle(fontSize: 7, color: index == 3 ? Colors.white70 : Colors.grey.shade700)),
                   ),
                 ),
               ),
@@ -591,18 +590,18 @@ class _CertificatePageState extends State<CertificatePage> {
   // ── Pill Helper ──
   Widget _buildPill(IconData icon, String label, Color bg, Color fg) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: fg.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: fg),
-          SizedBox(width: 6.w),
-          Text(label, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: fg)),
+          SizedBox(width: 6),
+          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: fg)),
         ],
       ),
     );

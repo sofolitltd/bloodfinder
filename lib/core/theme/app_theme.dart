@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final lightTheme = ThemeData(
@@ -15,15 +14,15 @@ final lightTheme = ThemeData(
     surfaceTintColor: Colors.white,
     titleTextStyle: GoogleFonts.anekBangla(
       fontWeight: FontWeight.w600,
-      fontSize: 18.sp,
+      fontSize: 18,
       color: Colors.black,
     ),
   ),
   cardTheme: CardThemeData(
     color: Colors.white,
-  elevation: 0,
+    elevation: 0,
     margin: EdgeInsets.zero,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.r)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -31,30 +30,32 @@ final lightTheme = ThemeData(
       minimumSize: const Size(double.infinity, 40),
       foregroundColor: Colors.white,
       textStyle: GoogleFonts.anekBangla(),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      foregroundColor: Colors.red.shade700,
+      side: BorderSide(color: Colors.red.shade700),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.transparent,
     elevation: 0,
-    height: 64.h,
-  
+    height: 64,
+
     indicatorColor: Colors.red.shade50,
     iconTheme: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
@@ -64,32 +65,44 @@ final lightTheme = ThemeData(
     }),
     labelTextStyle: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return TextStyle(color: Colors.red, fontSize: 12.sp);
+        return TextStyle(color: Colors.red, fontSize: 12);
       }
-      return TextStyle(color: Colors.grey, fontSize: 12.sp);
+      return TextStyle(color: Colors.grey, fontSize: 12);
     }),
   ),
   inputDecorationTheme: InputDecorationTheme(
     isDense: true,
-    contentPadding: EdgeInsets.fromLTRB(12.w, 14.h, 12.w, 14.h),
+    contentPadding: EdgeInsets.fromLTRB(12, 14, 12, 14),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade300),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade300),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.red, width: 1.5),
     ),
   ),
   dialogTheme: DialogThemeData(
     backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.r)),
+      borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
+  ),
+  bottomSheetTheme: BottomSheetThemeData(
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+  ),
+  popupMenuTheme: PopupMenuThemeData(
+    color: Colors.white,
+    surfaceTintColor: Colors.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
   datePickerTheme: DatePickerThemeData(
     backgroundColor: Colors.white,
@@ -104,13 +117,14 @@ final Color _bluishDarkCard = const Color(0xFF3A3E6E);
 
 final darkTheme = ThemeData(
   useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.red,
-    brightness: Brightness.dark,
-  ).copyWith(
-    surface: _bluishDarkSurface,
-    surfaceContainerHighest: _bluishDarkCard,
-  ),
+  colorScheme:
+      ColorScheme.fromSeed(
+        seedColor: Colors.red,
+        brightness: Brightness.dark,
+      ).copyWith(
+        surface: _bluishDarkSurface,
+        surfaceContainerHighest: _bluishDarkCard,
+      ),
   scaffoldBackgroundColor: _bluishDarkBg,
   fontFamily: GoogleFonts.anekBangla().fontFamily,
   appBarTheme: AppBarTheme(
@@ -118,7 +132,7 @@ final darkTheme = ThemeData(
     surfaceTintColor: _bluishDarkSurface,
     titleTextStyle: GoogleFonts.anekBangla(
       fontWeight: FontWeight.w600,
-      fontSize: 18.sp,
+      fontSize: 18,
       color: Colors.white,
     ),
   ),
@@ -126,7 +140,7 @@ final darkTheme = ThemeData(
     color: _bluishDarkCard,
     elevation: 0,
     margin: EdgeInsets.zero,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.r)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -134,31 +148,33 @@ final darkTheme = ThemeData(
       minimumSize: const Size(double.infinity, 40),
       foregroundColor: Colors.white,
       textStyle: GoogleFonts.anekBangla(),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      foregroundColor: Colors.red[700],
+      side: BorderSide(color: Colors.red[700]!),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: _bluishDarkSurface,
     surfaceTintColor: Colors.transparent,
     elevation: 0,
-    height: 64.h,
+    height: 64,
     indicatorShape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
     ),
     indicatorColor: Colors.red.shade900,
     iconTheme: WidgetStateProperty.resolveWith((states) {
@@ -169,32 +185,44 @@ final darkTheme = ThemeData(
     }),
     labelTextStyle: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return TextStyle(color: Colors.red, fontSize: 12.sp);
+        return TextStyle(color: Colors.red, fontSize: 12);
       }
-      return TextStyle(color: Colors.grey, fontSize: 12.sp);
+      return TextStyle(color: Colors.grey, fontSize: 12);
     }),
   ),
   inputDecorationTheme: InputDecorationTheme(
     isDense: true,
-    contentPadding: EdgeInsets.fromLTRB(12.w, 14.h, 12.w, 14.h),
+    contentPadding: EdgeInsets.fromLTRB(12, 14, 12, 14),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade700),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade700),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.red, width: 1.5),
     ),
   ),
   dialogTheme: DialogThemeData(
     backgroundColor: _bluishDarkSurface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.r)),
+      borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
+  ),
+  bottomSheetTheme: BottomSheetThemeData(
+    backgroundColor: _bluishDarkSurface,
+    surfaceTintColor: _bluishDarkSurface,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+  ),
+  popupMenuTheme: PopupMenuThemeData(
+    color: _bluishDarkSurface,
+    surfaceTintColor: _bluishDarkSurface,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
   datePickerTheme: DatePickerThemeData(
     backgroundColor: _bluishDarkSurface,

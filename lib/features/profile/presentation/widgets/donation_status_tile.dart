@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class DonationStatusTile extends StatefulWidget {
@@ -109,7 +108,7 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -119,14 +118,14 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(current.$3, size: 18, color: current.$4),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +133,7 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
                     Text(
                       'Donation Status',
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -142,7 +141,7 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
                       Text(
                         'Snoozed until ${DateFormat.yMMMd().format(_snoozeUntil!)}',
                         style: TextStyle(
-                          fontSize: 11.sp,
+                          fontSize: 11,
                           color: Colors.grey.shade600,
                         ),
                       ),
@@ -151,10 +150,10 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(vertical: 4.h),
+            padding: EdgeInsets.symmetric(vertical: 4),
             child: Row(
               spacing: 6,
               children: _options.map((opt) {
@@ -163,14 +162,14 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
                   onTap: () => _updateAvailability(opt.$1),
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 4.h,
+                      horizontal: 10,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
                       color: selected
                           ? opt.$4.withValues(alpha: 0.15)
                           : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: selected
                             ? opt.$4
@@ -181,11 +180,11 @@ class _DonationStatusTileState extends State<DonationStatusTile> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(opt.$3, size: 14, color: selected ? opt.$4 : Colors.grey),
-                        SizedBox(width: 4.w),
+                        SizedBox(width: 4),
                         Text(
                           opt.$2,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
                             color: selected ? opt.$4 : Colors.grey.shade700,
                           ),

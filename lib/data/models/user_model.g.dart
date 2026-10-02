@@ -10,7 +10,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   uid: json['uid'] as String,
   firstName: json['firstName'] as String,
   lastName: json['lastName'] as String,
-  email: json['email'] as String,
+  email: json['email'] as String?,
   mobileNumber: json['mobileNumber'] as String,
   gender: json['gender'] as String,
   dateOfBirth: DateTime.parse(json['dateOfBirth'] as String),
@@ -34,6 +34,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           ?.map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  authUid: json['authUid'] as String?,
+  accountStatus: json['accountStatus'] as String? ?? 'active',
+  createdBy: json['createdBy'] as String? ?? 'self',
+  createdByAdminEmail: json['createdByAdminEmail'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -59,4 +63,8 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'locationAddress': instance.locationAddress,
       'country': instance.country,
       'savedAddresses': instance.savedAddresses.map((e) => e.toJson()).toList(),
+      'authUid': instance.authUid,
+      'accountStatus': instance.accountStatus,
+      'createdBy': instance.createdBy,
+      'createdByAdminEmail': instance.createdByAdminEmail,
     };

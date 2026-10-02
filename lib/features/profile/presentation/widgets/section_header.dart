@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SectionHeader extends StatelessWidget {
   final IconData icon;
@@ -11,7 +10,7 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: EdgeInsets.only(top: 4.h, bottom: 2.h),
+      padding: EdgeInsets.only(top: 4, bottom: 2),
       child: Row(
         spacing: 8,
         children: [
@@ -19,7 +18,7 @@ class SectionHeader extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 17.sp,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
             ),

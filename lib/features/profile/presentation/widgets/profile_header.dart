@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../../../data/models/user_model.dart';
@@ -44,10 +43,10 @@ class ProfileHeader extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 32.h, 16.w, 80.h),
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 80),
               child: Column(
                 children: [
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   CircleAvatar(
                     radius: 52,
                     backgroundColor: Colors.white,
@@ -60,17 +59,17 @@ class ProfileHeader extends StatelessWidget {
                                   ? fullName[0].toUpperCase()
                                   : '',
                               style: TextStyle(
-                                fontSize: 40.sp,
+                                fontSize: 40,
                                 color: Colors.red.shade600,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
                           : ClipRRect(
-                              borderRadius: BorderRadius.circular(50.r),
+                              borderRadius: BorderRadius.circular(50),
                               child: CachedNetworkImage(
                                 imageUrl: user.image,
-                                width: 100.w,
-                                height: 100.h,
+                                width: 100,
+                                height: 100,
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     const CircularProgressIndicator(
@@ -83,7 +82,7 @@ class ProfileHeader extends StatelessWidget {
                             ),
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -91,12 +90,12 @@ class ProfileHeader extends StatelessWidget {
                         fullName,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 22.sp,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       if (isVerified) ...[
-                        SizedBox(width: 6.w),
+                        SizedBox(width: 6),
                         Tooltip(
                           message:
                               'This donor has successfully donated blood via BloodFinder.',
@@ -109,24 +108,25 @@ class ProfileHeader extends StatelessWidget {
                       ],
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4),
                   Text(
                     user.mobileNumber,
                     style: TextStyle(
                       color: Colors.white70,
                       fontWeight: FontWeight.w500,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                     ),
                   ),
-                  Text(
-                    user.email,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.65),
-                      fontSize: 13.sp,
+                  if (user.email != null && user.email!.isNotEmpty)
+                    Text(
+                      user.email!,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.65),
+                        fontSize: 13,
+                      ),
                     ),
-                  ),
                   if (badges.isNotEmpty) ...[
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       runSpacing: 6,
@@ -141,12 +141,12 @@ class ProfileHeader extends StatelessWidget {
             ),
             Positioned(
               top: 8,
-              left: 16.w,
+              left: 16,
               child: Text(
                 'Profile',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18.sp,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -157,11 +157,11 @@ class ProfileHeader extends StatelessWidget {
                 right: 4,
                 child: IconButton(
                   icon: Container(
-                    width: 36.w,
-                    height: 36.h,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.12),
@@ -222,16 +222,16 @@ class BadgeChip extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: color),
-          SizedBox(width: 4.w),
+          SizedBox(width: 4),
           Text(
             badge
                 .replaceAll('_', ' ')
@@ -239,7 +239,7 @@ class BadgeChip extends StatelessWidget {
                 .map((w) =>
                     w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
                 .join(' '),
-            style: TextStyle(color: Colors.white, fontSize: 11.sp),
+            style: TextStyle(color: Colors.white, fontSize: 11),
           ),
         ],
       ),

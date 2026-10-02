@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -15,10 +14,10 @@ class HomeActionButtonsSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark ? Colors.grey.shade700.withValues(alpha: 0.3) : Colors.grey.shade200,
           width: 0.5,
@@ -31,7 +30,7 @@ class HomeActionButtonsSection extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: [
           Row(
@@ -42,21 +41,21 @@ class HomeActionButtonsSection extends StatelessWidget {
                 label: 'Post Blood\nRequest',
                 onTap: () => context.pushNamed(AppRoute.bloodRequest.name),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               _buildActionButton(
                 context,
                 icon: PhosphorIcons.heartbeat,
                 label: 'Blood\nBank',
                 onTap: () => context.pushNamed(AppRoute.bloodBank.name),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               _buildActionButton(
                 context,
                 icon: PhosphorIcons.ambulance,
                 label: 'Emergency\nDonors',
                 onTap: () => context.pushNamed(AppRoute.emergencyDonor.name),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               _buildActionButton(
                 context,
                 icon: PhosphorIcons.usersThree,
@@ -65,7 +64,7 @@ class HomeActionButtonsSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           const HomeCommunitySection(),
         ],
       ),
@@ -84,11 +83,11 @@ class HomeActionButtonsSection extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 4.w),
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 4),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
             color: isDark
                 ? Colors.grey.shade800.withValues(alpha: 0.4)
                 : Colors.grey.shade50,
@@ -102,13 +101,13 @@ class HomeActionButtonsSection extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: Colors.red.shade500, size: 28.w),
-              SizedBox(height: 6.h),
+              Icon(icon, color: Colors.red.shade500, size: 28),
+              SizedBox(height: 6),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 10.sp,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                   height: 1.3,

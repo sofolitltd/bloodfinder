@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SearchField extends StatelessWidget {
@@ -18,7 +17,7 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.surface,
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
@@ -27,11 +26,11 @@ class SearchField extends StatelessWidget {
             onChanged: onChanged,
             decoration: InputDecoration(
               hintText: hintText,
-              prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20.w),
+              prefixIcon: Icon(PhosphorIcons.magnifyingGlass, size: 20),
               suffixIcon: controller.text.isEmpty
                   ? null
                   : IconButton(
-                      icon: Icon(PhosphorIcons.x, size: 18.w),
+                      icon: Icon(PhosphorIcons.x, size: 18),
                       onPressed: () {
                         controller.clear();
                         onChanged('');

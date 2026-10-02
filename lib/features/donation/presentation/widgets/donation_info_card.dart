@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:bloodfinder/features/blood_request/models/blood_request.dart';
@@ -28,7 +27,7 @@ class DonationInfoCard extends StatelessWidget {
                     value: request.bloodGroup,
                     isDark: isDark,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   InfoTile(
                     icon: PhosphorIcons.calendar,
                     iconColor: Colors.orange.shade400,
@@ -39,7 +38,7 @@ class DonationInfoCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             Expanded(
               child: Column(
                 children: [
@@ -50,7 +49,7 @@ class DonationInfoCard extends StatelessWidget {
                     value: request.bag,
                     isDark: isDark,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   InfoTile(
                     icon: PhosphorIcons.clock,
                     iconColor: Colors.orange.shade400,
@@ -63,15 +62,15 @@ class DonationInfoCard extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(12.w),
+          padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isDark
                 ? Colors.grey.shade700.withValues(alpha: 0.15)
                 : Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +84,7 @@ class DonationInfoCard extends StatelessWidget {
               ),
               if (request.locationAddress != null &&
                   request.locationAddress!.isNotEmpty) ...[
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 AddressTile(
                   icon: PhosphorIcons.mapPin,
                   iconColor: Colors.grey.shade500,

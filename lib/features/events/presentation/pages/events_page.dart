@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -245,7 +244,7 @@ class _EventsPageState extends ConsumerState<EventsPage>
             IconButton(
               icon: Icon(
                 PhosphorIcons.funnel,
-                size: 20.w,
+                size: 20,
                 color: _showFilter ? Colors.red.shade600 : null,
               ),
               tooltip: _showFilter ? 'Hide filters' : 'Show filters',
@@ -298,22 +297,22 @@ class _EventsPageState extends ConsumerState<EventsPage>
     if (_latitude == null || _longitude == null) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(PhosphorIcons.mapPinLine,
-                  size: 48.w, color: Colors.grey.shade300),
-              SizedBox(height: 8.h),
+                  size: 48, color: Colors.grey.shade300),
+              SizedBox(height: 8),
               Text(
                 'Set your location to see nearby events',
-                style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: _openLocationPicker,
-                icon: Icon(Icons.location_on, size: 20.w),
+                icon: Icon(Icons.location_on, size: 20),
                 label: const Text('Set Location'),
               ),
             ],
@@ -362,10 +361,10 @@ class _EventsPageState extends ConsumerState<EventsPage>
     if (_selectedCountry == null) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           child: Text(
             'Set your country in profile to see events.',
-            style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
             textAlign: TextAlign.center,
           ),
         ),
@@ -376,22 +375,22 @@ class _EventsPageState extends ConsumerState<EventsPage>
       children: [
         // Country filter row
         Container(
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: Row(
             children: [
               Icon(PhosphorIcons.globe,
-                  size: 18.w, color: Colors.grey.shade600),
-              SizedBox(width: 8.w),
+                  size: 18, color: Colors.grey.shade600),
+              SizedBox(width: 8),
               Text(
                 'Country:',
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               DropdownButton<String>(
                 value: _selectedCountry,
                 underline: const SizedBox(),
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                 ),
@@ -444,33 +443,33 @@ class _EventsPageState extends ConsumerState<EventsPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72.w,
-              height: 72.h,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 PhosphorIcons.calendar,
-                size: 34.w,
+                size: 34,
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Text(
               emptyText,
               style: TextStyle(
-                fontSize: 17.sp,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade600,
               ),
               textAlign: TextAlign.center,
             ),
             if (onLocationMissing != null) ...[
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: onLocationMissing,
-                icon: Icon(Icons.location_on, size: 20.w),
+                icon: Icon(Icons.location_on, size: 20),
                 label: const Text('Set Location'),
               ),
             ],
@@ -481,7 +480,7 @@ class _EventsPageState extends ConsumerState<EventsPage>
 
     return ListView.builder(
       controller: scrollController,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 96),
       itemCount: events.length + (isLoading ? 1 : 0),
       itemBuilder: (context, index) {
         if (index == events.length) {
@@ -494,7 +493,7 @@ class _EventsPageState extends ConsumerState<EventsPage>
         }
         final event = events[index];
         return Padding(
-          padding: EdgeInsets.only(top: index == 0 ? 0 : 12.h),
+          padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
           child: _EventCard(event: event),
         );
       },
@@ -526,7 +525,7 @@ class _MyEventsTab extends ConsumerWidget {
         if (snapshot.hasError) {
           return Center(
             child: Padding(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(16),
               child: Text(
                 'Something went wrong loading your events.',
                 textAlign: TextAlign.center,
@@ -570,23 +569,23 @@ class _EventsList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72.w,
-              height: 72.h,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 PhosphorIcons.calendar,
-                size: 34.w,
+                size: 34,
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Text(
               emptyText,
               style: TextStyle(
-                fontSize: 17.sp,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
               ),
@@ -597,12 +596,12 @@ class _EventsList extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 96.h),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 96),
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
         return Padding(
-          padding: EdgeInsets.only(top: index == 0 ? 0 : 12.h),
+          padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
           child: _EventCard(event: event),
         );
       },
@@ -634,7 +633,7 @@ class _EventCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -650,14 +649,14 @@ class _EventCard extends StatelessWidget {
             if (event.imageUrl != null && event.imageUrl!.isNotEmpty)
               Image.network(
                 event.imageUrl!,
-                height: 140.h,
+                height: 140,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (_, _, _) => const SizedBox.shrink(),
               )
             else
               Container(
-                height: 140.h,
+                height: 140,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -670,12 +669,12 @@ class _EventCard extends StatelessWidget {
                   child: Icon(
                     PhosphorIcons.drop,
                     color: Colors.white24,
-                    size: 48.w,
+                    size: 48,
                   ),
                 ),
               ),
             Padding(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -683,7 +682,7 @@ class _EventCard extends StatelessWidget {
                     event.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15.sp,
+                      fontSize: 15,
                       color: isDark
                           ? Colors.grey.shade200
                           : Colors.grey.shade800,
@@ -691,26 +690,26 @@ class _EventCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4),
                   Text(
                     event.organizerName,
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 13,
                       color: isDark ? Colors.grey.shade400 : Colors.grey,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   Row(
                     children: [
                       Icon(PhosphorIcons.calendar,
-                          size: 14.w, color: Colors.red.shade400),
-                      SizedBox(width: 4.w),
+                          size: 14, color: Colors.red.shade400),
+                      SizedBox(width: 4),
                       Text(
                         dateStr,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 12,
                           color: isDark
                               ? Colors.grey.shade400
                               : Colors.grey.shade600,
@@ -718,17 +717,17 @@ class _EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(PhosphorIcons.mapPin,
-                          size: 14.w, color: Colors.grey.shade500),
-                      SizedBox(width: 4.w),
+                          size: 14, color: Colors.grey.shade500),
+                      SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           event.locationAddress,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: isDark
                                 ? Colors.grey.shade400
                                 : Colors.grey.shade600,
@@ -739,29 +738,29 @@ class _EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(PhosphorIcons.user,
-                          size: 14.w, color: Colors.blue.shade400),
-                      SizedBox(width: 4.w),
+                          size: 14, color: Colors.blue.shade400),
+                      SizedBox(width: 4),
                       Text(
                         '${event.rsvpCount} attending',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 12,
                           color: Colors.blue.shade600,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (event.country.isNotEmpty) ...[
-                        SizedBox(width: 12.w),
+                        SizedBox(width: 12),
                         Icon(PhosphorIcons.globe,
-                            size: 14.w, color: Colors.grey.shade400),
-                        SizedBox(width: 4.w),
+                            size: 14, color: Colors.grey.shade400),
+                        SizedBox(width: 4),
                         Text(
                           event.country,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: Colors.grey.shade500,
                           ),
                         ),

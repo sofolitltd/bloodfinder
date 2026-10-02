@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -105,14 +104,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 ),
 
               //
-              if (!hasArchived) SizedBox(height: 8.h),
+              if (!hasArchived) SizedBox(height: 8),
 
               Expanded(
                 child: filteredChats.isEmpty
                     ? const Center(child: Text("No active chats"))
                     : ListView.separated(
+                        padding: const EdgeInsets.only(top: 8),
                         itemCount: filteredChats.length,
-                        separatorBuilder: (_, _) => SizedBox(height: 8.h),
+                        separatorBuilder: (_, _) => SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final chatDoc = filteredChats[index];
                           final chatData = chatDoc.data();
@@ -140,7 +140,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           return FutureBuilder<
                             DocumentSnapshot<Map<String, dynamic>>
                           >(
-                            future: ref.read(userRepositoryProvider).getUser(otherUserId),
+                            future: ref
+                                .read(userRepositoryProvider)
+                                .getUser(otherUserId),
                             builder: (context, userSnapshot) {
                               String name = '';
                               String avatarLetter = '';
@@ -157,100 +159,139 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                                 image = user.image;
                               }
 
-                              return GestureDetector(
-                                onLongPress: () =>
-                                    setState(() => selectedChatId = chatId),
-                                  child: Card(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 12.w,
-                                      ),
-                                      horizontalTitleGap: 8.w,
-                                      leading: CircleAvatar(
-                                        radius: 20.r,
-                                        backgroundColor:
-                                            Colors.redAccent.shade200,
-                                        child: image.isEmpty
-                                            ? Text(
-                                                avatarLetter,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.sp,
-                                                ),
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: GestureDetector(
+                                  onLongPress: () =>
+                                      setState(() => selectedChatId = chatId),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey.shade700.withValues(
+                                                alpha: 0.3,
                                               )
-                                            : ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50.r),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: image,
-                                                  width: 40.w,
-                                                  height: 40.h,
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (context, url) =>
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                      ),
-                                                  errorWidget:
-                                                      (
-                                                        context,
-                                                        url,
-                                                        error,
-                                                      ) => Center(
-                                                        child: Text(
-                                                          avatarLetter,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20.sp,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                ),
-                                              ),
+                                            : Colors.grey.shade200,
+                                        width: 1.5,
                                       ),
-                                      title: Row(
-                                        children: [
-                                          Expanded(child: Text(name)),
-                                          if (timestamp != null)
-                                            Text(
-                                              timeAgo(timestamp),
-                                              style: TextStyle(
-                                                fontSize: 12.sp,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      subtitle: Row(
-                                        children: [
-                                          if (lastSenderId == uid &&
-                                              !seenBy.contains(otherUserId))
-                                            Icon(
-                                              Icons.check,
-                                              size: 16.w,
-                                              color: Colors.grey,
-                                            ),
-                                          if (lastSenderId == uid &&
-                                              seenBy.contains(otherUserId))
-                                            Icon(
-                                              Icons.done_all,
-                                              size: 16.w,
-                                              color: Colors.blue,
-                                            ),
-                                          SizedBox(width: 4.w),
-                                        Expanded(
-                                          child: Text(
-                                            lastText,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.08,
                                           ),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 3),
                                         ),
                                       ],
                                     ),
-                                    onTap: () => GoRouter.of(
-                                      context,
-                                    ).push('/chats/$chatId'),
+                                    child: Material(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(16),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: ListTile(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        horizontalTitleGap: 8,
+                                        leading: CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor:
+                                              Colors.redAccent.shade200,
+                                          child: image.isEmpty
+                                              ? Text(
+                                                  avatarLetter,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                  ),
+                                                )
+                                              : ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(50),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: image,
+                                                    width: 40,
+                                                    height: 40,
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (context, url) =>
+                                                        CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                        ),
+                                                    errorWidget:
+                                                        (
+                                                          context,
+                                                          url,
+                                                          error,
+                                                        ) => Center(
+                                                          child: Text(
+                                                            avatarLetter,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                  ),
+                                                ),
+                                        ),
+                                        title: Row(
+                                          children: [
+                                            Expanded(child: Text(name)),
+                                            if (timestamp != null)
+                                              Text(
+                                                timeAgo(timestamp),
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                          ],
+                                        ),
+                                        subtitle: Row(
+                                          children: [
+                                            if (lastSenderId == uid &&
+                                                !seenBy.contains(otherUserId))
+                                              Icon(
+                                                Icons.check,
+                                                size: 16,
+                                                color: Colors.grey,
+                                              ),
+                                            if (lastSenderId == uid &&
+                                                seenBy.contains(otherUserId))
+                                              Icon(
+                                                Icons.done_all,
+                                                size: 16,
+                                                color: Colors.blue,
+                                              ),
+                                            SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                lastText,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () => GoRouter.of(
+                                          context,
+                                        ).push('/chats/$chatId'),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               );

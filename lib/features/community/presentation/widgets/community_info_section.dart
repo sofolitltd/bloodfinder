@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -41,25 +40,25 @@ class CommunityInfoSection extends StatelessWidget {
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Padding(
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 community.name,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               QrImageView(
                 data: _shareLink,
-                size: 220.w,
+                size: 220,
                 backgroundColor: Colors.white,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -72,7 +71,7 @@ class CommunityInfoSection extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: Icon(PhosphorIcons.shareNetwork, size: 16.w),
+                  icon: Icon(PhosphorIcons.shareNetwork, size: 16),
                   label: const Text('Share Link'),
                 ),
               ),
@@ -93,7 +92,7 @@ class CommunityInfoSection extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -102,27 +101,27 @@ class CommunityInfoSection extends StatelessWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 28.w,
-                    height: 28.h,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(PhosphorIcons.phoneCall,
-                        size: 15.w, color: Colors.red.shade600),
+                        size: 15, color: Colors.red.shade600),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 8),
                   Text(
                     'Contact',
                     style: TextStyle(
-                      fontSize: 15.sp,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey.shade800,
                     ),
@@ -139,24 +138,24 @@ class CommunityInfoSection extends StatelessWidget {
                           ),
                         );
                       },
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 6.h),
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(PhosphorIcons.pencil,
-                                size: 14.w, color: Colors.red.shade600),
-                            SizedBox(width: 4.w),
+                                size: 14, color: Colors.red.shade600),
+                            SizedBox(width: 4),
                             Text(
                               'Edit',
                               style: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.red.shade600,
                               ),
@@ -167,7 +166,7 @@ class CommunityInfoSection extends StatelessWidget {
                     ),
                 ],
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               _InfoTile(
                 icon: PhosphorIcons.phoneCall,
                 label: 'Phone',
@@ -183,7 +182,7 @@ class CommunityInfoSection extends StatelessWidget {
                   community.socialMediaLinks!.isNotEmpty)
                 ...community.socialMediaLinks!.map(
                   (link) => Padding(
-                    padding: EdgeInsets.only(top: 8.h),
+                    padding: EdgeInsets.only(top: 8),
                     child: _InfoTile(
                       icon: PhosphorIcons.shareNetwork,
                       label: link.platform,
@@ -202,18 +201,18 @@ class CommunityInfoSection extends StatelessWidget {
         ),
 
         if (community.latitude != null && community.longitude != null) ...[
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           _LocationCard(community: community, onOpenMaps: _openInGoogleMaps),
         ],
 
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
 
         // Share card
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -222,45 +221,45 @@ class CommunityInfoSection extends StatelessWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.all(16),
           child: Row(
             children: [
               Container(
-                width: 36.w,
-                height: 36.h,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(10.r),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   PhosphorIcons.shareNetwork,
-                  size: 18.w,
+                  size: 18,
                   color: Colors.blue.shade600,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Share this community with others',
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
               InkWell(
                 onTap: () => _showQrDialog(context),
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 10.w, vertical: 8.h),
-                  margin: EdgeInsets.only(right: 8.w),
+                      horizontal: 10, vertical: 8),
+                  margin: EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(PhosphorIcons.qrCode,
-                      size: 16.w, color: Colors.blue.shade600),
+                      size: 16, color: Colors.blue.shade600),
                 ),
               ),
               InkWell(
@@ -273,18 +272,18 @@ class CommunityInfoSection extends StatelessWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 12.w, vertical: 8.h),
+                      horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     'Share',
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: Colors.blue.shade600,
                     ),
@@ -313,7 +312,7 @@ class _LocationCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -322,38 +321,38 @@ class _LocationCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 28.w,
-                height: 28.h,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(PhosphorIcons.mapPin,
-                    size: 15.w, color: Colors.red.shade600),
+                    size: 15, color: Colors.red.shade600),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8),
               Text(
                 'Location',
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
             child: SizedBox(
-              height: 160.h,
+              height: 160,
               child: IgnorePointer(
                 child: FlutterMap(
                   options: MapOptions(
@@ -372,10 +371,10 @@ class _LocationCard extends StatelessWidget {
                       markers: [
                         Marker(
                           point: point,
-                          width: 40.w,
-                          height: 48.h,
+                          width: 40,
+                          height: 48,
                           child: Icon(Icons.location_pin,
-                              color: Colors.red.shade600, size: 40.w),
+                              color: Colors.red.shade600, size: 40),
                         ),
                       ],
                     ),
@@ -384,13 +383,13 @@ class _LocationCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: onOpenMaps,
               icon: Icon(PhosphorIcons.mapTrifold,
-                  size: 16.w, color: Colors.red.shade600),
+                  size: 16, color: Colors.red.shade600),
               label: Text(
                 'Open in Google Maps',
                 style: TextStyle(color: Colors.red.shade600),
@@ -423,25 +422,25 @@ class _InfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
             Container(
-              width: 36.w,
-              height: 36.h,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 18.w, color: Colors.red.shade600),
+              child: Icon(icon, size: 18, color: Colors.red.shade600),
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,16 +448,16 @@ class _InfoTile extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 11.sp,
+                      fontSize: 11,
                       color: Colors.grey.shade500,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 2),
                   Text(
                     value,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       color: Colors.grey.shade800,
                       fontWeight: FontWeight.w500,
                     ),

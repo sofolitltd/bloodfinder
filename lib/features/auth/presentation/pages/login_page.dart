@@ -4,7 +4,6 @@ import 'package:bloodfinder/routes/router_config.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,7 +65,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
         content: Text(message),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? Colors.red.shade700 : Colors.green.shade700,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -182,11 +181,11 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       // Logo
                       Container(
-                        width: 80.w,
-                        height: 80.h,
+                        width: 80,
+                        height: 80,
                         decoration: BoxDecoration(
                           color: Colors.white24,
                           shape: BoxShape.circle,
@@ -194,10 +193,10 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         child: Icon(
                           PhosphorIcons.drop,
                           color: Colors.white,
-                          size: 44.w,
+                          size: 44,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: 4,
@@ -205,7 +204,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           Text(
                             'Blood',
                             style: TextStyle(
-                              fontSize: 30.sp,
+                              fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.2,
@@ -214,7 +213,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           Text(
                             'Finder',
                             style: TextStyle(
-                              fontSize: 30.sp,
+                              fontSize: 30,
                               fontWeight: FontWeight.w300,
                               color: Colors.white.withValues(alpha: 0.9),
                               letterSpacing: 1.2,
@@ -222,11 +221,11 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         'Find donors. Save lives.',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 14,
                           color: Colors.white.withValues(alpha: 0.8),
                           letterSpacing: 0.5,
                         ),
@@ -243,7 +242,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(24, 32, 24, 24),
                   child: Column(
                     children: [
                       // Welcome text
@@ -252,31 +251,31 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         child: Text(
                           'Welcome back',
                           style: TextStyle(
-                            fontSize: 22.sp,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
                           ),
                         ),
                       ),
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 4),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Sign in to your account',
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 16),
 
                       // Card
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(16.r),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: Colors.grey.shade200, width: 0.5),
                           boxShadow: [
                             BoxShadow(
@@ -286,7 +285,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                             ),
                           ],
                         ),
-                        padding: EdgeInsets.all(20.w),
+                        padding: EdgeInsets.all(20),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -298,7 +297,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          prefixIcon: Icon(PhosphorIcons.envelope, size: 20.w),
+                          prefixIcon: Icon(PhosphorIcons.envelope, size: 20),
                         ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
@@ -314,7 +313,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 16),
 
                       // Password
                       TextFormField(
@@ -323,13 +322,13 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          prefixIcon: Icon(PhosphorIcons.lock, size: 20.w),
+                          prefixIcon: Icon(PhosphorIcons.lock, size: 20),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              size: 20.w,
+                              size: 20,
                             ),
                             onPressed: () {
                               setState(() {
@@ -353,7 +352,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           return null;
                         },
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
 
                       // Forgot password
                       Align(
@@ -376,12 +375,12 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           ),
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
 
                       // Log In button
                       SizedBox(
                         width: double.infinity,
-                        height: 50.h,
+                        height: 50,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _handleLogin,
                           style: ElevatedButton.styleFrom(
@@ -389,8 +388,8 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                           ),
                           child: _isLoading
                               ? SizedBox(
-                                  height: 22.h,
-                                  width: 22.w,
+                                  height: 22,
+                                  width: 22,
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                     strokeWidth: 2.5,
@@ -399,7 +398,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                               : Text(
                                   'Log In',
                                   style: TextStyle(
-                                    fontSize: 16.sp,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -409,26 +408,26 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
 
                   // Divider with "or"
                       Row(
                         children: [
                           Expanded(child: Divider(color: Colors.grey.shade300)),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
                               'or',
                               style: TextStyle(
                                 color: Colors.grey.shade500,
-                                fontSize: 13.sp,
+                                fontSize: 13,
                               ),
                             ),
                           ),
                           Expanded(child: Divider(color: Colors.grey.shade300)),
                         ],
                       ),
-                      SizedBox(height: 10.h),
+                      SizedBox(height: 10),
 
                       // Sign up
                       Row(
@@ -438,13 +437,13 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                             "Don't have an account? ",
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant,
-                              fontSize: 14.sp,
+                              fontSize: 14,
                             ),
                           ),
                           TextButton(
                             onPressed: () => context.push(AppRoute.registration.path),
                             style: TextButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                               visualDensity: VisualDensity.compact,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -453,7 +452,7 @@ class _LoginPage extends ConsumerState<LoginPage> with SingleTickerProviderState
                               style: TextStyle(
                                 color: Colors.red.shade600,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14.sp,
+                                fontSize: 14,
                               ),
                             ),
                           ),

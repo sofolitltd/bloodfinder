@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ExpandableInfoCard extends StatefulWidget {
   const ExpandableInfoCard({super.key});
 
@@ -13,7 +12,7 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(top: 8.h),
+      margin: EdgeInsets.only(top: 8),
       child: InkWell(
         onTap: () => setState(() => _expanded = !_expanded),
         child: Column(
@@ -22,16 +21,16 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
             Stack(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(12.r),
+                  padding: EdgeInsets.all(12),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
                         Icons.info_outline,
-                        size: 20.w,
+                        size: 20,
                         color: Colors.red,
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +38,7 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                             Text(
                               'Read Before create community!',
                               style: TextStyle(
-                                fontSize: 15.sp,
+                                fontSize: 15,
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -47,7 +46,7 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                             Text(
                               'Create community for your school, college, university, or family. Tap to view/hide community guidelines.',
                               style: TextStyle(
-                                fontSize: 13.sp,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -55,13 +54,13 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                               alignment: Alignment.centerLeft,
                               firstChild: const SizedBox.shrink(),
                               secondChild: Padding(
-                                padding: EdgeInsets.only(top: 12.h),
+                                padding: EdgeInsets.only(top: 12),
                                 child: Text(
                                   "- Add at least 10 members within 1 month.\n"
                                   "- Communities not meeting the guidelines may be removed.\n"
                                   "- You'll be notified before any removal.",
                                   style: TextStyle(
-                                    fontSize: 13.sp,
+                                    fontSize: 13,
                                     height: 1.4,
                                     color: Colors.grey,
                                   ),
@@ -79,12 +78,12 @@ class _ExpandableInfoCardState extends State<ExpandableInfoCard> {
                   ),
                 ),
                 Positioned(
-                  right: 8.w,
-                  bottom: 4.h,
+                  right: 8,
+                  bottom: 4,
                   child: Icon(
                     _expanded ? Icons.expand_less : Icons.expand_more,
                     color: Colors.red,
-                    size: 28.w,
+                    size: 28,
                   ),
                 ),
               ],

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -77,19 +76,19 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 PhosphorIcons.usersThree,
                 color: Colors.red.shade600,
-                size: 18.w,
+                size: 18,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             const Text(
               'My Circle',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -134,10 +133,10 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
-        icon: Icon(PhosphorIcons.plusBold, size: 20.w),
+        icon: Icon(PhosphorIcons.plusBold, size: 20),
         label: const Text('Add Contact'),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
           showModalBottomSheet(
@@ -183,35 +182,35 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72.w,
-              height: 72.h,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 isSearching ? PhosphorIcons.magnifyingGlass : PhosphorIcons.usersThree,
-                size: 34.w,
+                size: 34,
                 color: Colors.red.shade300,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               isSearching ? 'No matching contacts' : 'No contacts yet',
               style: TextStyle(
-                fontSize: 17.sp,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 6),
             Text(
               isSearching
                   ? 'Try a different name, relation or phone'
                   : "Tap + to add family & friends\nto your circle",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 14,
                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 height: 1.4,
               ),
@@ -241,7 +240,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
       children: available.map((bg) {
         final bgContacts = grouped[bg]!;
         return ListView.builder(
-          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 96.h),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 96),
           itemCount: bgContacts.length,
           itemBuilder: (context, index) {
             return Padding(
@@ -263,7 +262,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -273,29 +272,29 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.all(12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 40.w,
-              height: 48.h,
+              width: 40,
+              height: 48,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Text(
                   contact.name.isNotEmpty ? contact.name[0].toUpperCase() : '?',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.red.shade600,
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
 
             Expanded(
               child: Column(
@@ -312,7 +311,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                               contact.name,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 height: 1.2,
                                 color: isDark
                                     ? Colors.grey.shade200
@@ -320,22 +319,22 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                               ),
                             ),
 
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 2),
 
                             Row(
                               children: [
                                 Icon(
                                   PhosphorIcons.usersThree,
-                                  size: 14.w,
+                                  size: 14,
                                   color: isDark
                                       ? Colors.grey.shade500
                                       : Colors.grey.shade400,
                                 ),
-                                SizedBox(width: 6.w),
+                                SizedBox(width: 6),
                                 Text(
                                   contact.relation,
                                   style: TextStyle(
-                                    fontSize: 13.sp,
+                                    fontSize: 13,
                                     color: isDark
                                         ? Colors.grey.shade400
                                         : Colors.grey.shade700,
@@ -349,17 +348,17 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                       if (contact.isAppUser)
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 3.h,
+                            horizontal: 8,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(6.r),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             'App User',
                             style: TextStyle(
-                              fontSize: 10.sp,
+                              fontSize: 10,
                               color: Colors.green.shade700,
                               fontWeight: FontWeight.w600,
                             ),
@@ -367,21 +366,21 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                         ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(
                         PhosphorIcons.phone,
-                        size: 14.w,
+                        size: 14,
                         color: isDark
                             ? Colors.grey.shade500
                             : Colors.grey.shade400,
                       ),
-                      SizedBox(width: 6.w),
+                      SizedBox(width: 6),
                       Text(
                         contact.phone,
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 13,
                           color: isDark
                               ? Colors.grey.shade400
                               : Colors.grey.shade700,
@@ -389,7 +388,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                       ),
                     ],
                   ),
-                  SizedBox(height: 6.h),
+                  SizedBox(height: 6),
                   Row(
                     children: [
                       _ActionButton(
@@ -398,7 +397,7 @@ class _MyCirclePageState extends ConsumerState<MyCirclePage>
                         color: Colors.green.shade600,
                         onTap: () => _callNumber(contact.phone),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       if (contact.isAppUser)
                         _ActionButton(
                           icon: PhosphorIcons.chatDots,
@@ -584,23 +583,23 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15.w, color: color),
+            Icon(icon, size: 15, color: color),
             if (label.isNotEmpty) ...[
-              SizedBox(width: 5.w),
+              SizedBox(width: 5),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 12,
                   color: color,
                   fontWeight: FontWeight.w600,
                 ),

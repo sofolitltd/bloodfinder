@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -58,10 +57,10 @@ class _HomePageState extends ConsumerState<HomePage> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 16.h,
-                left: 24.w,
-                right: 8.w,
-                bottom: 32.h,
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 24,
+                right: 8,
+                bottom: 32,
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -74,7 +73,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 ),
                 borderRadius: BorderRadius.vertical(
-                  bottom: Radius.elliptical(300.w, 40.h),
+                  bottom: Radius.elliptical(300, 40),
                 ),
               ),
               child: Column(
@@ -91,16 +90,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                             Text(
                               greeting,
                               style: TextStyle(
-                                fontSize: 15.sp,
+                                fontSize: 15,
                                 color: Colors.white.withValues(alpha: 0.85),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 2),
                             Text(
                               displayName,
                               style: TextStyle(
-                                fontSize: 22.sp,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -113,12 +112,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   // Current location / set location
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -130,8 +129,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                       child: Row(
                         children: [
                           Container(
-                            width: 20.w,
-                            height: 20.h,
+                            width: 20,
+                            height: 20,
                             decoration: BoxDecoration(
                               color: Colors.white24,
                               shape: BoxShape.circle,
@@ -139,17 +138,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: Icon(
                               PhosphorIcons.mapPin,
                               color: Colors.white,
-                              size: 14.w,
+                              size: 14,
                             ),
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               user?.locationAddress != null
                                   ? user!.locationAddress!
                                   : 'Tap to set your location',
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 14,
                                 color: Colors.white.withValues(alpha: 0.9),
                                 fontWeight: FontWeight.w400,
                               ),
@@ -160,34 +159,34 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Icon(
                             Icons.chevron_right,
                             color: Colors.white.withValues(alpha: 0.8),
-                            size: 18.w,
+                            size: 18,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                 
                 ],
               ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24),
             // Sections
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.w),
+              padding: EdgeInsets.symmetric(horizontal: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   HomeFindDonorSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   HomeActionButtonsSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   HomeCommunityContributionSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   HomeUpcomingEventsSection(),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16),
                   HomeBloodRequestsSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                 ],
               ),
             ),
@@ -227,30 +226,30 @@ class NotificationIconButton extends ConsumerWidget {
               ),
             );
           },
-          icon: Icon(PhosphorIcons.bell, size: 24.w, color: Colors.white),
+          icon: Icon(PhosphorIcons.bell, size: 24, color: Colors.white),
         ),
 
         //
         unreadAsync.when(
           data: (count) => count > 0
               ? Positioned(
-                  right: 8.w,
-                  top: 6.h,
+                  right: 8,
+                  top: 6,
                   child: Container(
-                    padding: EdgeInsets.all(2.w),
+                    padding: EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     constraints: BoxConstraints(
-                      minWidth: 16.w,
-                      minHeight: 16.h,
+                      minWidth: 16,
+                      minHeight: 16,
                     ),
                     child: Text(
                       count.toString(),
                       style: TextStyle(
                         color: Colors.red.shade700,
-                        fontSize: 10.sp,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,

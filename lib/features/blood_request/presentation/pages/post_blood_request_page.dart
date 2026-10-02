@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -224,7 +223,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
           content: Text(_isEditing ? 'Request updated!' : 'Request posted successfully'),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       );
@@ -237,7 +236,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
           content: Text('Error: $e'),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       );
@@ -256,19 +255,19 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 PhosphorIcons.drop,
                 color: Colors.red.shade600,
-                size: 18.w,
+                size: 18,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             Text(
               _isEditing ? 'Edit Blood Request' : 'Post Blood Request',
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -277,7 +276,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: Form(
           key: _formKey,
           child: Column(
@@ -287,20 +286,20 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   color: theme.colorScheme.surface,
                   margin: EdgeInsets.zero,
                   child: Padding(
-                    padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             Icon(PhosphorIcons.flag,
-                                size: 20.w, color: Colors.red.shade400),
-                            SizedBox(width: 8.w),
+                                size: 20, color: Colors.red.shade400),
+                            SizedBox(width: 8),
                             Text(
                               'Request Status',
                               style: theme.textTheme.titleMedium?.copyWith(
@@ -309,15 +308,15 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 8),
                         DropdownButtonFormField<String>(
                           initialValue: _status,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 12.h),
+                                horizontal: 16, vertical: 12),
                           ),
                           items: [
                             DropdownMenuItem(
@@ -325,8 +324,8 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                               child: Row(
                                 children: [
                                   Icon(Icons.check_circle,
-                                      size: 18.w, color: Colors.green),
-                                  SizedBox(width: 8.w),
+                                      size: 18, color: Colors.green),
+                                  SizedBox(width: 8),
                                   const Text('Active'),
                                 ],
                               ),
@@ -336,8 +335,8 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                               child: Row(
                                 children: [
                                   Icon(Icons.check_circle_outline,
-                                      size: 18.w, color: Colors.blue),
-                                  SizedBox(width: 8.w),
+                                      size: 18, color: Colors.blue),
+                                  SizedBox(width: 8),
                                   const Text('Fulfilled'),
                                 ],
                               ),
@@ -347,8 +346,8 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                               child: Row(
                                 children: [
                                   Icon(Icons.cancel,
-                                      size: 18.w, color: Colors.red),
-                                  SizedBox(width: 8.w),
+                                      size: 18, color: Colors.red),
+                                  SizedBox(width: 8),
                                   const Text('Cancelled'),
                                 ],
                               ),
@@ -358,11 +357,11 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                             if (v != null) setState(() => _status = v);
                           },
                         ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 8),
                         Text(
                           'Save the form below to apply the status change.',
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: isDark
                                 ? Colors.grey.shade400
                                 : Colors.grey.shade600,
@@ -373,7 +372,7 @@ class _BloodRequestPageState extends ConsumerState<BloodRequestPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
               ],
               RequestForm(
                 nameController: _nameController,

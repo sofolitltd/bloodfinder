@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -222,11 +221,11 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 PhosphorIcons.ambulance,
@@ -234,7 +233,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
                 size: 18,
               ),
             ),
-            SizedBox(width: 10.w),
+            SizedBox(width: 10),
             const Text(
               'Emergency Donors',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -246,7 +245,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
             IconButton(
               icon: Icon(
                 PhosphorIcons.funnel,
-                size: 20.w,
+                size: 20,
                 color: _showFilter ? Colors.red.shade600 : null,
               ),
               tooltip: _showFilter ? 'Hide filters' : 'Show filters',
@@ -283,7 +282,7 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
           AdminWidget(
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
@@ -293,10 +292,10 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
                     ),
                   );
                 },
-                icon: Icon(PhosphorIcons.plusBold, size: 20.w),
+                icon: Icon(PhosphorIcons.plusBold, size: 20),
                 label: Text(
                   'Manage Emergency Donors',
-                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
@@ -314,21 +313,21 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     if (_latitude == null || _longitude == null) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(PhosphorIcons.mapPinLine, size: 48, color: Colors.grey.shade300),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               Text(
                 'Set your location to see nearby donors',
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: _openLocationPicker,
-                icon: Icon(Icons.location_on, size: 20.w),
+                icon: Icon(Icons.location_on, size: 20),
                 label: const Text('Set Location'),
               ),
             ],
@@ -370,12 +369,12 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     if (donors.isEmpty) return _emptyState();
     return ListView.builder(
       controller: _nearbyScrollCtrl,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
       itemCount: donors.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index >= donors.length) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -399,12 +398,12 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
     if (donors.isEmpty) return _emptyState();
     return ListView.builder(
       controller: _allScrollCtrl,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
       itemCount: donors.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index >= donors.length) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -422,11 +421,11 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 72.w,
-            height: 72.h,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
               color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
               PhosphorIcons.ambulance,
@@ -434,21 +433,21 @@ class _EmergencyDonorPageState extends ConsumerState<EmergencyDonorPage>
               color: Colors.red.shade300,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Text(
             'No emergency donors',
             style: TextStyle(
-              fontSize: 17.sp,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
               color: Colors.grey.shade800,
             ),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 6),
           Text(
             'Check back later or add yourself\nas an emergency donor',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 14,
               color: Colors.grey.shade500,
               height: 1.4,
             ),
@@ -468,11 +467,11 @@ class _DonorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => _showDonorDialog(context, donor),
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -482,15 +481,15 @@ class _DonorCard extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48.w,
-                height: 48.h,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(14),
                   color: Colors.red.shade50,
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -501,7 +500,7 @@ class _DonorCard extends StatelessWidget {
                               ? donor.firstName[0].toUpperCase()
                               : '?',
                           style: TextStyle(
-                            fontSize: 18.sp,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.red.shade600,
                           ),
@@ -518,7 +517,7 @@ class _DonorCard extends StatelessWidget {
                         ),
                       ),
               ),
-              SizedBox(width: 14.w),
+              SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,22 +529,22 @@ class _DonorCard extends StatelessWidget {
                             '${donor.firstName} ${donor.lastName}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               color: Colors.grey.shade800,
                             ),
                           ),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 3.h),
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(6.r),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             donor.bloodGroup,
                             style: TextStyle(
-                              fontSize: 10.sp,
+                              fontSize: 10,
                               color: Colors.red.shade700,
                               fontWeight: FontWeight.w600,
                             ),
@@ -553,37 +552,37 @@ class _DonorCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         Icon(PhosphorIcons.phone,
                             size: 14, color: Colors.grey.shade400),
-                        SizedBox(width: 6.w),
+                        SizedBox(width: 6),
                         Text(
                           donor.mobileNumber,
                           style: TextStyle(
-                              fontSize: 13.sp, color: Colors.grey.shade700),
+                              fontSize: 13, color: Colors.grey.shade700),
                         ),
                       ],
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(PhosphorIcons.mapPin,
                             size: 14, color: Colors.grey.shade400),
-                        SizedBox(width: 6.w),
+                        SizedBox(width: 6),
                         Expanded(
                           child: Text(
                             donor.locationAddress ?? 'Location not set',
                             style: TextStyle(
-                                fontSize: 13.sp, color: Colors.grey.shade700),
+                                fontSize: 13, color: Colors.grey.shade700),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 12),
                     Row(
                       children: [
                         _MiniButton(
@@ -592,7 +591,7 @@ class _DonorCard extends StatelessWidget {
                           color: Colors.green.shade600,
                           onTap: () => _callDonor(donor.mobileNumber),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 8),
                         _MiniChatButton(otherUserId: donor.uid),
                       ],
                     ),
@@ -620,7 +619,7 @@ void _showDonorDialog(BuildContext context, UserModel donor) {
     context: context,
     builder: (ctx) => Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+      insetPadding: EdgeInsets.symmetric(horizontal: 20),
       child: _DonorDetailDialog(donor: donor),
     ),
   );
@@ -638,7 +637,7 @@ class _DonorDetailDialog extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 28.h),
+          padding: EdgeInsets.fromLTRB(24, 32, 24, 28),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -660,8 +659,8 @@ class _DonorDetailDialog extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: Container(
-                    width: 32.w,
-                    height: 32.h,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
@@ -674,12 +673,12 @@ class _DonorDetailDialog extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Stack(
                 children: [
                   Container(
-                    width: 72.w,
-                    height: 72.h,
+                    width: 72,
+                    height: 72,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
@@ -699,7 +698,7 @@ class _DonorDetailDialog extends StatelessWidget {
                                   ? donor.firstName[0].toUpperCase()
                                   : '?',
                               style: TextStyle(
-                                fontSize: 28.sp,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red.shade600,
                               ),
@@ -715,12 +714,12 @@ class _DonorDetailDialog extends StatelessWidget {
                     bottom: 0,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 3.h,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.1),
@@ -733,28 +732,28 @@ class _DonorDetailDialog extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.red.shade700,
                           fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
+                          fontSize: 13,
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14.h),
+              SizedBox(height: 14),
               Text(
                 '${donor.firstName} ${donor.lastName}',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Text(
                 'Emergency Donor',
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.8),
-                  fontSize: 14.sp,
+                  fontSize: 14,
                 ),
               ),
             ],
@@ -762,7 +761,7 @@ class _DonorDetailDialog extends StatelessWidget {
         ),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: const BorderRadius.vertical(
@@ -776,34 +775,34 @@ class _DonorDetailDialog extends StatelessWidget {
                 label: 'Phone',
                 value: donor.mobileNumber,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               _DetailTile(
                 icon: PhosphorIcons.mapPin,
                 label: 'Location',
                 value: donor.locationAddress ?? 'Not set',
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               _DetailTile(
                 icon: PhosphorIcons.genderIntersex,
                 label: 'Gender',
                 value: donor.gender,
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     child: SizedBox(
-                      height: 48.h,
+                      height: 48,
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pop(context);
                           _callDonor(context, donor.mobileNumber);
                         },
-                        icon: Icon(PhosphorIcons.phoneCall, size: 18.w),
+                        icon: Icon(PhosphorIcons.phoneCall, size: 18),
                         label: Text(
                           'Call',
                           style: TextStyle(
-                            fontSize: 15.sp,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -811,10 +810,10 @@ class _DonorDetailDialog extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 12),
                   Expanded(
                     child: SizedBox(
-                      height: 48.h,
+                      height: 48,
                       child: StartChatButton(
                         otherUserId: donor.uid,
                       ),
@@ -852,23 +851,23 @@ class _DetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
           Container(
-            width: 36.w,
-            height: 36.h,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, size: 18, color: Colors.red.shade600),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -876,16 +875,16 @@ class _DetailTile extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 11,
                     color: Colors.grey.shade500,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 2),
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     color: Colors.grey.shade800,
                     fontWeight: FontWeight.w500,
                   ),
@@ -916,22 +915,22 @@ class _MiniButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 14, color: color),
-            SizedBox(width: 4.w),
+            SizedBox(width: 4),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 12,
                 color: color,
                 fontWeight: FontWeight.w600,
               ),
@@ -1016,17 +1015,17 @@ class _MiniChatButtonState extends ConsumerState<_MiniChatButton> {
 
     return InkWell(
       onTap: isSelf || _isLoading ? null : _startChat,
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: Colors.blue.shade50,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: _isLoading
             ? SizedBox(
-                width: 14.w,
-                height: 14.h,
+                width: 14,
+                height: 14,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : Row(
@@ -1037,11 +1036,11 @@ class _MiniChatButtonState extends ConsumerState<_MiniChatButton> {
                     size: 14,
                     color: isSelf ? Colors.grey : Colors.blue.shade600,
                   ),
-                  SizedBox(width: 4.w),
+                  SizedBox(width: 4),
                   Text(
                     isSelf ? 'Chat' : 'Chat',
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 12,
                       color: isSelf ? Colors.grey : Colors.blue.shade600,
                       fontWeight: FontWeight.w600,
                     ),

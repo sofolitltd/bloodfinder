@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class LocationPickerHeader extends StatelessWidget {
@@ -24,10 +23,10 @@ class LocationPickerHeader extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+      margin: EdgeInsets.fromLTRB(16, 12, 16, 0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark ? Colors.transparent : Colors.grey.shade200,
           width: 0.5,
@@ -41,18 +40,18 @@ class LocationPickerHeader extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: .start,
           children: [
             InkWell(
               onTap: onOpenLocationPicker,
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isDark
                         ? Colors.grey.shade700.withValues(alpha: 0.3)
@@ -61,25 +60,25 @@ class LocationPickerHeader extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(PhosphorIcons.mapPin, color: Colors.red.shade400, size: 20.w),
-                    SizedBox(width: 4.w),
+                    Icon(PhosphorIcons.mapPin, color: Colors.red.shade400, size: 20),
+                    SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         locationAddress ?? 'Set search location',
                         style: TextStyle(
                           color: isDark ? Colors.grey.shade300 : Colors.black87,
-                          fontSize: 14.sp,
+                          fontSize: 14,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Icon(Icons.edit, color: Colors.grey.shade400, size: 16.w),
+                    Icon(Icons.edit, color: Colors.grey.shade400, size: 16),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -88,21 +87,21 @@ class LocationPickerHeader extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                    fontSize: 14.sp,
+                    fontSize: 14,
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '${radiusInKm.round()} km',
                     style: TextStyle(
                       color: Colors.red.shade600,
                       fontWeight: FontWeight.bold,
-                      fontSize: 13.sp,
+                      fontSize: 13,
                     ),
                   ),
                 ),

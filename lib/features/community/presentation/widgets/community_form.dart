@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -92,7 +91,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             icon: PhosphorIcons.usersFour,
             title: 'Community Information',
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           _SectionCard(
             children: [
               TextFormField(
@@ -100,7 +99,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                 decoration: InputDecoration(
                   labelText: 'Community Name',
                   hintText: 'Enter community name',
-                  prefixIcon: Icon(PhosphorIcons.usersFour, size: 20.w),
+                  prefixIcon: Icon(PhosphorIcons.usersFour, size: 20),
                 ),
                 keyboardType: TextInputType.name,
                 validator: (value) {
@@ -110,13 +109,13 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               TextFormField(
                 controller: _mobileController,
                 decoration: InputDecoration(
                   labelText: 'Admin Mobile',
                   hintText: 'Enter mobile number',
-                  prefixIcon: Icon(PhosphorIcons.phone, size: 20.w),
+                  prefixIcon: Icon(PhosphorIcons.phone, size: 20),
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
@@ -129,14 +128,14 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             ],
           ),
 
-          SizedBox(height: 2.h),
+          SizedBox(height: 2),
 
           // Location section
           _SectionHeader(
             icon: PhosphorIcons.mapPin,
             title: 'Location',
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           _SectionCard(
             children: [
               TextFormField(
@@ -144,7 +143,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                 decoration: InputDecoration(
                   labelText: 'Address',
                   hintText: 'Enter community address',
-                  prefixIcon: Icon(PhosphorIcons.mapPin, size: 20.w),
+                  prefixIcon: Icon(PhosphorIcons.mapPin, size: 20),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -153,7 +152,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               FormField<double>(
                 validator: (_) =>
                     _selectedLatitude == null ? 'Please pick a location' : null,
@@ -178,7 +177,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 14.w, vertical: 14.h),
+                              horizontal: 14, vertical: 14),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: state.hasError
@@ -186,19 +185,19 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                                   : Colors.red.shade200,
                               width: state.hasError ? 1.5 : 1,
                             ),
-                            borderRadius: BorderRadius.circular(12.r),
+                            borderRadius: BorderRadius.circular(12),
                             color: Colors.red.shade50,
                           ),
                           child: Row(
                             children: [
                               Icon(
                                 PhosphorIcons.mapPin,
-                                size: 20.w,
+                                size: 20,
                                 color: hasLocation
                                     ? Colors.red.shade600
                                     : Colors.red.shade300,
                               ),
-                              SizedBox(width: 8.w),
+                              SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment:
@@ -209,7 +208,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                                           ? 'Location Picked'
                                           : 'Pick Community Location',
                                       style: TextStyle(
-                                        fontSize: 14.sp,
+                                        fontSize: 14,
                                         fontWeight: hasLocation
                                             ? FontWeight.w500
                                             : FontWeight.normal,
@@ -222,11 +221,11 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                                         _selectedLocationAddress!.isNotEmpty)
                                       Padding(
                                         padding:
-                                            EdgeInsets.only(top: 2.h),
+                                            EdgeInsets.only(top: 2),
                                         child: Text(
                                           _selectedLocationAddress!,
                                           style: TextStyle(
-                                            fontSize: 12.sp,
+                                            fontSize: 12,
                                             color: Colors.grey.shade500,
                                           ),
                                           maxLines: 1,
@@ -236,12 +235,12 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 8.w),
+                              SizedBox(width: 8),
                               Icon(
                                 hasLocation
                                     ? PhosphorIcons.pencilSimple
                                     : PhosphorIcons.mapPinArea,
-                                size: 18.w,
+                                size: 18,
                                 color: Colors.red.shade400,
                               ),
                             ],
@@ -250,11 +249,11 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                       ),
                       if (state.hasError)
                         Padding(
-                          padding: EdgeInsets.only(top: 6.h, left: 12.w),
+                          padding: EdgeInsets.only(top: 6, left: 12),
                           child: Text(
                             state.errorText!,
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                               color: Theme.of(context).colorScheme.error,
                             ),
                           ),
@@ -266,14 +265,14 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             ],
           ),
 
-          SizedBox(height: 2.h),
+          SizedBox(height: 2),
 
           // Social Media section
           _SectionHeader(
             icon: PhosphorIcons.shareNetwork,
             title: 'Social Media Links',
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           _SectionCard(
             children: [
               SocialMediaInput(
@@ -285,14 +284,14 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             ],
           ),
 
-          SizedBox(height: 2.h),
+          SizedBox(height: 2),
 
           // Community Image section
           _SectionHeader(
             icon: PhosphorIcons.image,
             title: 'Community Image',
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           _SectionCard(
             children: [
               ImagePickerSection(
@@ -307,11 +306,11 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
             ],
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
 
           SizedBox(
             width: double.infinity,
-            height: 52.h,
+            height: 52,
             child: ElevatedButton(
               onPressed: _isLoading
                   ? null
@@ -326,7 +325,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                               ),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                           );
@@ -424,7 +423,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius:
-                                    BorderRadius.circular(12.r),
+                                    BorderRadius.circular(12),
                               ),
                             ),
                           );
@@ -440,7 +439,7 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius:
-                                    BorderRadius.circular(12.r),
+                                    BorderRadius.circular(12),
                               ),
                             ),
                           );
@@ -454,8 +453,8 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
               style: ElevatedButton.styleFrom(elevation: 0),
               child: _isLoading
                   ? SizedBox(
-                      height: 22.h,
-                      width: 22.w,
+                      height: 22,
+                      width: 22,
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2.5,
@@ -464,12 +463,12 @@ class _CommunityFormState extends ConsumerState<CommunityForm> {
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(PhosphorIcons.usersFour, size: 20.w),
-                        SizedBox(width: 8.w),
+                        Icon(PhosphorIcons.usersFour, size: 20),
+                        SizedBox(width: 8),
                         Text(
                           'Create Community',
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -494,19 +493,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28.w,
-          height: 28.h,
+          width: 28,
+          height: 28,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 15.w, color: Colors.red.shade600),
+          child: Icon(icon, size: 15, color: Colors.red.shade600),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),
@@ -527,7 +526,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -536,7 +535,7 @@ class _SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,

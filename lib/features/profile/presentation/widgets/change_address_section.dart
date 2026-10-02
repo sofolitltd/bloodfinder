@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../pages/address_management_page.dart';
@@ -14,16 +13,16 @@ class ChangeAddressSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
         const SectionHeader(
           icon: PhosphorIcons.mapPin,
           title: 'Manage Address',
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -35,7 +34,7 @@ class ChangeAddressSection extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(16),
               onTap: () {
                 Navigator.push(
                   context,
@@ -45,15 +44,15 @@ class ChangeAddressSection extends StatelessWidget {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     Icon(
                       PhosphorIcons.mapPin,
-                      size: 22.w,
+                      size: 22,
                       color: Colors.red.shade600,
                     ),
-                    SizedBox(width: 12.w),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,16 +60,16 @@ class ChangeAddressSection extends StatelessWidget {
                           Text(
                             'Current Address',
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              fontSize: 13,
                               fontWeight: FontWeight.w600,
                               color: Colors.grey.shade600,
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 2),
                           Text(
                             locationAddress ?? 'No address set',
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 2,
@@ -79,10 +78,10 @@ class ChangeAddressSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 8),
                     Icon(
                       Icons.chevron_right,
-                      size: 20.w,
+                      size: 20,
                       color: Colors.grey.shade400,
                     ),
                   ],

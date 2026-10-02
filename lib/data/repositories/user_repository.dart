@@ -33,6 +33,25 @@ abstract class UserRepository {
   Future<UserModel?> findUserByEmail(String email);
   Future<List<UserModel>> searchUsersByName(String query);
 
+  /// Returns the single admin-added, not-yet-claimed record matching
+  /// [canonicalPhone], or `null` if there's none or more than one (an
+  /// ambiguous match, e.g. a shared household phone, is left unclaimed
+  /// rather than guessed at).
+  Future<DocumentSnapshot<Map<String, dynamic>>?> findUnclaimedByPhone(
+      String canonicalPhone);
+  Future<DocumentSnapshot<Map<String, dynamic>>?> findUnclaimedByEmail(
+      String email);
+
+  /// Merges an admin-added placeholder record (at [placeholderId]) into the
+  /// freshly self-registered account at [newUid], reassigns the donations /
+  /// blood requests / emergency-donor / community-membership records that
+  /// referenced the placeholder, and removes the placeholder doc.
+  Future<void> claimUnclaimedUser({
+    required String placeholderId,
+    required String newUid,
+    required Map<String, dynamic> selfRegisteredData,
+  });
+
   /// Dispatches to phone/email/name lookup based on the shape of [query].
   Future<List<UserModel>> searchRegisteredUsers(String query);
   Stream<QuerySnapshot<Map<String, dynamic>>> emergencyDonorsStream();
@@ -197,6 +216,100 @@ class FirebaseUserRepository implements UserRepository {
 
     if (snap.docs.isEmpty) return null;
     return UserModel.fromFirestore(snap.docs.first);
+  }
+
+  @override
+  Future<DocumentSnapshot<Map<String, dynamic>>?> findUnclaimedByPhone(
+      String canonicalPhone) async {
+    final snap = await _dataSource
+        .collection(_col)
+        .where('mobileNumber', isEqualTo: canonicalPhone)
+        .where('accountStatus', isEqualTo: 'unclaimed')
+        .limit(2)
+        .get();
+    return snap.docs.length == 1 ? snap.docs.first : null;
+  }
+
+  @override
+  Future<DocumentSnapshot<Map<String, dynamic>>?> findUnclaimedByEmail(
+      String email) async {
+    final snap = await _dataSource
+        .collection(_col)
+        .where('email', isEqualTo: email)
+        .where('accountStatus', isEqualTo: 'unclaimed')
+        .limit(2)
+        .get();
+    return snap.docs.length == 1 ? snap.docs.first : null;
+  }
+
+  @override
+  Future<void> claimUnclaimedUser({
+    required String placeholderId,
+    required String newUid,
+    required Map<String, dynamic> selfRegisteredData,
+  }) async {
+    final placeholderRef = userDoc(placeholderId);
+    final placeholderSnap = await placeholderRef.get();
+    final placeholderData = placeholderSnap.data() ?? <String, dynamic>{};
+
+    // Fields the signup form collects (name/email/blood group/dob/etc.) take
+    // priority; anything only the admin recorded (district, currentAddress,
+    // isBanned, donationCount, ...) survives because selfRegisteredData
+    // doesn't define those keys.
+    final merged = <String, dynamic>{...placeholderData, ...selfRegisteredData};
+    merged['authUid'] = newUid;
+    merged['accountStatus'] = 'active';
+    merged['claimedAt'] = DateTime.now().toIso8601String();
+    merged['createdAt'] =
+        placeholderData['createdAt'] ?? selfRegisteredData['createdAt'];
+    // `selfRegisteredData` always carries its own defaults ('self'/null) for
+    // these two, which would otherwise stomp on the admin-provenance audit
+    // trail from the placeholder record.
+    merged['createdBy'] = placeholderData['createdBy'] ?? 'self';
+    merged['createdByAdminEmail'] = placeholderData['createdByAdminEmail'];
+
+    final batch = _dataSource.batch();
+    batch.set(userDoc(newUid), merged);
+    batch.delete(placeholderRef);
+
+    // Donations/blood requests reference the owner via a `uid` field on an
+    // otherwise independent doc ID — just repoint that field.
+    for (final col in ['donations', 'blood_requests']) {
+      final snap = await _dataSource
+          .collection(col)
+          .where('uid', isEqualTo: placeholderId)
+          .get();
+      for (final doc in snap.docs) {
+        batch.update(doc.reference, {'uid': newUid});
+      }
+    }
+
+    // emergency_donor uses the uid itself as the doc ID, so it has to be
+    // recreated under the new uid rather than field-updated.
+    final emergencyDonorSnap =
+        await _dataSource.document('emergency_donor/$placeholderId').get();
+    if (emergencyDonorSnap.exists) {
+      batch.set(_dataSource.document('emergency_donor/$newUid'), {});
+      batch.delete(emergencyDonorSnap.reference);
+    }
+
+    // community_members doc IDs are `${communityId}_$uid`, so these also
+    // need to be recreated under the new uid.
+    final memberSnap = await _dataSource
+        .collection('community_members')
+        .where('uid', isEqualTo: placeholderId)
+        .get();
+    for (final doc in memberSnap.docs) {
+      final communityId = doc.data()['communityId'] as String?;
+      if (communityId == null) continue;
+      batch.set(
+        _dataSource.document('community_members/${communityId}_$newUid'),
+        {...doc.data(), 'uid': newUid},
+      );
+      batch.delete(doc.reference);
+    }
+
+    await batch.commit();
   }
 
   @override

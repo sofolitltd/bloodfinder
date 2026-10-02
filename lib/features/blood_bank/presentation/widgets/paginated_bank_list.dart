@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../models/blood_bank.dart';
@@ -34,11 +33,11 @@ class PaginatedBankList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(PhosphorIcons.hospital, size: 48.w, color: Colors.grey.shade300),
-            SizedBox(height: 8.h),
+            Icon(PhosphorIcons.hospital, size: 48, color: Colors.grey.shade300),
+            SizedBox(height: 8),
             Text(
               emptyMessage,
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -47,12 +46,12 @@ class PaginatedBankList extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, paddingBottom.h),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, paddingBottom),
       itemCount: banks.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index >= banks.length) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Center(child: CircularProgressIndicator()),
           );
         }

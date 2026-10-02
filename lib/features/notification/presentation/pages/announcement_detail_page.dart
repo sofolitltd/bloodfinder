@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/announcement_model.dart';
@@ -17,7 +16,7 @@ class AnnouncementDetailPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.w),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,7 +30,7 @@ class AnnouncementDetailPage extends StatelessWidget {
                   Colors.amber.shade700,
                 ),
                 if (broadcast.country != null) ...[
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 8),
                   _badge(
                     Icons.location_on_outlined,
                     broadcast.country!,
@@ -41,51 +40,51 @@ class AnnouncementDetailPage extends StatelessWidget {
                 ],
               ],
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
 
             // Target info
             Text(
               _targetLabel(),
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 12,
                 color: Colors.grey.shade500,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
 
             // Timestamp
             Text(
               DateFormat('MMM d, yyyy – h:mm a').format(broadcast.createdAt),
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 12,
                 color: Colors.grey.shade500,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
 
             // Title
             Text(
               broadcast.title,
               style: TextStyle(
-                fontSize: 20.sp,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
 
             // Body
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 broadcast.body,
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   height: 1.5,
                   color: Colors.grey.shade800,
                 ),
@@ -99,20 +98,20 @@ class AnnouncementDetailPage extends StatelessWidget {
 
   Widget _badge(IconData icon, String label, Color bg, Color fg) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14.w, color: fg),
-          SizedBox(width: 4.w),
+          Icon(icon, size: 14, color: fg),
+          SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 11.sp,
+              fontSize: 11,
               fontWeight: FontWeight.w600,
               color: fg,
             ),

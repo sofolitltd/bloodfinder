@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -91,7 +90,7 @@ class _RequestFormState extends State<RequestForm> {
           icon: PhosphorIcons.user,
           title: 'Patient Information',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             TextFormField(
@@ -99,19 +98,19 @@ class _RequestFormState extends State<RequestForm> {
               decoration: InputDecoration(
                 labelText: 'Patient Name',
                 hintText: 'Enter patient name',
-                prefixIcon: Icon(PhosphorIcons.user, size: 20.w),
+                prefixIcon: Icon(PhosphorIcons.user, size: 20),
               ),
               validator: (val) =>
                   (val == null || val.trim().isEmpty) ? 'Required' : null,
             ),
-            SizedBox(height: 14.h),
+            SizedBox(height: 14),
             TextFormField(
               controller: widget.mobileController,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'Contact Number',
                 hintText: 'Enter contact number',
-                prefixIcon: Icon(PhosphorIcons.phone, size: 20.w),
+                prefixIcon: Icon(PhosphorIcons.phone, size: 20),
               ),
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Required';
@@ -121,13 +120,13 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         _SectionHeader(
           icon: PhosphorIcons.drop,
           title: 'Blood Details',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             BloodGroupSelector(
@@ -140,13 +139,13 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         _SectionHeader(
           icon: PhosphorIcons.hospital,
           title: 'Location',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             TextFormField(
@@ -156,12 +155,12 @@ class _RequestFormState extends State<RequestForm> {
               decoration: InputDecoration(
                 labelText: 'Hospital / Clinic Name',
                 hintText: 'Enter hospital or clinic name',
-                prefixIcon: Icon(PhosphorIcons.hospital, size: 20.w),
+                prefixIcon: Icon(PhosphorIcons.hospital, size: 20),
               ),
               validator: (val) =>
                   (val == null || val.trim().isEmpty) ? 'Required' : null,
             ),
-            SizedBox(height: 14.h),
+            SizedBox(height: 14),
             FormField<double>(
               validator: (_) => widget.selectedLatitude == null
                   ? 'Please pick a location'
@@ -174,7 +173,7 @@ class _RequestFormState extends State<RequestForm> {
                       onTap: _openMapPicker,
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 14.w, vertical: 14.h),
+                            horizontal: 14, vertical: 14),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: state.hasError
@@ -182,7 +181,7 @@ class _RequestFormState extends State<RequestForm> {
                                 : Colors.red.shade200,
                             width: state.hasError ? 1.5 : 1,
                           ),
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(12),
                           color: Colors.red.shade50,
                         ),
                         child: Row(
@@ -194,7 +193,7 @@ class _RequestFormState extends State<RequestForm> {
                                   ? Colors.red.shade600
                                   : Colors.red.shade300,
                             ),
-                            SizedBox(width: 12.w),
+                            SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 hasLocation
@@ -202,7 +201,7 @@ class _RequestFormState extends State<RequestForm> {
                                         'Location selected')
                                     : 'Pick location on map',
                                 style: TextStyle(
-                                  fontSize: 14.sp,
+                                  fontSize: 14,
                                   fontWeight: hasLocation
                                       ? FontWeight.w500
                                       : FontWeight.normal,
@@ -214,7 +213,7 @@ class _RequestFormState extends State<RequestForm> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            SizedBox(width: 8.w),
+                            SizedBox(width: 8),
                             Icon(
                               hasLocation
                                   ? PhosphorIcons.pencilSimple
@@ -228,11 +227,11 @@ class _RequestFormState extends State<RequestForm> {
                     ),
                     if (state.hasError)
                       Padding(
-                        padding: EdgeInsets.only(top: 6.h, left: 12.w),
+                        padding: EdgeInsets.only(top: 6, left: 12),
                         child: Text(
                           state.errorText!,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             color: Theme.of(context).colorScheme.error,
                           ),
                         ),
@@ -244,13 +243,13 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         _SectionHeader(
           icon: PhosphorIcons.calendar,
           title: 'Date & Time',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             Row(
@@ -269,13 +268,13 @@ class _RequestFormState extends State<RequestForm> {
                         widget.onDateChanged(date);
                       }
                     },
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 14.w, vertical: 14.h),
+                          horizontal: 14, vertical: 14),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
@@ -286,14 +285,14 @@ class _RequestFormState extends State<RequestForm> {
                                 ? Colors.red.shade600
                                 : Colors.grey.shade400,
                           ),
-                          SizedBox(width: 10.w),
+                          SizedBox(width: 10),
                           Text(
                             widget.selectedDate == null
                                 ? 'Select Date'
                                 : DateFormat('d/M/yyy')
                                     .format(widget.selectedDate!),
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               color: widget.selectedDate != null
                                   ? Colors.grey.shade800
                                   : Colors.grey.shade500,
@@ -307,7 +306,7 @@ class _RequestFormState extends State<RequestForm> {
                     ),
                   ),
                 ),
-                SizedBox(width: 10.w),
+                SizedBox(width: 10),
                 Expanded(
                   child: InkWell(
                     onTap: () async {
@@ -320,13 +319,13 @@ class _RequestFormState extends State<RequestForm> {
                         widget.onTimeChanged(time);
                       }
                     },
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 14.w, vertical: 14.h),
+                          horizontal: 14, vertical: 14),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
@@ -337,13 +336,13 @@ class _RequestFormState extends State<RequestForm> {
                                 ? Colors.red.shade600
                                 : Colors.grey.shade400,
                           ),
-                          SizedBox(width: 10.w),
+                          SizedBox(width: 10),
                           Text(
                             widget.selectedTime == null
                                 ? 'Select Time'
                                 : widget.selectedTime!.format(context),
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               color: widget.selectedTime != null
                                   ? Colors.grey.shade800
                                   : Colors.grey.shade500,
@@ -362,13 +361,13 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         _SectionHeader(
           icon: PhosphorIcons.hourglass,
           title: 'Active Duration',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             ExpiryDurationSelector(
@@ -378,13 +377,13 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: 24),
 
         _SectionHeader(
           icon: PhosphorIcons.notePencil,
           title: 'Note (optional)',
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         _SectionCard(
           children: [
             TextFormField(
@@ -397,10 +396,10 @@ class _RequestFormState extends State<RequestForm> {
           ],
         ),
 
-        SizedBox(height: 32.h),
+        SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
-          height: 52.h,
+          height: 52,
           child: ElevatedButton(
             onPressed: (widget.isLoading || (widget.isEditing && !widget.hasChanges))
                 ? null
@@ -408,8 +407,8 @@ class _RequestFormState extends State<RequestForm> {
             style: ElevatedButton.styleFrom(elevation: 0),
             child: widget.isLoading
                 ? SizedBox(
-                    height: 22.h,
-                    width: 22.w,
+                    height: 22,
+                    width: 22,
                     child: CircularProgressIndicator(
                       color: Colors.white,
                       strokeWidth: 2.5,
@@ -418,7 +417,7 @@ class _RequestFormState extends State<RequestForm> {
                 : Text(
                     widget.isEditing ? 'Update Request' : 'Submit Request',
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -440,19 +439,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28.w,
-          height: 28.h,
+          width: 28,
+          height: 28,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 15, color: Colors.red.shade600),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),
@@ -473,7 +472,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -482,7 +481,7 @@ class _SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,

@@ -3,22 +3,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
 import '../../../../data/repositories/community_repository.dart';
 
-import '../widgets/admin_management_section.dart';
 import '../widgets/announcements_section.dart';
 import '../widgets/blood_tab_section.dart';
 import '../widgets/community_admins_section.dart';
 import '../widgets/community_info_section.dart';
 import '../widgets/community_members_list.dart';
 import '../widgets/non_member_join_card.dart';
+import 'community_manage_page.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -59,14 +57,13 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
-          final community =
-              Community.fromJson({...data, 'id': widget.communityId});
-          final canManage = community.canManageMembers(uid);
-          final tabCount = canManage ? 6 : 5;
-
-          if (_tabController == null || _tabController!.length != tabCount) {
+          final community = Community.fromJson({
+            ...data,
+            'id': widget.communityId,
+          });
+          if (_tabController == null || _tabController!.length != 5) {
             _tabController?.dispose();
-            _tabController = TabController(length: tabCount, vsync: this);
+            _tabController = TabController(length: 5, vsync: this);
           }
 
           return Column(
@@ -85,13 +82,12 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
                   labelColor: Colors.red.shade700,
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: Colors.red.shade700,
-                  tabs: [
-                    const Tab(text: 'About'),
-                    const Tab(text: 'Blood'),
-                    const Tab(text: 'Members'),
-                    const Tab(text: 'Admins'),
-                    const Tab(text: 'Announcements'),
-                    if (canManage) const Tab(text: 'Manage'),
+                  tabs: const [
+                    Tab(text: 'About'),
+                    Tab(text: 'Blood'),
+                    Tab(text: 'Members'),
+                    Tab(text: 'Admins'),
+                    Tab(text: 'Announcements'),
                   ],
                 ),
               ),
@@ -103,10 +99,10 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
 
                     if (memberStatusSnapshot.hasData &&
                         memberStatusSnapshot.data!.exists) {
-                      final memberData = memberStatusSnapshot.data!.data()
-                          as Map<String, dynamic>?;
-                      if (memberData != null &&
-                          memberData['member'] == true) {
+                      final memberData =
+                          memberStatusSnapshot.data!.data()
+                              as Map<String, dynamic>?;
+                      if (memberData != null && memberData['member'] == true) {
                         isApprovedMember = true;
                       }
                     }
@@ -115,27 +111,27 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
                       controller: _tabController,
                       children: [
                         SingleChildScrollView(
-                          padding: EdgeInsets.all(16.w),
+                          padding: EdgeInsets.all(16),
                           child: CommunityInfoSection(
-                              community: community, uid: uid),
+                            community: community,
+                            uid: uid,
+                          ),
                         ),
                         BloodTabSection(community: community),
                         isApprovedMember
                             ? CommunityMembersList(
-                                community: community, currentUserId: uid)
+                                community: community,
+                                currentUserId: uid,
+                              )
                             : NonMemberJoinCard(community: community),
                         CommunityAdminsSection(community: community),
                         SingleChildScrollView(
-                          padding: EdgeInsets.all(16.w),
+                          padding: EdgeInsets.all(16),
                           child: AnnouncementsSection(
-                              community: community, uid: uid),
-                        ),
-                        if (canManage)
-                          SingleChildScrollView(
-                            padding: EdgeInsets.all(16.w),
-                            child: AdminManagementSection(
-                                community: community, uid: uid),
+                            community: community,
+                            uid: uid,
                           ),
+                        ),
                       ],
                     );
                   },
@@ -182,7 +178,7 @@ class _CommunityHero extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(4.w, 4.h, 16.w, 28.h),
+          padding: EdgeInsets.fromLTRB(4, 4, 16, 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -211,8 +207,7 @@ class _CommunityHero extends StatelessWidget {
                               actions: <Widget>[
                                 TextButton(
                                   child: const Text("Cancel"),
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(),
+                                  onPressed: () => Navigator.of(context).pop(),
                                 ),
                                 TextButton(
                                   child: Text(
@@ -220,11 +215,12 @@ class _CommunityHero extends StatelessWidget {
                                     style: TextStyle(color: Colors.red),
                                   ),
                                   onPressed: () async {
-                                    await communityRepo
-                                        .deleteCommunity(community.id);
-                                    Navigator.of(context).popUntil(
-                                      (route) => route.isFirst,
+                                    await communityRepo.deleteCommunity(
+                                      community.id,
                                     );
+                                    Navigator.of(
+                                      context,
+                                    ).popUntil((route) => route.isFirst);
                                   },
                                 ),
                               ],
@@ -235,51 +231,59 @@ class _CommunityHero extends StatelessWidget {
                     ),
                 ],
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 56.w,
-                          height: 56.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: community.images.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    community.name.isNotEmpty
-                                        ? community.name[0].toUpperCase()
-                                        : '',
-                                    style: TextStyle(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red.shade600,
-                                    ),
-                                  ),
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: community.images.first,
-                                  width: 56.w,
-                                  height: 56.h,
-                                  fit: BoxFit.cover,
+                        GestureDetector(
+                          onTap: community.images.isEmpty
+                              ? null
+                              : () => _showFullImage(
+                                  context,
+                                  community.images.first,
                                 ),
+                          child: Container(
+                            width: 76,
+                            height: 76,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: community.images.isEmpty
+                                ? Center(
+                                    child: Text(
+                                      community.name.isNotEmpty
+                                          ? community.name[0].toUpperCase()
+                                          : '',
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red.shade600,
+                                      ),
+                                    ),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: community.images.first,
+                                    width: 76,
+                                    height: 76,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
                         ),
-                        SizedBox(width: 14.w),
+                        SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,31 +292,66 @@ class _CommunityHero extends StatelessWidget {
                                 community.name,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20.sp,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                community.address,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              if (community.locationAddress != null &&
-                                  community.locationAddress!.isNotEmpty)
+                              SizedBox(height: 4),
+                              if (community.canManageMembers(uid))
                                 Padding(
-                                  padding: EdgeInsets.only(top: 2.h),
-                                  child: Text(
-                                    community.locationAddress!,
-                                    style: TextStyle(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.65),
-                                      fontSize: 12.sp,
+                                  padding: EdgeInsets.only(top: 4),
+                                  child: OutlinedButton.icon(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => CommunityManagePage(
+                                          community: community,
+                                          uid: uid,
+                                        ),
+                                      ),
                                     ),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      side: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                      ),
+                                      visualDensity: VisualDensity.compact,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      PhosphorIcons.shieldChevron,
+                                      size: 16,
+                                    ),
+                                    label: const Text('Manage'),
+                                  ),
+                                )
+                              else ...[
+                                Text(
+                                  community.address,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                    fontSize: 14,
                                   ),
                                 ),
+                                if (community.locationAddress != null &&
+                                    community.locationAddress!.isNotEmpty)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 2),
+                                    child: Text(
+                                      community.locationAddress!,
+                                      style: TextStyle(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.65,
+                                        ),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ],
                           ),
                         ),
@@ -323,6 +362,35 @@ class _CommunityHero extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showFullImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(16),
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: InteractiveViewer(
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(PhosphorIcons.x, color: Colors.white),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
         ),
       ),
     );

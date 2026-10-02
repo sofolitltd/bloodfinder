@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../../models/community.dart';
@@ -16,13 +15,13 @@ class NonMemberJoinCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       children: [
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -31,24 +30,24 @@ class NonMemberJoinCard extends StatelessWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "You're not a member yet",
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade800,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Text(
                 'Join this community to see and connect with its members.',
-                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -66,7 +65,7 @@ class NonMemberJoinCard extends StatelessWidget {
                   label: const Text('View Join Instructions'),
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(

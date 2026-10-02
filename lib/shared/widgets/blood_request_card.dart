@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -96,7 +95,7 @@ class BloodRequestCard extends ConsumerWidget {
         return Container(
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark
                   ? Colors.grey.shade700.withValues(alpha: 0.3)
@@ -127,18 +126,18 @@ class BloodRequestCard extends ConsumerWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 0.h),
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 40.w,
-                  height: 48.h,
+                  width: 40,
+                  height: 48,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -148,20 +147,20 @@ class BloodRequestCard extends ConsumerWidget {
                         Colors.red.shade400,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
 
-                      Icon(PhosphorIcons.dropFill, size: 16.w, color: Colors.white),
-                      SizedBox(height: 2.h),
+                      Icon(PhosphorIcons.dropFill, size: 16, color: Colors.white),
+                      SizedBox(height: 2),
                       Text(
                         request.bloodGroup,
                         style: TextStyle(
-                          fontSize: 16.sp,
-                          height: 1.h,
+                          fontSize: 16,
+                          height: 1,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -169,7 +168,7 @@ class BloodRequestCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +179,7 @@ class BloodRequestCard extends ConsumerWidget {
                             child: Text(
                               request.name,
                               style: TextStyle(
-                                fontSize: 15.sp,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
                               ),
@@ -188,17 +187,17 @@ class BloodRequestCard extends ConsumerWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(width: 6.w),
+                          SizedBox(width: 6),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: _statusColor(request.effectiveStatus).withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(4.r),
+                              borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               _statusLabel(request.effectiveStatus),
                               style: TextStyle(
-                                fontSize: 9.sp,
+                                fontSize: 9,
                                 fontWeight: FontWeight.w600,
                                 color: _statusColor(request.effectiveStatus),
                               ),
@@ -206,11 +205,11 @@ class BloodRequestCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 4),
                       Row(
                         children: [
                           CircleAvatar(
-                            radius: 7.r,
+                            radius: 7,
                             backgroundColor: Colors.grey.shade300,
                             backgroundImage: user.image.isNotEmpty
                                 ? CachedNetworkImageProvider(user.image)
@@ -221,33 +220,33 @@ class BloodRequestCard extends ConsumerWidget {
                                         ? user.firstName[0].toUpperCase()
                                         : '',
                                     style: TextStyle(
-                                      fontSize: 8.sp,
+                                      fontSize: 8,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.grey.shade600,
                                     ),
                                   )
                                 : null,
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 4),
                           Text(
                             'Posted by ${user.firstName} ${user.lastName}',
                             style: TextStyle(
-                              fontSize: 10.sp,
+                              fontSize: 10,
                               color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 6.h),
+                      SizedBox(height: 6),
                       Row(
                         children: [
-                          Icon(PhosphorIcons.hospital, size: 14.w, color: Colors.grey.shade500),
-                          SizedBox(width: 5.w),
+                          Icon(PhosphorIcons.hospital, size: 14, color: Colors.grey.shade500),
+                          SizedBox(width: 5),
                           Expanded(
                             child: Text(
                               request.address,
                               style: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 12,
                                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               ),
                               maxLines: 1,
@@ -258,16 +257,16 @@ class BloodRequestCard extends ConsumerWidget {
                       ),
                       if (request.locationAddress != null &&
                           request.locationAddress!.isNotEmpty) ...[
-                        SizedBox(height: 3.h),
+                        SizedBox(height: 3),
                         Row(
                           children: [
-                            Icon(PhosphorIcons.mapPin, size: 13.w, color: Colors.grey.shade500),
-                            SizedBox(width: 6.w),
+                            Icon(PhosphorIcons.mapPin, size: 13, color: Colors.grey.shade500),
+                            SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 request.locationAddress!,
                                 style: TextStyle(
-                                  fontSize: 11.sp,
+                                  fontSize: 11,
                                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                                 ),
                                 maxLines: 1,
@@ -277,30 +276,30 @@ class BloodRequestCard extends ConsumerWidget {
                           ],
                         ),
                       ],
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(PhosphorIcons.clock, size: 14.w, color: Colors.grey.shade500),
-                          SizedBox(width: 5.w),
+                          Icon(PhosphorIcons.clock, size: 14, color: Colors.grey.shade500),
+                          SizedBox(width: 5),
                           Text(
                             '${formatDate(request.date)} at ${formatTime(request.time)}',
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 11,
                               color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
                             ),
                           ),
                         ],
                       ),
                       if (distanceInKm != null) ...[
-                        SizedBox(height: 4.h),
+                        SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(PhosphorIcons.mapPin, size: 14.w, color: Colors.red.shade400),
-                            SizedBox(width: 5.w),
+                            Icon(PhosphorIcons.mapPin, size: 14, color: Colors.red.shade400),
+                            SizedBox(width: 5),
                             Text(
                               '${distanceInKm!.toStringAsFixed(1)} km away',
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.red.shade400,
                               ),
@@ -311,20 +310,20 @@ class BloodRequestCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 4.w),
+                SizedBox(width: 4),
                 InkWell(
                   onTap: shareRequest,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                   child: Container(
-                    width: 32.w,
-                    height: 32.h,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       color: isDark ? Colors.grey.shade700.withValues(alpha: 0.3) : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       PhosphorIcons.share,
-                      size: 16.w,
+                      size: 16,
                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                   ),
@@ -332,27 +331,27 @@ class BloodRequestCard extends ConsumerWidget {
               ],
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 10),
           Container(
-            height: 40.h,
+            height: 40,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.red.shade600, Colors.red.shade500],
               ),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.r),
-                bottomRight: Radius.circular(16.r),
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(PhosphorIcons.heart, size: 16.w, color: Colors.white.withValues(alpha: 0.9)),
-                SizedBox(width: 8.w),
+                Icon(PhosphorIcons.heart, size: 16, color: Colors.white.withValues(alpha: 0.9)),
+                SizedBox(width: 8),
                 Text(
                   'Donate Now',
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white.withValues(alpha: 0.95),
                   ),
@@ -367,7 +366,7 @@ class BloodRequestCard extends ConsumerWidget {
 
   Widget _buildManageCard(BuildContext context, bool isDark, UserModel user, VoidCallback shareRequest) {
     return Padding(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -375,7 +374,7 @@ class BloodRequestCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 22.r,
+                radius: 22,
                 backgroundColor: Colors.redAccent.shade200,
                 child: user.image.isEmpty
                     ? Text(
@@ -385,20 +384,20 @@ class BloodRequestCard extends ConsumerWidget {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 22.sp,
+                          fontSize: 22,
                         ),
                       )
                     : ClipRRect(
-                        borderRadius: BorderRadius.circular(50.r),
+                        borderRadius: BorderRadius.circular(50),
                         child: CachedNetworkImage(
                           imageUrl: user.image,
-                          width: 44.w,
-                          height: 44.h,
+                          width: 44,
+                          height: 44,
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
                               SizedBox(
-                                  width: 20.w,
-                                  height: 20.h,
+                                  width: 20,
+                                  height: 20,
                                   child: CircularProgressIndicator(
                                       strokeWidth: 2)),
                           errorWidget: (context, url, error) => Icon(
@@ -408,7 +407,7 @@ class BloodRequestCard extends ConsumerWidget {
                         ),
                       ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,19 +415,19 @@ class BloodRequestCard extends ConsumerWidget {
                     Text(
                       '${user.firstName} ${user.lastName}',
                       style: TextStyle(
-                        fontSize: 15.sp,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: isDark
                             ? Colors.grey.shade200
                             : Colors.grey.shade800,
                       ),
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 2),
                     Text(
                       DateFormat('dd MMM yyy - hh:mm a')
                           .format(request.createdAt),
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 12,
                         color: isDark
                             ? Colors.grey.shade400
                             : Colors.grey,
@@ -451,15 +450,15 @@ class BloodRequestCard extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Divider(
-            height: 8.h,
+            height: 8,
             thickness: 1,
             color: isDark
                 ? Colors.grey.shade600.withValues(alpha: 0.5)
                 : Colors.grey.shade300,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -473,7 +472,7 @@ class BloodRequestCard extends ConsumerWidget {
                       value: request.name,
                       isDark: isDark,
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 10),
                     _InfoTile(
                       icon: PhosphorIcons.drop,
                       iconColor: Colors.red.shade400,
@@ -481,7 +480,7 @@ class BloodRequestCard extends ConsumerWidget {
                       value: request.bloodGroup,
                       isDark: isDark,
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 10),
                     _InfoTile(
                       icon: PhosphorIcons.calendar,
                       iconColor: Colors.orange.shade400,
@@ -490,7 +489,7 @@ class BloodRequestCard extends ConsumerWidget {
                       isDark: isDark,
                     ),
                     if (distanceInKm != null) ...[
-                      SizedBox(height: 10.h),
+                      SizedBox(height: 10),
                       _InfoTile(
                         icon: PhosphorIcons.mapPin,
                         iconColor: Colors.grey.shade500,
@@ -502,7 +501,7 @@ class BloodRequestCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   children: [
@@ -514,7 +513,7 @@ class BloodRequestCard extends ConsumerWidget {
                       isDark: isDark,
                       valueColor: _statusColor(request.effectiveStatus),
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 10),
                     _InfoTile(
                       icon: PhosphorIcons.heartbeat,
                       iconColor: Colors.red.shade400,
@@ -522,7 +521,7 @@ class BloodRequestCard extends ConsumerWidget {
                       value: request.bag,
                       isDark: isDark,
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 10),
                     _InfoTile(
                       icon: PhosphorIcons.clock,
                       iconColor: Colors.orange.shade400,
@@ -535,15 +534,15 @@ class BloodRequestCard extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(12.r),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isDark
                   ? Colors.grey.shade700.withValues(alpha: 0.15)
                   : Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,7 +556,7 @@ class BloodRequestCard extends ConsumerWidget {
                 ),
                 if (request.locationAddress != null &&
                     request.locationAddress!.isNotEmpty) ...[
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   _AddressTile(
                     icon: PhosphorIcons.mapPin,
                     iconColor: Colors.grey.shade500,
@@ -598,15 +597,15 @@ class _InfoTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 36.w,
-          height: 36.h,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, size: 18.w, color: iconColor),
+          child: Icon(icon, size: 18, color: iconColor),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -614,15 +613,15 @@ class _InfoTile extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 11,
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: valueColor ??
                       (isDark ? Colors.grey.shade200 : Colors.grey.shade800),
@@ -657,15 +656,15 @@ class _AddressTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 32.w,
-          height: 32.h,
+          width: 32,
+          height: 32,
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 16.w, color: iconColor),
+          child: Icon(icon, size: 16, color: iconColor),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -673,15 +672,15 @@ class _AddressTile extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 11,
                   color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 2),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                 ),
@@ -740,8 +739,8 @@ class _ManagementMenu extends StatelessWidget {
             value: 'edit',
             child: Row(
               children: [
-                Icon(Icons.edit, size: 20.w),
-                SizedBox(width: 8.w),
+                Icon(Icons.edit, size: 20),
+                SizedBox(width: 8),
                 Text('Edit'),
               ],
             ),
@@ -750,8 +749,8 @@ class _ManagementMenu extends StatelessWidget {
             value: 'share',
             child: Row(
               children: [
-                Icon(Icons.share, size: 20.w),
-                SizedBox(width: 8.w),
+                Icon(Icons.share, size: 20),
+                SizedBox(width: 8),
                 Text('Share'),
               ],
             ),
@@ -761,7 +760,7 @@ class _ManagementMenu extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.delete, size: 20, color: Colors.red),
-                SizedBox(width: 8.w),
+                SizedBox(width: 8),
                 Text('Delete', style: TextStyle(color: Colors.red)),
               ],
             ),

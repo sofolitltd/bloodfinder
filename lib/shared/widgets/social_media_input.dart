@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/social_media_link.dart';
 
 class SocialMediaInput extends StatefulWidget {
@@ -71,7 +70,7 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
         ...List.generate(_entries.length, (i) {
           final entry = _entries[i];
           return Padding(
-            padding: EdgeInsets.only(bottom: 12.h),
+            padding: EdgeInsets.only(bottom: 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,8 +81,8 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
                       labelText: 'Platform',
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 12.h,
+                        horizontal: 10,
+                        vertical: 12,
                       ),
                     ),
                     child: DropdownButtonHideUnderline(
@@ -105,7 +104,7 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
                     ),
                   ),
                 ),
-                SizedBox(width: 4.w),
+                SizedBox(width: 4),
                 Expanded(
                   flex: 3,
                   child: TextFormField(
@@ -114,18 +113,18 @@ class _SocialMediaInputState extends State<SocialMediaInput> {
                       hintText: 'Enter URL',
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 12.h,
+                        horizontal: 8,
+                        vertical: 12,
                       ),
                     ),
                     keyboardType: TextInputType.url,
                     onChanged: (_) => widget.onLinksChanged(_links),
                   ),
                 ),
-                SizedBox(width: 2.w),
+                SizedBox(width: 2),
                 IconButton(
                   icon: Icon(Icons.remove_circle_outline,
-                      color: Colors.red, size: 20.w),
+                      color: Colors.red, size: 20),
                   onPressed: () => _removeEntry(i),
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(

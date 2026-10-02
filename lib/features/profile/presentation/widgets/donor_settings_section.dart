@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -106,17 +105,17 @@ class DonorSettingsSection extends ConsumerWidget {
 
     return Column(
       children: [
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         const SectionHeader(
           icon: Icons.bloodtype_outlined,
           title: 'Donor Settings',
         ),
-        SizedBox(height: 6.h),
+        SizedBox(height: 6),
 
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -128,15 +127,15 @@ class DonorSettingsSection extends ConsumerWidget {
           child: GestureDetector(
             onTap: () => _handleDonorToggle(context, !isDonorStatus, ref),
             child: Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 12.w),
+              padding: EdgeInsets.only(left: 16, right: 12),
               child: Row(
                 children: [
-                  Icon(PhosphorIcons.checkCircle, size: 20.w),
-                  SizedBox(width: 16.w),
+                  Icon(PhosphorIcons.checkCircle, size: 20),
+                  SizedBox(width: 16),
                   Expanded(
                     child: Text(
                       'Available to Donate',
-                      style: TextStyle(fontSize: 14.sp),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                   Switch(
@@ -152,7 +151,7 @@ class DonorSettingsSection extends ConsumerWidget {
         ),
 
         if (isDonorStatus) ...[
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           DonationStatusTile(
             availability: availability,
             snoozedUntil: snoozedUntil,
@@ -161,11 +160,11 @@ class DonorSettingsSection extends ConsumerWidget {
           ),
         ],
 
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -181,15 +180,15 @@ class DonorSettingsSection extends ConsumerWidget {
               });
             },
             child: Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 12.w),
+              padding: EdgeInsets.only(left: 16, right: 12),
               child: Row(
                 children: [
-                  Icon(PhosphorIcons.checkCircle, size: 20.w),
-                  SizedBox(width: 16.w),
+                  Icon(PhosphorIcons.checkCircle, size: 20),
+                  SizedBox(width: 16),
                   Expanded(
                     child: Text(
                       'Emergency Donor',
-                      style: TextStyle(fontSize: 14.sp),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                   Switch(

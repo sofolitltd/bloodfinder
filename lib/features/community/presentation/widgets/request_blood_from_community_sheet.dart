@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
@@ -152,10 +151,11 @@ class _RequestBloodFromCommunitySheetState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Request sent to ${widget.community.name}\'s admins.'),
+              'Request sent to ${widget.community.name}\'s admins.',
+            ),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         );
@@ -177,10 +177,10 @@ class _RequestBloodFromCommunitySheetState
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 24.w,
-        right: 24.w,
-        top: 24.w,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24.w,
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: SingleChildScrollView(
         child: Form(
@@ -191,25 +191,38 @@ class _RequestBloodFromCommunitySheetState
             children: [
               Center(
                 child: Container(
-                  width: 40.w,
-                  height: 4.h,
-                  margin: EdgeInsets.only(bottom: 20.h),
+                  width: 40,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(2.r),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
-              Text(
-                'Request Blood from ${widget.community.name}',
-                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Request Blood from ${widget.community.name}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 4),
               Text(
                 'This goes directly to the community\'s admins — you don\'t need to join.',
-                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 initialValue: _bloodGroup,
                 decoration: const InputDecoration(
@@ -221,7 +234,7 @@ class _RequestBloodFromCommunitySheetState
                     .toList(),
                 onChanged: (value) => setState(() => _bloodGroup = value),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               TextFormField(
                 controller: _mobileController,
                 keyboardType: TextInputType.phone,
@@ -233,7 +246,7 @@ class _RequestBloodFromCommunitySheetState
                     ? 'Please enter a contact number'
                     : null,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               TextFormField(
                 controller: _noteController,
                 maxLines: 3,
@@ -243,17 +256,16 @@ class _RequestBloodFromCommunitySheetState
                   alignLabelWithHint: true,
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
-                height: 50.h,
+                height: 50,
                 child: ElevatedButton.icon(
-                  onPressed:
-                      (_isSending || !_prefillLoaded) ? null : _submit,
+                  onPressed: (_isSending || !_prefillLoaded) ? null : _submit,
                   icon: _isSending
                       ? SizedBox(
-                          width: 18.w,
-                          height: 18.h,
+                          width: 18,
+                          height: 18,
                           child: const CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2,
@@ -266,7 +278,7 @@ class _RequestBloodFromCommunitySheetState
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),

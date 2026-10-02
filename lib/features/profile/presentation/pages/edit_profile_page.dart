@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
@@ -221,19 +220,19 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         title: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 PhosphorIcons.user,
                 color: Colors.red.shade600,
-                size: 18.w,
+                size: 18,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             const Text(
               'Edit Profile',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -242,7 +241,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: Form(
           key: _formKey,
           child: Column(
@@ -251,21 +250,21 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
               if (showLocationBanner)
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(bottom: 16.h),
-                  padding: EdgeInsets.all(12.w),
+                  margin: EdgeInsets.only(bottom: 16),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.orange.shade50,
                     border: Border.all(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.warning_amber, color: Colors.orange),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           'You are not visible to blood seekers.\nSet your location on the map below.',
-                          style: TextStyle(fontSize: 13.sp),
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
                     ],
@@ -277,7 +276,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 icon: PhosphorIcons.user,
                 title: 'Profile Information',
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               SectionCard(
                 children: [
                   AvatarPicker(
@@ -285,35 +284,35 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     profileImageUrl: _profileImageUrl,
                     onPickImage: _pickImage,
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 14),
                   TextFormField(
                     controller: _firstNameController,
                     decoration: InputDecoration(
                       labelText: 'First Name',
                       prefixIcon:
-                          Icon(PhosphorIcons.user, size: 20.w),
+                          Icon(PhosphorIcons.user, size: 20),
                     ),
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Required' : null,
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 14),
                   TextFormField(
                     controller: _lastNameController,
                     decoration: InputDecoration(
                       labelText: 'Last Name',
                       prefixIcon:
-                          Icon(PhosphorIcons.user, size: 20.w),
+                          Icon(PhosphorIcons.user, size: 20),
                     ),
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Required' : null,
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 14),
                   TextFormField(
                     controller: _mobileNumberController,
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
                       prefixIcon:
-                          Icon(PhosphorIcons.phone, size: 20.w),
+                          Icon(PhosphorIcons.phone, size: 20),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (v) {
@@ -324,14 +323,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 ],
               ),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
 
               // Section 2: Medical Info
               _SectionHeader(
                 icon: PhosphorIcons.heart,
                 title: 'Medical Info',
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               SectionCard(
                 children: [
                   Row(
@@ -342,7 +341,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                           decoration: InputDecoration(
                             labelText: 'Blood Group',
                             prefixIcon:
-                                Icon(PhosphorIcons.drop, size: 20.w),
+                                Icon(PhosphorIcons.drop, size: 20),
                           ),
                           items: [
                             'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
@@ -355,14 +354,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                           validator: (v) => v == null ? 'Required' : null,
                         ),
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 8),
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           initialValue: _selectedGender,
                           decoration: InputDecoration(
                             labelText: 'Gender',
                             prefixIcon: Icon(
-                                PhosphorIcons.genderIntersex, size: 20.w),
+                                PhosphorIcons.genderIntersex, size: 20),
                           ),
                           items: ['Male', 'Female']
                               .map((g) => DropdownMenuItem(
@@ -375,7 +374,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 14),
                   GestureDetector(
                     onTap: _selectDate,
                     child: AbsorbPointer(
@@ -383,7 +382,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                         decoration: InputDecoration(
                           labelText: 'Date of Birth',
                           prefixIcon: Icon(
-                              PhosphorIcons.calendarBlank, size: 20.w),
+                              PhosphorIcons.calendarBlank, size: 20),
                         ),
                         controller: TextEditingController(
                           text: _selectedDOB == null
@@ -395,12 +394,12 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 14),
                   Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 16.w, vertical: 12.h),
+                        horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14.r),
+                      borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: isDonor
                             ? Colors.red.shade200
@@ -420,7 +419,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                                 'Listed as a donor',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 15.sp,
+                                  fontSize: 15,
                                   color: isDonor
                                       ? Colors.red.shade800
                                       : Colors.grey.shade700,
@@ -431,7 +430,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                                     ? "You're ready to save lives"
                                     : 'Enable to be visible to blood seekers',
                                 style: TextStyle(
-                                  fontSize: 12.sp,
+                                  fontSize: 12,
                                   color: isDonor
                                       ? Colors.red.shade400
                                       : Colors.grey.shade500,
@@ -453,14 +452,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 ],
               ),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
 
               // Section 3: Location
               _SectionHeader(
                 icon: PhosphorIcons.mapPin,
                 title: 'Location',
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               SectionCard(
                 children: [
                   AddressManagementSection(
@@ -475,18 +474,18 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 ],
               ),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
 
               SizedBox(
                 width: double.infinity,
-                height: 52.h,
+                height: 52,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _updateUser,
                   style: ElevatedButton.styleFrom(elevation: 0),
                   child: _isLoading
                       ? SizedBox(
-                          height: 22.h,
-                          width: 22.w,
+                          height: 22,
+                          width: 22,
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2.5,
@@ -495,12 +494,12 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(PhosphorIcons.check, size: 20.w),
-                            SizedBox(width: 8.w),
+                            Icon(PhosphorIcons.check, size: 20),
+                            SizedBox(width: 8),
                             Text(
                               'Save Changes',
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -527,19 +526,19 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 28.w,
-          height: 28.h,
+          width: 28,
+          height: 28,
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 15.w, color: Colors.red.shade600),
+          child: Icon(icon, size: 15, color: Colors.red.shade600),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,
           ),

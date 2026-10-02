@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
-
 
 import '../../models/community.dart';
 import '../../../../data/providers/repository_providers.dart';
@@ -18,16 +16,16 @@ import '../../../../features/notification/services/notification_service.dart';
 class JoinRequestSheet extends ConsumerWidget {
   final Community community;
 
-  const JoinRequestSheet({
-    super.key,
-    required this.community,
-  });
+  const JoinRequestSheet({super.key, required this.community});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUserId = ref.read(authRepositoryProvider).currentUser!.uid;
     final communityRepo = ref.read(communityRepositoryProvider);
-    final memberStream = communityRepo.memberStream(community.id, currentUserId);
+    final memberStream = communityRepo.memberStream(
+      community.id,
+      currentUserId,
+    );
 
     return StreamBuilder<DocumentSnapshot>(
       stream: memberStream,
@@ -42,7 +40,7 @@ class JoinRequestSheet extends ConsumerWidget {
         }
 
         return Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(24),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -50,23 +48,23 @@ class JoinRequestSheet extends ConsumerWidget {
               children: [
                 Center(
                   child: Container(
-                    width: 40.w,
-                    height: 4.h,
-                    margin: EdgeInsets.only(bottom: 20.h),
+                    width: 40,
+                    height: 4,
+                    margin: EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2.r),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
                 Row(
                   children: [
                     Container(
-                      width: 44.w,
-                      height: 44.h,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(14.r),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(
                         PhosphorIcons.usersThree,
@@ -74,7 +72,7 @@ class JoinRequestSheet extends ConsumerWidget {
                         size: 22,
                       ),
                     ),
-                    SizedBox(width: 14.w),
+                    SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,31 +80,35 @@ class JoinRequestSheet extends ConsumerWidget {
                           Text(
                             community.name,
                             style: TextStyle(
-                              fontSize: 18.sp,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey.shade800,
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 2),
                           Text(
                             community.address,
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              fontSize: 13,
                               color: Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
                   ],
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 20),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(14.w),
+                  padding: EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,16 +116,16 @@ class JoinRequestSheet extends ConsumerWidget {
                       Text(
                         'Instructions to join:',
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey.shade700,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         '1. Press the Join Request button below.\n2. Wait for approval from community admin.',
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 13,
                           color: Colors.grey.shade600,
                           height: 1.5,
                         ),
@@ -131,24 +133,21 @@ class JoinRequestSheet extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  height: 50.h,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
                       try {
                         if (!isRequested) {
-                          await communityRepo.addMember(
-                            community.id,
-                            currentUserId,
-                            {
-                              'uid': currentUserId,
-                              'member': false,
-                              'source': 'requested',
-                              'createdAt': FieldValue.serverTimestamp(),
-                            },
-                          );
+                          await communityRepo
+                              .addMember(community.id, currentUserId, {
+                                'uid': currentUserId,
+                                'member': false,
+                                'source': 'requested',
+                                'createdAt': FieldValue.serverTimestamp(),
+                              });
 
                           try {
                             await FCMSender.sendToTopic(
@@ -188,22 +187,23 @@ class JoinRequestSheet extends ConsumerWidget {
                                 content: const Text('Join request sent'),
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             );
                           }
                         } else {
                           await communityRepo.removeMember(
-                              community.id, currentUserId);
+                            community.id,
+                            currentUserId,
+                          );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content:
-                                    const Text('Join request canceled'),
+                                content: const Text('Join request canceled'),
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             );
@@ -217,10 +217,11 @@ class JoinRequestSheet extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text(
-                                  'Something went wrong. Please try again.'),
+                                'Something went wrong. Please try again.',
+                              ),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                           );
@@ -234,15 +235,13 @@ class JoinRequestSheet extends ConsumerWidget {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
-                      isRequested
-                          ? 'Cancel Join Request'
-                          : 'Send Join Request',
+                      isRequested ? 'Cancel Join Request' : 'Send Join Request',
                       style: TextStyle(
-                        fontSize: 15.sp,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
