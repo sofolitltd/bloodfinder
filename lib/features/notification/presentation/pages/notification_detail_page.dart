@@ -201,7 +201,7 @@ class NotificationDetailPage extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () {
           if (routePath != null) {
-            GoRouter.of(context).go(routePath);
+            GoRouter.of(context).push(routePath);
           } else {
             Navigator.pop(context);
           }

@@ -187,49 +187,55 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                         ),
                       ),
                     ),
-                    Center(
-                      child: FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white24,
-                                    shape: BoxShape.circle,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white24,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.person_add_outlined,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
                                   ),
-                                  child: Icon(
-                                    Icons.person_add_outlined,
-                                    color: Colors.white,
-                                    size: 16,
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Create Account',
-                                  style: TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Join BloodFinder and start saving lives',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.white.withValues(alpha: 0.8),
+                                ],
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 4),
+                              Text(
+                                'Join BloodFinder and start saving lives',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -268,12 +274,13 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage>
                     onSelectDate: _selectDate,
                     onGenderChanged: (v) =>
                         ref.read(registrationProvider.notifier).setGender(v),
-                    onBloodGroupChanged: (v) =>
-                        ref.read(registrationProvider.notifier).setBloodGroup(v),
+                    onBloodGroupChanged: (v) => ref
+                        .read(registrationProvider.notifier)
+                        .setBloodGroup(v),
                     onDonorTap: _handleDonorToggle,
-                    onLocationPicked: (lat, lon, address) =>
-                        ref.read(registrationProvider.notifier)
-                            .setLocation(lat, lon, address),
+                    onLocationPicked: (lat, lon, address) => ref
+                        .read(registrationProvider.notifier)
+                        .setLocation(lat, lon, address),
                     onTogglePasswordVisibility: () =>
                         setState(() => _obscurePassword = !_obscurePassword),
                     onRegister: _handleRegistration,

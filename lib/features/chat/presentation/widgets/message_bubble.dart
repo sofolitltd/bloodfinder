@@ -34,7 +34,8 @@ class MessageBubble extends StatelessWidget {
           decoration: BoxDecoration(
             color: isMe
                 ? Colors.red.shade100.withValues(alpha: .5)
-                : Colors.grey.shade100,
+                : Theme.of(context).cardTheme.color ??
+                    Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(

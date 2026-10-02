@@ -300,7 +300,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 2),
+                              SizedBox(height: 16),
 
                               // Send Reset Link button
                               SizedBox(

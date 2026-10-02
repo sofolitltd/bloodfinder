@@ -38,7 +38,7 @@ class DonorInfoSection extends StatelessWidget {
     return ButtonTheme(
       alignedDropdown: true,
       child: Column(
-        spacing: 8,
+        spacing: 16,
         children: [
             // Blood group + Gender — row
             Row(
@@ -76,7 +76,6 @@ class DonorInfoSection extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8),
 
             // DOB
             GestureDetector(
@@ -96,8 +95,6 @@ class DonorInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-
-            SizedBox(height: 8),
 
             // Donor toggle
             Container(

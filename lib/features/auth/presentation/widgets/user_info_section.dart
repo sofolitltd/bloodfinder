@@ -23,7 +23,7 @@ class UserInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
+      spacing: 16,
       children: [
           // Avatar
           GestureDetector(
@@ -74,7 +74,6 @@ class UserInfoSection extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 2),
 
           // First name
           TextFormField(
@@ -85,7 +84,6 @@ class UserInfoSection extends StatelessWidget {
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          SizedBox(height: 8),
 
           // Last name
           TextFormField(
@@ -96,7 +94,6 @@ class UserInfoSection extends StatelessWidget {
             ),
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          SizedBox(height: 8),
 
           // Mobile
           TextFormField(
