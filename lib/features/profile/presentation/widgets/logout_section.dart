@@ -162,7 +162,7 @@ class LogoutSection extends ConsumerWidget {
     );
   }
 
-  void _performLogout(BuildContext context, WidgetRef ref) {
+  Future<void> _performLogout(BuildContext context, WidgetRef ref) async {
     showDialog(
       context: context,
       useRootNavigator: true,
@@ -182,10 +182,11 @@ class LogoutSection extends ConsumerWidget {
       ),
     );
 
-    ref.read(firebaseDataSourceProvider).deleteToken().then((_) {
-      ref.read(authRepositoryProvider).signOut();
-    }).catchError((_) {
+    try {
+      await ref.read(firebaseDataSourceProvider).deleteToken();
+      await ref.read(authRepositoryProvider).signOut();
+    } finally {
       if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
-    });
+    }
   }
 }

@@ -135,6 +135,11 @@ class _NotificationPageState extends ConsumerState<NotificationPage>
                       ),
                       subtitle: Text(n.body),
                       onTap: () {
+                        if (!n.read) {
+                          ref
+                              .read(communityRepositoryProvider)
+                              .markNotificationRead(widget.userId, n.id);
+                        }
                         routerConfig.push(
                           '/notification-detail',
                           extra: n,
